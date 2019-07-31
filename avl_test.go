@@ -61,6 +61,41 @@ func Test_max_func(t *testing.T) {
 	assert.Equal(t, max(-1, 2), 2)
 }
 
+func Test_treeNode_Left_func(t *testing.T) {
+	as := assert.New(t)
+
+	// node is nil
+	as.Nil((*treeNode)(nil).Left(), "When node is nil, must returns nil")
+
+	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
+	tree1.ltree = &treeNode{nil, nil, -1, &intValue{2}}
+	v, _ := tree1.Left().value.(*intValue)
+	as.Equal(v.value, 2, "left child must has the value 2")
+}
+
+func Test_treeNode_Right_func(t *testing.T) {
+	as := assert.New(t)
+
+	// node is nil
+	as.Nil((*treeNode)(nil).Left(), "When node is nil, must returns nil")
+
+	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
+	tree1.rtree = &treeNode{nil, nil, -1, &intValue{2}}
+	v, _ := tree1.Right().value.(*intValue)
+	as.Equal(v.value, 2, "left child must has the value 2")
+}
+
+func Test_treeNode_Value_func(t *testing.T) {
+	as := assert.New(t)
+
+	// node is nil
+	as.Nil((*treeNode)(nil).Value(), "When node is nil, must returns nil")
+
+	tree1 := &treeNode{nil, nil, -1, &intValue{11}}
+	v, _ := tree1.Value().(*intValue)
+	as.Equal(v.value, 11, "left child must has the value 11")
+}
+
 func Test_treeNode_Height_func(t *testing.T) {
 	as := assert.New(t)
 

@@ -20,6 +20,33 @@ type treeNode struct {
 	value        Value
 }
 
+// Left returns the `node` left child. If node is nil then returns nil.
+func (node *treeNode) Left() *treeNode {
+	if node != nil {
+		return node.ltree
+	}
+
+	return nil
+}
+
+// Right returns the `node` right child. If node is nil then returns nil.
+func (node *treeNode) Right() *treeNode {
+	if node != nil {
+		return node.rtree
+	}
+
+	return nil
+}
+
+// Value returns the `node` value. If node is nil then returns nil.
+func (node *treeNode) Value() Value {
+	if node != nil {
+		return node.value
+	}
+
+	return nil
+}
+
 // Height returns the `node.height` property. If node is nil, then returns -1
 func (node *treeNode) Height() int {
 	if node != nil {
@@ -90,4 +117,12 @@ func (node treeNode) Stringify() string {
 
 func (node treeNode) StringifyWithIndent(indent string) string {
 	return node.stringifyNode("", indent)
+}
+
+
+type TreeNode interface {
+	Left()	 TreeNode
+	Right()  TreeNode
+	Value()  Value
+	Height() int
 }
