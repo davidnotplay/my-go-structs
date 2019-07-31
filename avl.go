@@ -17,7 +17,7 @@ func max(a, b int) int {
 type avlNode struct {
 	ltree, rtree *avlNode
 	height       int
-	value        Value
+	value        *Value
 }
 
 // Left returns the `node` left child. If node is nil then returns nil.
@@ -41,7 +41,7 @@ func (node *avlNode) Right() *avlNode {
 // Value returns the `node` value. If node is nil then returns nil.
 func (node *avlNode) Value() Value {
 	if node != nil {
-		return node.value
+		return *node.value
 	}
 
 	return nil
@@ -105,7 +105,7 @@ func (node *avlNode) stringifyNode(sep string, space string) string {
 		return "NULL\n"
 	}
 
-	valueStr :=  node.value.String()
+	valueStr :=  (*node.value).String()
 	lChildStr := node.ltree.stringifyNode(fmt.Sprintf("%s│%s", sep, space), space)
 	rChildStr := node.rtree.stringifyNode(fmt.Sprintf("%s%s%s", sep, space, space), space)
 	return fmt.Sprintf("%s\n%s├─%s%s└─%s", valueStr, sep, lChildStr, sep, rChildStr)
