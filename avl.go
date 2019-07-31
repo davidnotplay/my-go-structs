@@ -1,9 +1,5 @@
 package structs
 
-import (
-	"fmt"
-)
-
 // max returns the param more large
 func max(a, b int) int {
 	if a > b {
@@ -100,24 +96,24 @@ func (node *avlNode) rotateLeftRight() *avlNode {
 
 
 
-func (node *avlNode) stringifyNode(sep string, space string) string {
-	if node == nil {
-		return "NULL\n"
-	}
+// func (node *avlNode) stringifyNode(sep string, space string) string {
+// 	if node == nil {
+// 		return "NULL\n"
+// 	}
 
-	valueStr :=  (*node.value).String()
-	lChildStr := node.ltree.stringifyNode(fmt.Sprintf("%s│%s", sep, space), space)
-	rChildStr := node.rtree.stringifyNode(fmt.Sprintf("%s%s%s", sep, space, space), space)
-	return fmt.Sprintf("%s\n%s├─%s%s└─%s", valueStr, sep, lChildStr, sep, rChildStr)
-}
+// 	valueStr :=  (*node.value).String()
+// 	lChildStr := node.ltree.stringifyNode(fmt.Sprintf("%s│%s", sep, space), space)
+// 	rChildStr := node.rtree.stringifyNode(fmt.Sprintf("%s%s%s", sep, space, space), space)
+// 	return fmt.Sprintf("%s\n%s├─%s%s└─%s", valueStr, sep, lChildStr, sep, rChildStr)
+// }
 
-func (node avlNode) Stringify() string {
-	return node.StringifyWithIndent(" ")
-}
+// func (node avlNode) Stringify() string {
+// 	return node.StringifyWithIndent(" ")
+// }
 
-func (node avlNode) StringifyWithIndent(indent string) string {
-	return node.stringifyNode("", indent)
-}
+// func (node avlNode) StringifyWithIndent(indent string) string {
+// 	return node.stringifyNode("", indent)
+// }
 
 type AvlNode interface {
 	Left()	 AvlNode
