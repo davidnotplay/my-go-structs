@@ -13,15 +13,15 @@ func max(a, b int) int {
 	return b
 }
 
-// treeNode is the interanal AVL tree node
-type treeNode struct {
-	ltree, rtree *treeNode
+// avlNode is the interanal AVL tree node
+type avlNode struct {
+	ltree, rtree *avlNode
 	height       int
 	value        Value
 }
 
 // Left returns the `node` left child. If node is nil then returns nil.
-func (node *treeNode) Left() *treeNode {
+func (node *avlNode) Left() *avlNode {
 	if node != nil {
 		return node.ltree
 	}
@@ -30,7 +30,7 @@ func (node *treeNode) Left() *treeNode {
 }
 
 // Right returns the `node` right child. If node is nil then returns nil.
-func (node *treeNode) Right() *treeNode {
+func (node *avlNode) Right() *avlNode {
 	if node != nil {
 		return node.rtree
 	}
@@ -39,7 +39,7 @@ func (node *treeNode) Right() *treeNode {
 }
 
 // Value returns the `node` value. If node is nil then returns nil.
-func (node *treeNode) Value() Value {
+func (node *avlNode) Value() Value {
 	if node != nil {
 		return node.value
 	}
@@ -48,7 +48,7 @@ func (node *treeNode) Value() Value {
 }
 
 // Height returns the `node.height` property. If node is nil, then returns -1
-func (node *treeNode) Height() int {
+func (node *avlNode) Height() int {
 	if node != nil {
 		return node.height
 	}
@@ -57,12 +57,12 @@ func (node *treeNode) Height() int {
 }
 
 // maxHeights returns the max value of left tree height and right tree height
-func (node treeNode) maxHeight() int {
+func (node avlNode) maxHeight() int {
 	return max(node.ltree.Height(), node.rtree.Height())
 }
 
 // rotateRight execute an AVL tree right rotation.
-func (node *treeNode) rotateRight() *treeNode {
+func (node *avlNode) rotateRight() *avlNode {
 	newNode := node.ltree
 	node.ltree = newNode.rtree
 	newNode.rtree = node
@@ -74,7 +74,7 @@ func (node *treeNode) rotateRight() *treeNode {
 }
 
 // rotateLeft execute an AVL tree left rotation.
-func (node *treeNode) rotateLeft() *treeNode {
+func (node *avlNode) rotateLeft() *avlNode {
 	newNode := node.rtree
 	node.rtree = newNode.ltree
 	newNode.ltree = node
@@ -86,13 +86,13 @@ func (node *treeNode) rotateLeft() *treeNode {
 }
 
 // rotateRightLeft executes the AVL double rotation (right left)
-func (node *treeNode) rotateRightLeft() *treeNode {
+func (node *avlNode) rotateRightLeft() *avlNode {
 	node.rtree = node.rtree.rotateRight()
 	return node.rotateLeft()
 }
 
 // rotateLeftRight executes the AVL double rotation (left right)
-func (node *treeNode) rotateLeftRight() *treeNode {
+func (node *avlNode) rotateLeftRight() *avlNode {
 	node.ltree = node.ltree.rotateLeft()
 	return node.rotateRight()
 }
@@ -100,7 +100,7 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 
 
 
-func (node *treeNode) stringifyNode(sep string, space string) string {
+func (node *avlNode) stringifyNode(sep string, space string) string {
 	if node == nil {
 		return "NULL\n"
 	}
@@ -111,18 +111,17 @@ func (node *treeNode) stringifyNode(sep string, space string) string {
 	return fmt.Sprintf("%s\n%s├─%s%s└─%s", valueStr, sep, lChildStr, sep, rChildStr)
 }
 
-func (node treeNode) Stringify() string {
+func (node avlNode) Stringify() string {
 	return node.StringifyWithIndent(" ")
 }
 
-func (node treeNode) StringifyWithIndent(indent string) string {
+func (node avlNode) StringifyWithIndent(indent string) string {
 	return node.stringifyNode("", indent)
 }
 
-
-type TreeNode interface {
-	Left()	 TreeNode
-	Right()  TreeNode
+type AvlNode interface {
+	Left()	 AvlNode
+	Right()  AvlNode
 	Value()  Value
 	Height() int
 }

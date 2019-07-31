@@ -28,7 +28,7 @@ func i(i int) *int {
 	return &i
 }
 
-func checkTree(t *testing.T, node *treeNode, l, r *int) {
+func checkTree(t *testing.T, node *avlNode, l, r *int) {
 
 	if l == nil {
 		assert.Nil(t, node.ltree)
@@ -61,70 +61,70 @@ func Test_max_func(t *testing.T) {
 	assert.Equal(t, max(-1, 2), 2)
 }
 
-func Test_treeNode_Left_func(t *testing.T) {
+func Test_avlNode_Left_func(t *testing.T) {
 	as := assert.New(t)
 
 	// node is nil
-	as.Nil((*treeNode)(nil).Left(), "When node is nil, must returns nil")
+	as.Nil((*avlNode)(nil).Left(), "When node is nil, must returns nil")
 
-	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
-	tree1.ltree = &treeNode{nil, nil, -1, &intValue{2}}
+	tree1 := &avlNode{nil, nil, -1, &intValue{1}}
+	tree1.ltree = &avlNode{nil, nil, -1, &intValue{2}}
 	v, _ := tree1.Left().value.(*intValue)
 	as.Equal(v.value, 2, "left child must has the value 2")
 }
 
-func Test_treeNode_Right_func(t *testing.T) {
+func Test_avlNode_Right_func(t *testing.T) {
 	as := assert.New(t)
 
 	// node is nil
-	as.Nil((*treeNode)(nil).Left(), "When node is nil, must returns nil")
+	as.Nil((*avlNode)(nil).Left(), "When node is nil, must returns nil")
 
-	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
-	tree1.rtree = &treeNode{nil, nil, -1, &intValue{2}}
+	tree1 := &avlNode{nil, nil, -1, &intValue{1}}
+	tree1.rtree = &avlNode{nil, nil, -1, &intValue{2}}
 	v, _ := tree1.Right().value.(*intValue)
 	as.Equal(v.value, 2, "left child must has the value 2")
 }
 
-func Test_treeNode_Value_func(t *testing.T) {
+func Test_avlNode_Value_func(t *testing.T) {
 	as := assert.New(t)
 
 	// node is nil
-	as.Nil((*treeNode)(nil).Value(), "When node is nil, must returns nil")
+	as.Nil((*avlNode)(nil).Value(), "When node is nil, must returns nil")
 
-	tree1 := &treeNode{nil, nil, -1, &intValue{11}}
+	tree1 := &avlNode{nil, nil, -1, &intValue{11}}
 	v, _ := tree1.Value().(*intValue)
 	as.Equal(v.value, 11, "left child must has the value 11")
 }
 
-func Test_treeNode_Height_func(t *testing.T) {
+func Test_avlNode_Height_func(t *testing.T) {
 	as := assert.New(t)
 
-	as.Equal((*treeNode)(nil).Height(), -1, "When node is nil, must returns -1")
-	as.Equal((&treeNode{nil, nil, 33, nil}).Height(), 33, "Return invalid height")
+	as.Equal((*avlNode)(nil).Height(), -1, "When node is nil, must returns -1")
+	as.Equal((&avlNode{nil, nil, 33, nil}).Height(), 33, "Return invalid height")
 }
 
-func Test_treeNode_maxHeight_func(t *testing.T) {
+func Test_avlNode_maxHeight_func(t *testing.T) {
 	as := assert.New(t)
 
-	node := treeNode{nil, nil, 3, nil}
+	node := avlNode{nil, nil, 3, nil}
 	as.Equal(node.maxHeight(), -1, "children are nil, so the height of the node must be -1")
 
-	node = treeNode{&treeNode{nil, nil, 22, nil}, nil, 3, nil}
+	node = avlNode{&avlNode{nil, nil, 22, nil}, nil, 3, nil}
 	as.Equal(node.maxHeight(), 22, "height value is the height value of the left child")
 
-	node = treeNode{nil, &treeNode{nil, nil, 41, nil}, 3, nil}
+	node = avlNode{nil, &avlNode{nil, nil, 41, nil}, 3, nil}
 	as.Equal(node.maxHeight(), 41, "height value is the height value of the left child")
 
-	node = treeNode{&treeNode{nil, nil, 15, nil}, &treeNode{nil, nil, 30, nil}, 3, nil}
+	node = avlNode{&avlNode{nil, nil, 15, nil}, &avlNode{nil, nil, 30, nil}, 3, nil}
 	as.Equal(node.maxHeight(), 30, "height must be 30")
 }
 
-func Test_treeNode_rotateRight_func(t *testing.T) {
-	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
-	tree2 := &treeNode{nil, nil, -1, &intValue{2}}
-	tree3 := &treeNode{nil, nil, -1, &intValue{3}}
-	tree4 := &treeNode{nil, nil, -1, &intValue{4}}
-	tree5 := &treeNode{nil, nil, -1, &intValue{5}}
+func Test_avlNode_rotateRight_func(t *testing.T) {
+	tree1 := &avlNode{nil, nil, -1, &intValue{1}}
+	tree2 := &avlNode{nil, nil, -1, &intValue{2}}
+	tree3 := &avlNode{nil, nil, -1, &intValue{3}}
+	tree4 := &avlNode{nil, nil, -1, &intValue{4}}
+	tree5 := &avlNode{nil, nil, -1, &intValue{5}}
 
 	tree2.ltree = tree1
 	tree2.rtree = tree3
@@ -141,12 +141,12 @@ func Test_treeNode_rotateRight_func(t *testing.T) {
 	checkTree(t, tree5, nil, nil)
 }
 
-func Test_treeNode_rotateLeft_func(t *testing.T) {
-	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
-	tree2 := &treeNode{nil, nil, -1, &intValue{2}}
-	tree3 := &treeNode{nil, nil, -1, &intValue{3}}
-	tree4 := &treeNode{nil, nil, -1, &intValue{4}}
-	tree5 := &treeNode{nil, nil, -1, &intValue{5}}
+func Test_avlNode_rotateLeft_func(t *testing.T) {
+	tree1 := &avlNode{nil, nil, -1, &intValue{1}}
+	tree2 := &avlNode{nil, nil, -1, &intValue{2}}
+	tree3 := &avlNode{nil, nil, -1, &intValue{3}}
+	tree4 := &avlNode{nil, nil, -1, &intValue{4}}
+	tree5 := &avlNode{nil, nil, -1, &intValue{5}}
 
 	tree4.ltree = tree3
 	tree4.rtree = tree5
@@ -163,12 +163,12 @@ func Test_treeNode_rotateLeft_func(t *testing.T) {
 	checkTree(t, tree5, nil, nil)
 }
 
-func Test_treeNode_rotateRightLeft_func(t *testing.T) {
-	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
-	tree2 := &treeNode{nil, nil, -1, &intValue{2}}
-	tree3 := &treeNode{nil, nil, -1, &intValue{3}}
-	tree4 := &treeNode{nil, nil, -1, &intValue{4}}
-	tree5 := &treeNode{nil, nil, -1, &intValue{5}}
+func Test_avlNode_rotateRightLeft_func(t *testing.T) {
+	tree1 := &avlNode{nil, nil, -1, &intValue{1}}
+	tree2 := &avlNode{nil, nil, -1, &intValue{2}}
+	tree3 := &avlNode{nil, nil, -1, &intValue{3}}
+	tree4 := &avlNode{nil, nil, -1, &intValue{4}}
+	tree5 := &avlNode{nil, nil, -1, &intValue{5}}
 
 	tree4.ltree = tree3
 	tree4.rtree = tree5
@@ -185,12 +185,12 @@ func Test_treeNode_rotateRightLeft_func(t *testing.T) {
 	checkTree(t, tree5, nil, nil)
 }
 
-func Test_treeNode_rotateLeftRight_func(t *testing.T) {
-	tree1 := &treeNode{nil, nil, -1, &intValue{1}}
-	tree2 := &treeNode{nil, nil, -1, &intValue{2}}
-	tree3 := &treeNode{nil, nil, -1, &intValue{3}}
-	tree4 := &treeNode{nil, nil, -1, &intValue{4}}
-	tree5 := &treeNode{nil, nil, -1, &intValue{5}}
+func Test_avlNode_rotateLeftRight_func(t *testing.T) {
+	tree1 := &avlNode{nil, nil, -1, &intValue{1}}
+	tree2 := &avlNode{nil, nil, -1, &intValue{2}}
+	tree3 := &avlNode{nil, nil, -1, &intValue{3}}
+	tree4 := &avlNode{nil, nil, -1, &intValue{4}}
+	tree5 := &avlNode{nil, nil, -1, &intValue{5}}
 
 	tree2.ltree = tree1
 	tree2.rtree = tree3
