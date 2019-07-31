@@ -1,4 +1,4 @@
-package list
+package structs
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func max(a, b int) int {
 type treeNode struct {
 	ltree, rtree *treeNode
 	height       int
-	value        ListValue
+	value        Value
 }
 
 // Height returns the `node.height` property. If node is nil, then returns -1
@@ -70,6 +70,9 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 	return node.rotateRight()
 }
 
+
+
+
 func (node *treeNode) stringifyNode(sep string, space string) string {
 	if node == nil {
 		return "NULL\n"
@@ -87,10 +90,4 @@ func (node treeNode) Stringify() string {
 
 func (node treeNode) StringifyWithIndent(indent string) string {
 	return node.stringifyNode("", indent)
-}
-
-type ListValue interface {
-	Less(ListValue) bool
-	Eq(ListValue) bool
-	String() string
 }

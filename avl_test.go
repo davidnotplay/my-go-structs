@@ -1,4 +1,4 @@
-package list
+package structs
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -14,12 +14,12 @@ func (i intValue) String() string {
 	return fmt.Sprintf("%d", i.value)
 }
 
-func (i intValue) Less(v ListValue) bool {
+func (i intValue) Less(v Value) bool {
 	vi, _ := v.(*intValue)
 	return i.value < vi.value
 }
 
-func (i intValue) Eq(v ListValue) bool {
+func (i intValue) Eq(v Value) bool {
 	vi, _ := v.(*intValue)
 	return i.value == vi.value
 }
