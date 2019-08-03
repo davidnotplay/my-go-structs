@@ -15,12 +15,12 @@ func (i intValue) String() string {
 }
 
 func (i intValue) Less(v Value) bool {
-	vi, _ := v.(*intValue)
+	vi, _ := v.(intValue)
 	return i.value < vi.value
 }
 
 func (i intValue) Eq(v Value) bool {
-	vi, _ := v.(*intValue)
+	vi, _ := v.(intValue)
 	return i.value == vi.value
 }
 
@@ -31,6 +31,16 @@ func i(i int) *int {
 func iv(i int) *Value{
 	var v Value = intValue{i}
 	return &v
+}
+
+func vi (value *Value) int {
+	v, _ := (*value).(intValue)
+	return v.value
+}
+
+func checkVAndH(t *testing.T, node *avlNode, v, h int) {
+	assert.Equal(t, vi(node.value), v)
+	assert.Equal(t, node.height, h)
 }
 
 func checkTree(t *testing.T, node *avlNode, l, r *int) {
@@ -211,3 +221,100 @@ func Test_avlNode_rotateLeftRight_func(t *testing.T) {
 	checkTree(t, tree4, nil, i(5))
 	checkTree(t, tree1, nil, nil)
 }
+
+func Test_newAvl_func(t *testing.T)  {
+	as := assert.New(t)
+
+	avl := NewAvl()
+	as.Nil(avl.root, "root must be nil when the avl is made")
+	as.Equal(avl.length, 0, "avl length must be 0 when the avl is made")
+}
+
+func Test_Avl_Insert_func(t *testing.T) {
+	avl := NewAvl()
+
+	l := func(l int) {
+		assert.Equal(t, avl.Length(), l, "inavlid length")
+	}
+
+	in := func(e int) {
+		assert.True(t, avl.Insert(iv(e)), "element duplicated")
+	}
+
+	// Insert first element. Element 5
+	in(10)
+	checkVAndH(t, avl.root, 10, 0)
+	l(1)
+
+	// Insert element 5
+	in(5)
+	checkVAndH(t, avl.root, 10, 1)
+	checkVAndH(t, avl.root.ltree, 5, 0)
+	l(2)
+
+	// Insert element 3. Re-balance tree. Right rotate
+	in(3)
+	checkVAndH(t, avl.root, 5, 1)
+	checkVAndH(t, avl.root.ltree, 3, 0)
+	checkVAndH(t, avl.root.rtree, 10, 0)
+	l(3)
+
+	// Insert element 15
+	in(15)
+	checkVAndH(t, avl.root, 5, 2)
+	checkVAndH(t, avl.root.ltree, 3, 0)
+	checkVAndH(t, avl.root.rtree, 10, 1)
+	checkVAndH(t, avl.root.rtree.rtree, 15, 0)
+	l(4)
+
+	// Insert element 7
+	in(7)
+	checkVAndH(t, avl.root, 5, 2)
+	checkVAndH(t, avl.root.ltree, 3, 0)
+	checkVAndH(t, avl.root.rtree, 10, 1)
+	checkVAndH(t, avl.root.rtree.rtree, 15, 0)
+	checkVAndH(t, avl.root.rtree.ltree, 7, 0)
+	l(5)
+
+	// Insert element 20. Re-balance tree. Left rotate
+	in(20)
+	checkVAndH(t, avl.root, 10, 2)
+	checkVAndH(t, avl.root.ltree, 5, 1)
+	checkVAndH(t, avl.root.ltree.ltree, 3, 0)
+	checkVAndH(t, avl.root.ltree.rtree, 7, 0)
+
+	checkVAndH(t, avl.root.rtree, 15, 1)
+	checkVAndH(t, avl.root.rtree.rtree, 20, 0)
+	l(6)
+
+
+	// New tree to check the double rotations. Left right
+	avl = NewAvl()
+	in(10)
+	in(5)
+	in(7)
+	checkVAndH(t, avl.root, 7, 1)
+	checkVAndH(t, avl.root.ltree, 5, 0)
+	checkVAndH(t, avl.root.rtree, 10, 0)
+	l(3)
+
+	// Insert 15 and 12. Generate double rotation right and left
+	in(15)
+	in(12)
+	checkVAndH(t, avl.root, 7, 2)
+	checkVAndH(t, avl.root.ltree, 5, 0)
+	checkVAndH(t, avl.root.rtree, 12, 1)
+	checkVAndH(t, avl.root.rtree.ltree, 10, 0)
+	checkVAndH(t, avl.root.rtree.rtree, 15, 0)
+	l(5)
+
+	// Insert duplicate element
+	assert.False(t, avl.Insert(iv(5)))
+	checkVAndH(t, avl.root, 7, 2)
+	checkVAndH(t, avl.root.ltree, 5, 0)
+	checkVAndH(t, avl.root.rtree, 12, 1)
+	checkVAndH(t, avl.root.rtree.ltree, 10, 0)
+	checkVAndH(t, avl.root.rtree.rtree, 15, 0)
+	l(5)
+}
+
