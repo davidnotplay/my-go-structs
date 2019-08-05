@@ -318,3 +318,65 @@ func Test_Avl_Insert_func(t *testing.T) {
 	l(5)
 }
 
+func Test_Avl_search_func(t *testing.T) {
+	as := assert.New(t)
+	avl := NewAvl()
+
+	v1 := iv(1)
+	v2 := iv(2)
+	v3 := iv(3)
+	v4 := iv(4)
+
+	avl.Insert(v1)
+	avl.Insert(v2)
+	avl.Insert(v3)
+	avl.Insert(v4)
+
+	node, parent, found := search(v2, avl.root, nil)
+	as.True(found)
+	as.Nil(parent)
+	as.Equal(avl.root, node)
+
+	node, parent, found = search(v4, avl.root, nil)
+	as.True(found)
+	as.Equal(vi(parent.value), 3)
+	as.Equal(vi(node.value), 4)
+
+	node, parent, found = search(iv(7), avl.root, nil)
+	as.False(found)
+	as.Nil(node)
+	as.Nil(parent)
+}
+
+func Test_Avl_Search_func(t *testing.T) {
+	as := assert.New(t)
+	avl := NewAvl()
+
+	values := map[int]*Value {
+		1:  iv(1),
+		2:  iv(2),
+		5:  iv(5),
+		12: iv(12),
+		8:  iv(8),
+		33: iv(33),
+	}
+
+	for _, v := range(values) {
+		avl.Insert(v)
+	}
+
+	for number, v := range(values) {
+		result, found := avl.Search(iv(number))
+		as.Truef(found, "value %s not found", (*v).String())
+		as.Truef(result.Eq(*v), "Values doesn't match, key %d", number)
+	}
+
+	// Values hasn't in the tree
+	invalidVals := []int{-1, 3, 4, 6, 9, 11, 13, 20, 30, 32, 34, 19322}
+	for _, number := range(invalidVals) {
+		result, found := avl.Search(iv(number))
+		as.False(found, "number  %d found in the tree", number)
+		as.Nil(result, "result %d isn't nil", number)
+	}
+}
+

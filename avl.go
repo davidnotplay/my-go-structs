@@ -1,6 +1,6 @@
 package structs
 
-import "fmt"
+// import "fmt"
 
 // max returns the param more large
 func max(a, b int) int {
@@ -166,6 +166,29 @@ func (avl *Avl) Insert(v *Value) bool {
 // Length returns the number of elements in the avl tree.
 func (avl *Avl) Length() int {
 	return avl.length
+}
+
+func search(v *Value, node *avlNode, parent *avlNode) (*avlNode, *avlNode, bool) {
+	if node == nil {
+		// v value not found
+		return nil, nil, false
+	}
+
+
+	if node.Value().Eq(*v) {
+		return node, parent, true
+	}
+
+	if node.Value().Less(*v) {
+		return search(v, node.rtree, node)
+	}
+
+	return search(v, node.ltree, node)
+}
+
+func (avl *Avl) Search(v *Value) (Value, bool) {
+	node, _, found := search(v, avl.root, nil)
+	return node.Value(), found
 }
 
 
