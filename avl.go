@@ -1,7 +1,5 @@
 package structs
 
-// import "fmt"
-
 // max returns the param more large
 func max(a, b int) int {
 	if a > b {
@@ -111,7 +109,7 @@ func NewAvl() Avl {
 // rotate the nodes for balance the new tree. No allow elements duplicated.
 // Returns the new tree and and a flag indicating if the element has been inserted.
 func insertValue(node *avlNode, v *Value) (*avlNode, bool){
-	var duplicated bool
+	var inserted bool
 
 	if node == nil {
 		return &avlNode{nil, nil, 0, v}, true
@@ -123,30 +121,41 @@ func insertValue(node *avlNode, v *Value) (*avlNode, bool){
 	}
 
 	if (*v).Less(node.Value()) {
-		node.ltree, duplicated = insertValue(node.ltree, v)
-
-		if node.ltree.Height() - node.rtree.Height() == 2 {
-			// Balance tree
-			if (*v).Less(node.ltree.Value()) {
-				node = node.rotateRight()
-			} else {
-				node = node.rotateLeftRight()
-			}
-		}
+		node.ltree, inserted = insertValue(node.ltree, v)
 	} else {
-		node.rtree, duplicated = insertValue(node.rtree, v)
-		if node.rtree.Height() - node.ltree.Height() == 2 {
-			// Balance tree
-			if node.rtree.Value().Less(*v) {
-				node = node.rotateLeft()
-			} else {
-				node = node.rotateRightLeft()
-			}
+		node.rtree, inserted = insertValue(node.rtree, v)
+	}
+
+	if inserted {
+		node = rebalance(node)
+	}
+
+	return node, inserted
+}
+
+// rebalance Reblance the `node` avlNode and return it.
+func rebalance(node *avlNode) *avlNode {
+	if node.Left().Height() - node.Right().Height() == 2 {
+		ltree := node.Left()
+
+		if ltree.Left().Height() <= ltree.Right().Height() {
+			node = node.rotateLeftRight()
+		} else {
+			node = node.rotateRight()
+		}
+
+	} else if node.Right().Height() - node.Left().Height() == 2 {
+		rtree := node.Right()
+
+		if rtree.Right().Height() <= rtree.Left().Height() {
+			node = node.rotateRightLeft()
+		} else {
+			node = node.rotateLeft()
 		}
 	}
 
 	node.height = node.maxHeight() + 1
-	return node, duplicated
+	return node
 }
 
 // Insert inserts the `v` value in the avl tree.
@@ -200,6 +209,66 @@ func (avl *Avl) Search(v *Value) (Value, bool) {
 	return node.Value(), found
 }
 
+// deleteAvl searchs the `v` value in the `node` tree,  delete it if it is found, and re-balance
+// `node` tree. `parent` param is the node father of `node` tree.  The function returns tne node
+// deleted, the new node re-balanced and a flag indicating if the value was found.
+func deleteAvl(node *avlNode, v *Value) (*avlNode, *Value, bool) {
+	var (
+		found bool
+		vDeleted *Value
+	)
+
+	if node == nil {
+		return node, nil, false
+	}
+
+	if node.Value().Eq(*v) {
+		if node.ltree == nil {
+			return node.rtree, node.value, true
+		} else if node.rtree == nil {
+			return node.ltree, node.value, true
+		}
+
+		var nodeTemp *avlNode
+		nodeTemp = node.rtree;
+
+		for nodeTemp.ltree != nil {
+			nodeTemp = nodeTemp.ltree
+		}
+
+		vDeleted = node.value
+		node.value = nodeTemp.value
+		node.rtree, _, _ = deleteAvl(node.rtree, nodeTemp.value)
+		return node, vDeleted, true
+
+	} else if node.Value().Less(*v) {
+		node.rtree, vDeleted, found = deleteAvl(node.rtree, v)
+	} else {
+		node.ltree, vDeleted, found = deleteAvl(node.ltree, v)
+	}
+
+	if found {
+		node = rebalance(node)
+	}
+
+
+	return node, vDeleted, found
+}
+
+// Delete delete the `v` value of the avl tree.
+// Returns the value deleted and a flag indicating if `v` was found in the tree.
+func (avl *Avl)Delete(v *Value) (Value, bool){
+	var (
+		vDeleted *Value = nil
+		found bool = false
+	)
+
+	if avl.root, vDeleted, found = deleteAvl(avl.root, v); found {
+		avl.length--
+	}
+
+	return *vDeleted, found
+}
 
 // func (node *avlNode) stringifyNode(sep string, space string) string {
 // 	if node == nil {
