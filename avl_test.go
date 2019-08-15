@@ -52,8 +52,8 @@ func getAllValues(node *avlNode) (values map[int]*Value) {
 			return
 		}
 		getValue(node.ltree, node)
-		value := node.Value()
-		v, _ := value.(intValue)
+		value := *node.value
+		v, _ := (*node.value).(intValue)
 		values[v.value] = &value
 		getValue(node.rtree, node)
 	}
@@ -122,41 +122,6 @@ func Test_max_func(t *testing.T) {
 	assert.Equal(t, max(2, -2), 2)
 	assert.Equal(t, max(1, -2), 1)
 	assert.Equal(t, max(-1, 2), 2)
-}
-
-func Test_avlNode_Left_func(t *testing.T) {
-	as := assert.New(t)
-
-	// node is nil
-	as.Nil((*avlNode)(nil).Left(), "When node is nil, must returns nil")
-
-	tree1 := &avlNode{nil, nil, -1, iv(1)}
-	tree1.ltree = &avlNode{nil, nil, -1, iv(2)}
-	v, _ := (*tree1.Left().value).(intValue)
-	as.Equal(v.value, 2, "left child must has the value 2")
-}
-
-func Test_avlNode_Right_func(t *testing.T) {
-	as := assert.New(t)
-
-	// node is nil
-	as.Nil((*avlNode)(nil).Right(), "When node is nil, must returns nil")
-
-	tree1 := &avlNode{nil, nil, -1, iv(1)}
-	tree1.rtree = &avlNode{nil, nil, -1, iv(2)}
-	v, _ := (*tree1.Right().value).(intValue)
-	as.Equal(v.value, 2, "left child must has the value 2")
-}
-
-func Test_avlNode_Value_func(t *testing.T) {
-	as := assert.New(t)
-
-	// node is nil
-	as.Nil((*avlNode)(nil).Value(), "When node is nil, must returns nil")
-
-	tree1 := &avlNode{nil, nil, -1, iv(11)}
-	v, _ := tree1.Value().(intValue)
-	as.Equal(v.value, 11, "left child must has the value 11")
 }
 
 func Test_avlNode_Height_func(t *testing.T) {
