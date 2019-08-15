@@ -345,20 +345,17 @@ func Test_search_func(t *testing.T) {
 	avl.Insert(v3)
 	avl.Insert(v4)
 
-	node, parent, found := search(v2, avl.root, nil)
+	node, found := search(v2, avl.root)
 	as.True(found)
-	as.Nil(parent)
 	as.Equal(avl.root, node)
 
-	node, parent, found = search(v4, avl.root, nil)
+	node, found = search(v4, avl.root)
 	as.True(found)
-	as.Equal(vi(parent.value), 3)
 	as.Equal(vi(node.value), 4)
 
-	node, parent, found = search(iv(7), avl.root, nil)
+	node, found = search(iv(7), avl.root)
 	as.False(found)
 	as.Nil(node)
-	as.Nil(parent)
 }
 
 func Test_Avl_Search_func(t *testing.T) {

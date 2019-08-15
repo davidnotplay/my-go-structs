@@ -155,32 +155,30 @@ func (avl *Avl) Length() int {
 // search searchs the `v` value in the avlNode or in one of their trees
 // The function returns:
 //	- node where is the value. If value doesn't exist then returns nil.
-//	- parent node of the node where is the value. If values doesn't exist, or the node
-//	  where is the value is the avl root then returns nil
 //	- Flag indicating if the value has been found.
-func search(v *Value, node *avlNode, parent *avlNode) (*avlNode, *avlNode, bool) {
+func search(v *Value, node *avlNode) (*avlNode, bool) {
 	if node == nil {
 		// v value not found
-		return nil, nil, false
+		return nil, false
 	}
 
 
 	if (*node.value).Eq(*v) {
-		return node, parent, true
+		return node, true
 	}
 
 	if (*node.value).Less(*v) {
-		return search(v, node.rtree, node)
+		return search(v, node.rtree)
 	}
 
-	return search(v, node.ltree, node)
+	return search(v, node.ltree)
 }
 
 // Search searchs the `v` value in the avl tree.
 // The function returns: The value found in the avl tree. If `v` doesn't exists, then returns nil.
 // And a flag indicating if the value exists or not.
 func (avl *Avl) Search(v *Value) (Value, bool) {
-	if node, _, found := search(v, avl.root, nil); found {
+	if node, found := search(v, avl.root); found {
 		return *node.value, true
 	}
 
@@ -188,8 +186,8 @@ func (avl *Avl) Search(v *Value) (Value, bool) {
 }
 
 // deleteAvl searchs the `v` value in the `node` tree,  delete it if it is found, and re-balance
-// `node` tree. `parent` param is the node father of `node` tree.  The function returns tne node
-// deleted, the new node re-balanced and a flag indicating if the value was found.
+// `node` tree. The function returns tne node deleted, the new node re-balanced and a flag
+// indicating if the value was found.
 func deleteAvl(node *avlNode, v *Value) (*avlNode, *Value, bool) {
 	var (
 		found bool
