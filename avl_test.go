@@ -318,7 +318,7 @@ func Test_Avl_Insert_func(t *testing.T) {
 	l(5)
 }
 
-func Test_Avl_search_func(t *testing.T) {
+func Test_search_func(t *testing.T) {
 	as := assert.New(t)
 	avl := NewAvl()
 

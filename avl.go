@@ -168,6 +168,12 @@ func (avl *Avl) Length() int {
 	return avl.length
 }
 
+// search searchs the `v` value in the avlNode or in one of their trees
+// The function returns:
+//	- node where is the value. If value doesn't exist then returns nil.
+//	- parent node of the node where is the value. If values doesn't exist, or the node
+//	  where is the value is the avl root then returns nil
+//	- Flag indicating if the value has been found.
 func search(v *Value, node *avlNode, parent *avlNode) (*avlNode, *avlNode, bool) {
 	if node == nil {
 		// v value not found
@@ -186,6 +192,9 @@ func search(v *Value, node *avlNode, parent *avlNode) (*avlNode, *avlNode, bool)
 	return search(v, node.ltree, node)
 }
 
+// Search searchs the `v` value in the avl tree.
+// The function returns: The value found in the avl tree. If `v` doesn't exists, then returns nil.
+// And a flag indicating if the value exists or not.
 func (avl *Avl) Search(v *Value) (Value, bool) {
 	node, _, found := search(v, avl.root, nil)
 	return node.Value(), found
