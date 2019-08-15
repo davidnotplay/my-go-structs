@@ -2,7 +2,6 @@ package structs
 
 import "testing"
 
-
 func insertValues(num int) Avl {
 	avl := NewAvl()
 	var v Value

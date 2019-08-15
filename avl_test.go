@@ -1,9 +1,9 @@
 package structs
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
 )
 
 type intValue struct {
@@ -32,22 +32,22 @@ func i(i int) *int {
 }
 
 // iv create a invValue struct, using the i param, and returns the memory address.
-func iv(i int) *Value{
+func iv(i int) *Value {
 	var v Value = intValue{i}
 	return &v
 }
 
 // vi returns the integer value inside of the value param.
-func vi (value *Value) int {
+func vi(value *Value) int {
 	v, _ := (*value).(intValue)
 	return v.value
 }
 
 // getAllValues returns a map with all values inside of `node` avl node.
 func getAllValues(node *avlNode) (values map[int]*Value) {
-	var getValue func (node, parent *avlNode)
+	var getValue func(node, parent *avlNode)
 
-	getValue = func (node, parent *avlNode) {
+	getValue = func(node, parent *avlNode) {
 		if node == nil {
 			return
 		}
@@ -70,7 +70,7 @@ func createAvl(intValues ...int) (Avl, map[int]*Value) {
 
 	values := map[int]*Value{}
 
-	for _, i := range(intValues) {
+	for _, i := range intValues {
 		values[i] = iv(i)
 		avl.Insert(values[i])
 	}
@@ -103,12 +103,10 @@ func checkTree(t *testing.T, node *avlNode, l, r *int) {
 
 }
 
-
 //
 // Start tests here
 // ================
 //
-
 
 func Test_max_func(t *testing.T) {
 	assert.Equal(t, max(2, 3), 3)
@@ -181,7 +179,7 @@ func Test_avlNode_rotateLeft_func(t *testing.T) {
 	tree2.ltree = tree1
 	tree2.rtree = tree4
 
-	ntree := tree2.rotateLeft();
+	ntree := tree2.rotateLeft()
 
 	checkTree(t, ntree, i(2), i(5))
 	checkTree(t, tree1, nil, nil)
@@ -235,7 +233,7 @@ func Test_avlNode_rotateLeftRight_func(t *testing.T) {
 	checkTree(t, tree1, nil, nil)
 }
 
-func Test_newAvl_func(t *testing.T)  {
+func Test_newAvl_func(t *testing.T) {
 	as := assert.New(t)
 
 	avl := NewAvl()
@@ -300,7 +298,6 @@ func Test_Avl_Insert_func(t *testing.T) {
 	checkVAndH(t, avl.root.rtree.rtree, 20, 0)
 	l(6)
 
-
 	// New tree to check the double rotations. Left right
 	avl = NewAvl()
 	in(10)
@@ -362,7 +359,7 @@ func Test_Avl_Search_func(t *testing.T) {
 	as := assert.New(t)
 	avl := NewAvl()
 
-	values := map[int]*Value {
+	values := map[int]*Value{
 		1:  iv(1),
 		2:  iv(2),
 		5:  iv(5),
@@ -371,11 +368,11 @@ func Test_Avl_Search_func(t *testing.T) {
 		33: iv(33),
 	}
 
-	for _, v := range(values) {
+	for _, v := range values {
 		avl.Insert(v)
 	}
 
-	for number, v := range(values) {
+	for number, v := range values {
 		result, found := avl.Search(iv(number))
 		as.Truef(found, "value %s not found", (*v).String())
 		as.Truef(result.Eq(*v), "Values doesn't match, key %d", number)
@@ -383,7 +380,7 @@ func Test_Avl_Search_func(t *testing.T) {
 
 	// Values hasn't in the tree
 	invalidVals := []int{-1, 3, 4, 6, 9, 11, 13, 20, 30, 32, 34, 19322}
-	for _, number := range(invalidVals) {
+	for _, number := range invalidVals {
 		result, found := avl.Search(iv(number))
 		as.False(found, "number  %d found in the tree", number)
 		as.Nil(result, "result %d isn't nil", number)
@@ -423,7 +420,6 @@ func Test_Avl_Delete_func(t *testing.T) {
 	checkVAndH(t, avl.root.rtree, 3, 0)
 	checkTree(t, avl.root.rtree, nil, nil)
 
-
 	// Delete node with one child. Right child
 	avl, _ = createAvl(3, 2, 1, 4)
 	value, found = avl.Delete(iv(3))
@@ -438,7 +434,6 @@ func Test_Avl_Delete_func(t *testing.T) {
 
 	checkVAndH(t, avl.root.rtree, 4, 0)
 	checkTree(t, avl.root.rtree, nil, nil)
-
 
 	// Delete node with 2 children.
 	avl, _ = createAvl(4, 2, 1, 3, 5, 6, 7)
@@ -464,7 +459,6 @@ func Test_Avl_Delete_func(t *testing.T) {
 	checkVAndH(t, avl.root.rtree.rtree, 7, 0)
 	checkTree(t, avl.root.rtree.rtree, nil, nil)
 
-
 	// Delete another node with 2 children.
 	value, found = avl.Delete(iv(2))
 	as.Equal(vi(&value), 2)
@@ -485,4 +479,3 @@ func Test_Avl_Delete_func(t *testing.T) {
 	checkVAndH(t, avl.root.rtree.rtree, 7, 0)
 	checkTree(t, avl.root.rtree.rtree, nil, nil)
 }
-
