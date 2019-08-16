@@ -9,7 +9,7 @@ func max(a, b int) int {
 	return b
 }
 
-// avlNode is the interanal AVL tree node
+// avlNode is the internal AVL tree node
 type avlNode struct {
 	ltree, rtree *avlNode
 	height       int
