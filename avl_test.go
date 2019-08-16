@@ -440,6 +440,7 @@ func Test_Avl_Delete_func(t *testing.T) {
 	value, found := avl.Delete(iv(1))
 	as.Equal(vi(&value), 1)
 	as.True(found)
+	as.Equal(avl.Length(), 3)
 
 	checkVAndH(t, avl.root, 3, 1)
 	checkTree(t, avl.root, i(2), i(4))
@@ -455,6 +456,7 @@ func Test_Avl_Delete_func(t *testing.T) {
 	value, found = avl.Delete(iv(4))
 	as.Equal(vi(&value), 4)
 	as.True(found)
+	as.Equal(avl.Length(), 3)
 
 	checkVAndH(t, avl.root, 2, 1)
 	checkTree(t, avl.root, i(1), i(3))
@@ -470,6 +472,7 @@ func Test_Avl_Delete_func(t *testing.T) {
 	value, found = avl.Delete(iv(3))
 	as.Equal(vi(&value), 3)
 	as.True(found)
+	as.Equal(avl.Length(), 3)
 
 	checkVAndH(t, avl.root, 2, 1)
 	checkTree(t, avl.root, i(1), i(4))
@@ -485,6 +488,7 @@ func Test_Avl_Delete_func(t *testing.T) {
 	value, found = avl.Delete(iv(4))
 	as.Equal(vi(&value), 4)
 	as.True(found)
+	as.Equal(avl.Length(), 6)
 
 	checkVAndH(t, avl.root, 5, 2)
 	checkTree(t, avl.root, i(2), i(6))
@@ -508,6 +512,7 @@ func Test_Avl_Delete_func(t *testing.T) {
 	value, found = avl.Delete(iv(2))
 	as.Equal(vi(&value), 2)
 	as.True(found)
+	as.Equal(avl.Length(), 5)
 
 	checkVAndH(t, avl.root, 5, 2)
 	checkTree(t, avl.root, i(3), i(6))
@@ -533,6 +538,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	value, found := avl.DeleteKey(1)
 	as.Equal(vi(&value), 1)
 	as.True(found)
+	as.Equal(avl.Length(), 3)
 
 	checkVAndH(t, avl.root, 3, 1)
 	checkTree(t, avl.root, i(2), i(4))
@@ -548,6 +554,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	value, found = avl.DeleteKey(4)
 	as.Equal(vi(&value), 4)
 	as.True(found)
+	as.Equal(avl.Length(), 3)
 
 	checkVAndH(t, avl.root, 2, 1)
 	checkTree(t, avl.root, i(1), i(3))
@@ -563,6 +570,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	value, found = avl.DeleteKey(3)
 	as.Equal(vi(&value), 3)
 	as.True(found)
+	as.Equal(avl.Length(), 3)
 
 	checkVAndH(t, avl.root, 2, 1)
 	checkTree(t, avl.root, i(1), i(4))
@@ -578,6 +586,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	value, found = avl.DeleteKey(4)
 	as.Equal(vi(&value), 4)
 	as.True(found)
+	as.Equal(avl.Length(), 6)
 
 	checkVAndH(t, avl.root, 5, 2)
 	checkTree(t, avl.root, i(2), i(6))
@@ -601,6 +610,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	value, found = avl.DeleteKey(2)
 	as.Equal(vi(&value), 2)
 	as.True(found)
+	as.Equal(avl.Length(), 5)
 
 	checkVAndH(t, avl.root, 5, 2)
 	checkTree(t, avl.root, i(3), i(6))
