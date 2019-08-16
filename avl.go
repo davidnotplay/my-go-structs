@@ -1,7 +1,5 @@
 package structs
 
-import "fmt"
-
 // max returns the param more large
 func max(a, b int) int {
 	if a > b {
@@ -253,23 +251,4 @@ func (avl *Avl) DeleteKey(k Key) (Value, bool) {
 	}
 
 	return *vDeleted, found
-}
-
-func (node *avlNode) stringifyNode(sep string, space string) string {
-	if node == nil {
-		return "NULL\n"
-	}
-
-	valueStr := fmt.Sprintf("%s (%d)", (*node.value).String(), node.Height())
-	lChildStr := node.ltree.stringifyNode(fmt.Sprintf("%s│%s", sep, space), space)
-	rChildStr := node.rtree.stringifyNode(fmt.Sprintf("%s%s%s", sep, space, space), space)
-	return fmt.Sprintf("%s\n%s├─%s%s└─%s", valueStr, sep, lChildStr, sep, rChildStr)
-}
-
-func (node avlNode) Stringify() string {
-	return node.StringifyWithIndent(" ")
-}
-
-func (node avlNode) StringifyWithIndent(indent string) string {
-	return node.stringifyNode("", indent)
 }
