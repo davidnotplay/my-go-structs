@@ -1,43 +1,12 @@
 package structs
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-type intValue struct {
-	value int
-}
-
-func (i intValue) String() string {
-	return fmt.Sprintf("%d", i.value)
-}
-
-func (i intValue) Less(v Value) bool {
-	vi, _ := v.(intValue)
-	return i.value < vi.value
-}
-
-func (i intValue) Eq(v Value) bool {
-	vi, _ := v.(intValue)
-	return i.value == vi.value
-}
-
-func (i intValue) Key() Key {
-	return i.value
-}
-
-func (i intValue)EqKey(k Key) bool {
-	num, valid := k.(int)
-	return valid && num == i.value
-}
-
-func (i intValue)LessKey(k Key) bool {
-	num, valid := k.(int)
-	return valid && i.value < num
-}
 // utils function
+// ==============
 
 // i returns the address of the i param
 func i(i int) *int {
@@ -46,13 +15,13 @@ func i(i int) *int {
 
 // iv create a invValue struct, using the i param, and returns the memory address.
 func iv(i int) *Value {
-	var v Value = intValue{i}
+	var v Value = IntValue{i}
 	return &v
 }
 
 // vi returns the integer value inside of the value param.
 func vi(value *Value) int {
-	v, _ := (*value).(intValue)
+	v, _ := (*value).(IntValue)
 	return v.value
 }
 
@@ -66,7 +35,7 @@ func getAllValues(node *avlNode) (values map[int]*Value) {
 		}
 		getValue(node.ltree, node)
 		value := *node.value
-		v, _ := (*node.value).(intValue)
+		v, _ := (*node.value).(IntValue)
 		values[v.value] = &value
 		getValue(node.rtree, node)
 	}
@@ -103,14 +72,14 @@ func checkTree(t *testing.T, node *avlNode, l, r *int) {
 	if l == nil {
 		assert.Nil(t, node.ltree)
 	} else {
-		v, _ := (*node.ltree.value).(intValue)
+		v, _ := (*node.ltree.value).(IntValue)
 		assert.Equal(t, v.value, *l)
 	}
 
 	if r == nil {
 		assert.Nil(t, node.rtree)
 	} else {
-		v, _ := (*node.rtree.value).(intValue)
+		v, _ := (*node.rtree.value).(IntValue)
 		assert.Equal(t, v.value, *r)
 	}
 

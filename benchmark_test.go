@@ -7,7 +7,7 @@ func insertValues(num int) Avl {
 	var v Value
 
 	for i := 0; i < num; i++ {
-		v = intValue{i}
+		v = IntValue{i}
 		avl.Insert(&v)
 	}
 
