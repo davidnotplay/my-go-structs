@@ -4,11 +4,11 @@ import "testing"
 
 func insertValues(num int) Avl {
 	avl := NewAvl()
-	var v Value
+	// var v Value
 
 	for i := 0; i < num; i++ {
-		v = IntValue{i}
-		avl.Insert(&v)
+		v := &IntValue{i}
+		avl.Insert(v)
 	}
 
 	return avl
@@ -16,7 +16,6 @@ func insertValues(num int) Avl {
 
 func insertValuesBenchmark(num int, b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		println(i)
 		insertValues(num)
 	}
 }

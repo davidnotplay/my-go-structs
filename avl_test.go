@@ -13,15 +13,9 @@ func i(i int) *int {
 	return &i
 }
 
-// iv create a invValue struct, using the i param, and returns the memory address.
-func iv(i int) *Value {
-	var v Value = IntValue{i}
-	return &v
-}
-
 // vi returns the integer value inside of the value param.
-func vi(value *Value) int {
-	v, _ := (*value).(IntValue)
+func vi(value Value) int {
+	v, _ := value.(IntValue)
 	return v.value
 }
 
@@ -34,8 +28,8 @@ func getAllValues(node *avlNode) (values map[int]*Value) {
 			return
 		}
 		getValue(node.ltree, node)
-		value := *node.value
-		v, _ := (*node.value).(IntValue)
+		value := node.value
+		v, _ := node.value.(IntValue)
 		values[v.value] = &value
 		getValue(node.rtree, node)
 	}
@@ -47,13 +41,13 @@ func getAllValues(node *avlNode) (values map[int]*Value) {
 
 	return
 }
-func createAvl(intValues ...int) (Avl, map[int]*Value) {
+func createAvl(intValues ...int) (Avl, map[int]Value) {
 	avl := NewAvl()
 
-	values := map[int]*Value{}
+	values := map[int]Value{}
 
 	for _, i := range intValues {
-		values[i] = iv(i)
+		values[i] = Iv(i)
 		avl.Insert(values[i])
 	}
 
@@ -72,14 +66,14 @@ func checkTree(t *testing.T, node *avlNode, l, r *int) {
 	if l == nil {
 		assert.Nil(t, node.ltree)
 	} else {
-		v, _ := (*node.ltree.value).(IntValue)
+		v, _ := node.ltree.value.(IntValue)
 		assert.Equal(t, v.value, *l)
 	}
 
 	if r == nil {
 		assert.Nil(t, node.rtree)
 	} else {
-		v, _ := (*node.rtree.value).(IntValue)
+		v, _ := node.rtree.value.(IntValue)
 		assert.Equal(t, v.value, *r)
 	}
 
@@ -128,11 +122,11 @@ func Test_avlNode_maxHeight_func(t *testing.T) {
 }
 
 func Test_avlNode_rotateRight_func(t *testing.T) {
-	tree1 := &avlNode{nil, nil, -1, iv(1)}
-	tree2 := &avlNode{nil, nil, -1, iv(2)}
-	tree3 := &avlNode{nil, nil, -1, iv(3)}
-	tree4 := &avlNode{nil, nil, -1, iv(4)}
-	tree5 := &avlNode{nil, nil, -1, iv(5)}
+	tree1 := &avlNode{nil, nil, -1, Iv(1)}
+	tree2 := &avlNode{nil, nil, -1, Iv(2)}
+	tree3 := &avlNode{nil, nil, -1, Iv(3)}
+	tree4 := &avlNode{nil, nil, -1, Iv(4)}
+	tree5 := &avlNode{nil, nil, -1, Iv(5)}
 
 	tree2.ltree = tree1
 	tree2.rtree = tree3
@@ -150,11 +144,11 @@ func Test_avlNode_rotateRight_func(t *testing.T) {
 }
 
 func Test_avlNode_rotateLeft_func(t *testing.T) {
-	tree1 := &avlNode{nil, nil, -1, iv(1)}
-	tree2 := &avlNode{nil, nil, -1, iv(2)}
-	tree3 := &avlNode{nil, nil, -1, iv(3)}
-	tree4 := &avlNode{nil, nil, -1, iv(4)}
-	tree5 := &avlNode{nil, nil, -1, iv(5)}
+	tree1 := &avlNode{nil, nil, -1, Iv(1)}
+	tree2 := &avlNode{nil, nil, -1, Iv(2)}
+	tree3 := &avlNode{nil, nil, -1, Iv(3)}
+	tree4 := &avlNode{nil, nil, -1, Iv(4)}
+	tree5 := &avlNode{nil, nil, -1, Iv(5)}
 
 	tree4.ltree = tree3
 	tree4.rtree = tree5
@@ -172,11 +166,11 @@ func Test_avlNode_rotateLeft_func(t *testing.T) {
 }
 
 func Test_avlNode_rotateRightLeft_func(t *testing.T) {
-	tree1 := &avlNode{nil, nil, -1, iv(1)}
-	tree2 := &avlNode{nil, nil, -1, iv(2)}
-	tree3 := &avlNode{nil, nil, -1, iv(3)}
-	tree4 := &avlNode{nil, nil, -1, iv(4)}
-	tree5 := &avlNode{nil, nil, -1, iv(5)}
+	tree1 := &avlNode{nil, nil, -1, Iv(1)}
+	tree2 := &avlNode{nil, nil, -1, Iv(2)}
+	tree3 := &avlNode{nil, nil, -1, Iv(3)}
+	tree4 := &avlNode{nil, nil, -1, Iv(4)}
+	tree5 := &avlNode{nil, nil, -1, Iv(5)}
 
 	tree4.ltree = tree3
 	tree4.rtree = tree5
@@ -194,11 +188,11 @@ func Test_avlNode_rotateRightLeft_func(t *testing.T) {
 }
 
 func Test_avlNode_rotateLeftRight_func(t *testing.T) {
-	tree1 := &avlNode{nil, nil, -1, iv(1)}
-	tree2 := &avlNode{nil, nil, -1, iv(2)}
-	tree3 := &avlNode{nil, nil, -1, iv(3)}
-	tree4 := &avlNode{nil, nil, -1, iv(4)}
-	tree5 := &avlNode{nil, nil, -1, iv(5)}
+	tree1 := &avlNode{nil, nil, -1, Iv(1)}
+	tree2 := &avlNode{nil, nil, -1, Iv(2)}
+	tree3 := &avlNode{nil, nil, -1, Iv(3)}
+	tree4 := &avlNode{nil, nil, -1, Iv(4)}
+	tree5 := &avlNode{nil, nil, -1, Iv(5)}
 
 	tree2.ltree = tree1
 	tree2.rtree = tree3
@@ -231,7 +225,7 @@ func Test_Avl_Insert_func(t *testing.T) {
 	}
 
 	in := func(e int) {
-		assert.True(t, avl.Insert(iv(e)), "element duplicated")
+		assert.True(t, avl.Insert(Iv(e)), "element duplicated")
 	}
 
 	// Insert first element. Element 5
@@ -301,7 +295,7 @@ func Test_Avl_Insert_func(t *testing.T) {
 	l(5)
 
 	// Insert duplicate element
-	assert.False(t, avl.Insert(iv(5)))
+	assert.False(t, avl.Insert(Iv(5)))
 	checkVAndH(t, avl.root, 7, 2)
 	checkVAndH(t, avl.root.ltree, 5, 0)
 	checkVAndH(t, avl.root.rtree, 12, 1)
@@ -314,10 +308,10 @@ func Test_search_func(t *testing.T) {
 	as := assert.New(t)
 	avl := NewAvl()
 
-	v1 := iv(1)
-	v2 := iv(2)
-	v3 := iv(3)
-	v4 := iv(4)
+	v1 := Iv(1)
+	v2 := Iv(2)
+	v3 := Iv(3)
+	v4 := Iv(4)
 
 	avl.Insert(v1)
 	avl.Insert(v2)
@@ -341,13 +335,13 @@ func Test_Avl_Search_func(t *testing.T) {
 	as := assert.New(t)
 	avl := NewAvl()
 
-	values := map[int]*Value{
-		1:  iv(1),
-		2:  iv(2),
-		5:  iv(5),
-		12: iv(12),
-		8:  iv(8),
-		33: iv(33),
+	values := map[int]Value{
+		1:  Iv(1),
+		2:  Iv(2),
+		5:  Iv(5),
+		12: Iv(12),
+		8:  Iv(8),
+		33: Iv(33),
 	}
 
 	for _, v := range values {
@@ -355,15 +349,15 @@ func Test_Avl_Search_func(t *testing.T) {
 	}
 
 	for number, v := range values {
-		result, found := avl.Search(iv(number))
-		as.Truef(found, "value %s not found", (*v).String())
-		as.Truef(result.Eq(*v), "Values doesn't match, key %d", number)
+		result, found := avl.Search(Iv(number))
+		as.Truef(found, "value %s not found", v.String())
+		as.Truef(result.Eq(v), "Values doesn't match, key %d", number)
 	}
 
 	// Values hasn't in the tree
 	invalidVals := []int{-1, 3, 4, 6, 9, 11, 13, 20, 30, 32, 34, 19322}
 	for _, number := range invalidVals {
-		result, found := avl.Search(iv(number))
+		result, found := avl.Search(Iv(number))
 		as.False(found, "number  %d found in the tree", number)
 		as.Nil(result, "result %d isn't nil", number)
 	}
@@ -373,13 +367,13 @@ func Test_Avl_SearchKey_func(t *testing.T) {
 	as := assert.New(t)
 	avl := NewAvl()
 
-	values := map[int]*Value{
-		1:  iv(1),
-		2:  iv(2),
-		5:  iv(5),
-		12: iv(12),
-		8:  iv(8),
-		33: iv(33),
+	values := map[int]Value{
+		1:  Iv(1),
+		2:  Iv(2),
+		5:  Iv(5),
+		12: Iv(12),
+		8:  Iv(8),
+		33: Iv(33),
 	}
 
 	for _, v := range values {
@@ -388,8 +382,8 @@ func Test_Avl_SearchKey_func(t *testing.T) {
 
 	for number, v := range values {
 		result, found := avl.SearchKey(number)
-		as.Truef(found, "value %s not found", (*v).String())
-		as.Truef(result.Eq(*v), "Values doesn't match, key %d", number)
+		as.Truef(found, "value %s not found", v.String())
+		as.Truef(result.Eq(v), "Values doesn't match, key %d", number)
 	}
 
 	// Values hasn't in the tree
@@ -406,8 +400,8 @@ func Test_Avl_Delete_func(t *testing.T) {
 
 	// Delete leaf
 	avl, _ := createAvl(3, 2, 1, 4)
-	value, found := avl.Delete(iv(1))
-	as.Equal(vi(&value), 1)
+	value, found := avl.Delete(Iv(1))
+	as.Equal(vi(value), 1)
 	as.True(found)
 	as.Equal(avl.Length(), 3)
 
@@ -422,8 +416,8 @@ func Test_Avl_Delete_func(t *testing.T) {
 
 	// Delete node with one child. Left child
 	avl, _ = createAvl(4, 2, 1, 3)
-	value, found = avl.Delete(iv(4))
-	as.Equal(vi(&value), 4)
+	value, found = avl.Delete(Iv(4))
+	as.Equal(vi(value), 4)
 	as.True(found)
 	as.Equal(avl.Length(), 3)
 
@@ -438,8 +432,8 @@ func Test_Avl_Delete_func(t *testing.T) {
 
 	// Delete node with one child. Right child
 	avl, _ = createAvl(3, 2, 1, 4)
-	value, found = avl.Delete(iv(3))
-	as.Equal(vi(&value), 3)
+	value, found = avl.Delete(Iv(3))
+	as.Equal(vi(value), 3)
 	as.True(found)
 	as.Equal(avl.Length(), 3)
 
@@ -454,8 +448,8 @@ func Test_Avl_Delete_func(t *testing.T) {
 
 	// Delete node with 2 children.
 	avl, _ = createAvl(4, 2, 1, 3, 5, 6, 7)
-	value, found = avl.Delete(iv(4))
-	as.Equal(vi(&value), 4)
+	value, found = avl.Delete(Iv(4))
+	as.Equal(vi(value), 4)
 	as.True(found)
 	as.Equal(avl.Length(), 6)
 
@@ -478,8 +472,8 @@ func Test_Avl_Delete_func(t *testing.T) {
 	checkTree(t, avl.root.rtree.rtree, nil, nil)
 
 	// Delete another node with 2 children.
-	value, found = avl.Delete(iv(2))
-	as.Equal(vi(&value), 2)
+	value, found = avl.Delete(Iv(2))
+	as.Equal(vi(value), 2)
 	as.True(found)
 	as.Equal(avl.Length(), 5)
 
@@ -505,7 +499,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	// Delete leaf
 	avl, _ := createAvl(3, 2, 1, 4)
 	value, found := avl.DeleteKey(1)
-	as.Equal(vi(&value), 1)
+	as.Equal(vi(value), 1)
 	as.True(found)
 	as.Equal(avl.Length(), 3)
 
@@ -521,7 +515,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	// Delete node with one child. Left child
 	avl, _ = createAvl(4, 2, 1, 3)
 	value, found = avl.DeleteKey(4)
-	as.Equal(vi(&value), 4)
+	as.Equal(vi(value), 4)
 	as.True(found)
 	as.Equal(avl.Length(), 3)
 
@@ -537,7 +531,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	// Delete node with one child. Right child
 	avl, _ = createAvl(3, 2, 1, 4)
 	value, found = avl.DeleteKey(3)
-	as.Equal(vi(&value), 3)
+	as.Equal(vi(value), 3)
 	as.True(found)
 	as.Equal(avl.Length(), 3)
 
@@ -553,7 +547,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 	// Delete node with 2 children.
 	avl, _ = createAvl(4, 2, 1, 3, 5, 6, 7)
 	value, found = avl.DeleteKey(4)
-	as.Equal(vi(&value), 4)
+	as.Equal(vi(value), 4)
 	as.True(found)
 	as.Equal(avl.Length(), 6)
 
@@ -577,7 +571,7 @@ func Test_Avl_DeleteKey_func(t *testing.T) {
 
 	// Delete another node with 2 children.
 	value, found = avl.DeleteKey(2)
-	as.Equal(vi(&value), 2)
+	as.Equal(vi(value), 2)
 	as.True(found)
 	as.Equal(avl.Length(), 5)
 
