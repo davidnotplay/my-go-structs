@@ -25,20 +25,6 @@ func (tv testValue) String() string {
 	return fmt.Sprintf("%d", tv.value)
 }
 
-func (tv testValue) Key() Key {
-	return tv.value
-}
-
-func (tv testValue) LessKey(k Key) bool {
-	num, valid := k.(int)
-	return valid && tv.value < num
-}
-
-func (tv testValue) EqKey(k Key) bool {
-	num, valid := k.(int)
-	return valid && tv.value == num
-}
-
 func (tv testValue) Number() int {
 	return tv.value
 }
@@ -60,9 +46,9 @@ func Test_IntValue_Less_func(t *testing.T) {
 
 func Test_IntValue_Eq_func(t *testing.T) {
 	for i := -100; i <= 100; i++ {
-		assert.True(t, (IntValue{i}).Eq(IntValue{i}))
-		assert.False(t, (IntValue{i}).Eq(IntValue{i-1}))
-		assert.False(t, (IntValue{i}).Eq(IntValue{i+1}))
+		assert.True(t, Iv(i).Eq(IntValue{i}))
+		assert.False(t, Iv(i).Eq(IntValue{i-1}))
+		assert.False(t, Iv(i).Eq(IntValue{i+1}))
 	}
 
 	// The parameter of the Eq function isn't type IntValue
@@ -73,35 +59,6 @@ func Test_IntValue_String_func(t *testing.T) {
 	for i := -100; i <= 100; i++ {
 		assert.Equal(t, (IntValue{i}).String(), fmt.Sprintf("%d", i))
 	}
-}
-
-func Test_IntValue_Key_func(t *testing.T) {
-	for i := -100; i <= 100; i++ {
-		assert.Equal(t, (IntValue{i}).Key(), i)
-	}
-}
-
-func Test_IntValue_LessKey_func(t *testing.T) {
-	for i := -100; i <= 100; i++ {
-		assert.True(t, (IntValue{i}).LessKey(i+1))
-		assert.False(t, (IntValue{i}).LessKey(i))
-		assert.False(t, (IntValue{i}).LessKey(i-1))
-	}
-
-	// The parameter of the LessKey function isn't type IntValue
-	assert.False(t, (IntValue{1}).LessKey(3.22))
-	assert.False(t, (IntValue{1}).LessKey(int32(2)))
-}
-
-func Test_IntValue_EqKey_func(t *testing.T) {
-	for i := -100; i <= 100; i++ {
-		assert.True(t, (IntValue{i}).EqKey(i))
-		assert.False(t, (IntValue{i}).EqKey(i - 1))
-		assert.False(t, (IntValue{i}).EqKey(i + 1))
-	}
-
-	// The parameter of the LessKey function isn't type IntValue
-	assert.False(t, (IntValue{1}).EqKey(IntValue{1}))
 }
 
 func Test_IntValue_Value_func(t *testing.T) {

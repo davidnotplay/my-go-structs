@@ -318,15 +318,15 @@ func Test_search_func(t *testing.T) {
 	avl.Insert(v3)
 	avl.Insert(v4)
 
-	node, found := search(2, avl.root)
+	node, found := search(avl.root, Iv(2))
 	as.True(found)
 	as.Equal(avl.root, node)
 
-	node, found = search(4, avl.root)
+	node, found = search(avl.root, Iv(4))
 	as.True(found)
 	as.Equal(vi(node.value), 4)
 
-	node, found = search(7, avl.root)
+	node, found = search(avl.root, Iv(7))
 	as.False(found)
 	as.Nil(node)
 }
@@ -351,45 +351,13 @@ func Test_Avl_Search_func(t *testing.T) {
 	for number, v := range values {
 		result, found := avl.Search(Iv(number))
 		as.Truef(found, "value %s not found", v.String())
-		as.Truef(result.Eq(v), "Values doesn't match, key %d", number)
+		as.Truef(result.Eq(v), "Values doesn't match, Value %s", result.String())
 	}
 
 	// Values hasn't in the tree
 	invalidVals := []int{-1, 3, 4, 6, 9, 11, 13, 20, 30, 32, 34, 19322}
 	for _, number := range invalidVals {
 		result, found := avl.Search(Iv(number))
-		as.False(found, "number  %d found in the tree", number)
-		as.Nil(result, "result %d isn't nil", number)
-	}
-}
-
-func Test_Avl_SearchKey_func(t *testing.T) {
-	as := assert.New(t)
-	avl := NewAvl()
-
-	values := map[int]Value{
-		1:  Iv(1),
-		2:  Iv(2),
-		5:  Iv(5),
-		12: Iv(12),
-		8:  Iv(8),
-		33: Iv(33),
-	}
-
-	for _, v := range values {
-		avl.Insert(v)
-	}
-
-	for number, v := range values {
-		result, found := avl.SearchKey(number)
-		as.Truef(found, "value %s not found", v.String())
-		as.Truef(result.Eq(v), "Values doesn't match, key %d", number)
-	}
-
-	// Values hasn't in the tree
-	invalidVals := []int{-1, 3, 4, 6, 9, 11, 13, 20, 30, 32, 34, 19322}
-	for _, number := range invalidVals {
-		result, found := avl.SearchKey(number)
 		as.False(found, "number  %d found in the tree", number)
 		as.Nil(result, "result %d isn't nil", number)
 	}
@@ -491,103 +459,4 @@ func Test_Avl_Delete_func(t *testing.T) {
 
 	checkVAndH(t, avl.root.rtree.rtree, 7, 0)
 	checkTree(t, avl.root.rtree.rtree, nil, nil)
-}
-
-func Test_Avl_DeleteKey_func(t *testing.T) {
-	as := assert.New(t)
-
-	// Delete leaf
-	avl, _ := createAvl(3, 2, 1, 4)
-	value, found := avl.DeleteKey(1)
-	as.Equal(vi(value), 1)
-	as.True(found)
-	as.Equal(avl.Length(), 3)
-
-	checkVAndH(t, avl.root, 3, 1)
-	checkTree(t, avl.root, i(2), i(4))
-
-	checkVAndH(t, avl.root.ltree, 2, 0)
-	checkTree(t, avl.root.ltree, nil, nil)
-
-	checkVAndH(t, avl.root.rtree, 4, 0)
-	checkTree(t, avl.root.rtree, nil, nil)
-
-	// Delete node with one child. Left child
-	avl, _ = createAvl(4, 2, 1, 3)
-	value, found = avl.DeleteKey(4)
-	as.Equal(vi(value), 4)
-	as.True(found)
-	as.Equal(avl.Length(), 3)
-
-	checkVAndH(t, avl.root, 2, 1)
-	checkTree(t, avl.root, i(1), i(3))
-
-	checkVAndH(t, avl.root.ltree, 1, 0)
-	checkTree(t, avl.root.ltree, nil, nil)
-
-	checkVAndH(t, avl.root.rtree, 3, 0)
-	checkTree(t, avl.root.rtree, nil, nil)
-
-	// Delete node with one child. Right child
-	avl, _ = createAvl(3, 2, 1, 4)
-	value, found = avl.DeleteKey(3)
-	as.Equal(vi(value), 3)
-	as.True(found)
-	as.Equal(avl.Length(), 3)
-
-	checkVAndH(t, avl.root, 2, 1)
-	checkTree(t, avl.root, i(1), i(4))
-
-	checkVAndH(t, avl.root.ltree, 1, 0)
-	checkTree(t, avl.root.ltree, nil, nil)
-
-	checkVAndH(t, avl.root.rtree, 4, 0)
-	checkTree(t, avl.root.rtree, nil, nil)
-
-	// Delete node with 2 children.
-	avl, _ = createAvl(4, 2, 1, 3, 5, 6, 7)
-	value, found = avl.DeleteKey(4)
-	as.Equal(vi(value), 4)
-	as.True(found)
-	as.Equal(avl.Length(), 6)
-
-	checkVAndH(t, avl.root, 5, 2)
-	checkTree(t, avl.root, i(2), i(6))
-
-	checkVAndH(t, avl.root.ltree, 2, 1)
-	checkTree(t, avl.root.ltree, i(1), i(3))
-
-	checkVAndH(t, avl.root.ltree.ltree, 1, 0)
-	checkTree(t, avl.root.ltree.ltree, nil, nil)
-
-	checkVAndH(t, avl.root.ltree.rtree, 3, 0)
-	checkTree(t, avl.root.ltree.rtree, nil, nil)
-
-	checkVAndH(t, avl.root.rtree, 6, 1)
-	checkTree(t, avl.root.rtree, nil, i(7))
-
-	checkVAndH(t, avl.root.rtree.rtree, 7, 0)
-	checkTree(t, avl.root.rtree.rtree, nil, nil)
-
-	// Delete another node with 2 children.
-	value, found = avl.DeleteKey(2)
-	as.Equal(vi(value), 2)
-	as.True(found)
-	as.Equal(avl.Length(), 5)
-
-	checkVAndH(t, avl.root, 5, 2)
-	checkTree(t, avl.root, i(3), i(6))
-
-	checkVAndH(t, avl.root.ltree, 3, 1)
-	checkTree(t, avl.root.ltree, i(1), nil)
-
-	checkVAndH(t, avl.root.ltree.ltree, 1, 0)
-	checkTree(t, avl.root.ltree.ltree, nil, nil)
-
-	checkVAndH(t, avl.root.rtree, 6, 1)
-	checkTree(t, avl.root.rtree, nil, i(7))
-
-	checkVAndH(t, avl.root.rtree.rtree, 7, 0)
-	checkTree(t, avl.root.rtree.rtree, nil, nil)
-
 }

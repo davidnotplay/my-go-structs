@@ -150,47 +150,39 @@ func (avl *Avl) Length() int {
 	return avl.length
 }
 
-// search searchs the key in the node tree. Returns the avlNode that contains the value with
-// key's parameter or nil if the key wasn't found and a flag indicating if the value exists.
-func search(key Key, node *avlNode) (*avlNode, bool) {
+// search searchs the value in the node tree. Returns the avlNode that contains the value or nil
+// if v isn't found. Also returns a flag indicating if the value exists.
+func search(node *avlNode, v Value) (*avlNode, bool) {
 	if node == nil {
 		// v value not found
 		return nil, false
 	}
 
-	if node.value.EqKey(key) {
+	if node.value.Eq(v) {
 		return node, true
 	}
 
-	if node.value.LessKey(key) {
-		return search(key, node.rtree)
+	if node.value.Less(v) {
+		return search(node.rtree, v)
 	}
 
-	return search(key, node.ltree)
+	return search(node.ltree, v)
 }
 
-// Search searchs the value in the avl tree. It returns the value found, or nil if it doesn't
-// exist in the avl. The second value returned is a flag indicating if the value exists in the
-// avl tree.
+// Search searchs the value in the avl tree. It returns the value found and a flag indicating if
+// the value exists in the avl tree.
 func (avl *Avl) Search(v Value) (Value, bool) {
-	return avl.SearchKey(v.Key())
-}
-
-// SearchKey searchs the key value in the avl tree. It returns the value found, or nil if it
-// doesn't exist in the avl. The second value returned is a flag indicating if the value exists
-// in the avl tree.
-func (avl *Avl) SearchKey(key Key) (Value, bool) {
-	if node, found := search(key, avl.root); found {
+	if node, found := search(avl.root, v); found {
 		return node.value, true
 	}
 
 	return nil, false
 }
 
-// deleteAvl searchs the key in the node tree, it deletes it and rebalance the tree.
-// The functions returns the node rebalanced, the value deleted or nil if it doesn't exist and
-// a flag indicating if the value existed in the tree.
-func deleteAvl(node *avlNode, key Key) (*avlNode, Value, bool) {
+// deleteAvl searchs the value in the node tree, it deletes it and rebalance the tree.  The
+// functions returns the node rebalanced, the node deleted and a flag indicating if the value
+// existed in the tree.
+func deleteAvl(node *avlNode, v Value) (*avlNode, Value, bool) {
 	var (
 		found    bool
 		vDeleted Value
@@ -200,7 +192,7 @@ func deleteAvl(node *avlNode, key Key) (*avlNode, Value, bool) {
 		return node, nil, false
 	}
 
-	if node.value.EqKey(key) {
+	if node.value.Eq(v) {
 		if node.ltree == nil {
 			return node.rtree, node.value, true
 		} else if node.rtree == nil {
@@ -216,13 +208,13 @@ func deleteAvl(node *avlNode, key Key) (*avlNode, Value, bool) {
 
 		vDeleted = node.value
 		node.value = nodeTemp.value
-		node.rtree, _, _ = deleteAvl(node.rtree, nodeTemp.value.Key())
+		node.rtree, _, _ = deleteAvl(node.rtree, nodeTemp.value)
 		return node, vDeleted, true
 
-	} else if node.value.LessKey(key) {
-		node.rtree, vDeleted, found = deleteAvl(node.rtree, key)
+	} else if node.value.Less(v) {
+		node.rtree, vDeleted, found = deleteAvl(node.rtree, v)
 	} else {
-		node.ltree, vDeleted, found = deleteAvl(node.ltree, key)
+		node.ltree, vDeleted, found = deleteAvl(node.ltree, v)
 	}
 
 	if found {
@@ -232,23 +224,12 @@ func deleteAvl(node *avlNode, key Key) (*avlNode, Value, bool) {
 	return node, vDeleted, found
 }
 
-// Delete deletes v value of the avl tree. Returns the value delete or nil and a flag indicating
+// Delete deletes value v of the avl tree. Returns the value delete or nil and a flag indicating
 // if the value existed in the tree.
-func (avl *Avl) Delete(v Value) (Value, bool) {
-	return avl.DeleteKey(v.Key())
-}
-
-// DeleteKey deletes the value with the k key of the avl tree. Returns the value delete or nil
-// and a flag indicating if the value existed in the tree.
-func (avl *Avl) DeleteKey(k Key) (Value, bool) {
-	var (
-		vDeleted Value
-		found    bool
-	)
-
-	if avl.root, vDeleted, found = deleteAvl(avl.root, k); found {
+func (avl *Avl) Delete(v Value) (vd Value, deleted bool) {
+	avl.root, vd, deleted = deleteAvl(avl.root, v)
+	if deleted {
 		avl.length--
 	}
-
-	return vDeleted, found
+	return
 }
