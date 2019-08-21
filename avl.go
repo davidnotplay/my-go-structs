@@ -13,7 +13,7 @@ func max(a, b int) int {
 type avlNode struct {
 	ltree, rtree *avlNode
 	height       int
-	value        Value
+	item         Item
 }
 
 // Height returns the `node.height` property. If node is nil, then returns -1
@@ -72,31 +72,31 @@ type Avl struct {
 	length int      // Number of tree nodes.
 }
 
-// NewAvl creates a new empty value
+// NewAvl creates a new empty AVL tree.
 func NewAvl() Avl {
 	return Avl{nil, 0}
 }
 
-// InsertValues searchs the correct position inside of the param tree node, inserts the
-// v value and rebalance the node. The value inserted must be unique. If it is repeated then
-// value doesn't add to the tree. The function returns the node rebalanced and a flag indicating
-// v value was added.
-func insertValue(node *avlNode, v Value) (*avlNode, bool) {
+// insertItem searchs the correct position inside of the param tree node, inserts the
+// it item and rebalance the node. The item inserted must be unique. If it is repeated then
+// item doesn't add to the tree. The function returns the node rebalanced and a flag indicating
+// it item was added.
+func insertItem(node *avlNode, it Item) (*avlNode, bool) {
 	var inserted bool
 
 	if node == nil {
-		return &avlNode{nil, nil, 0, v}, true
+		return &avlNode{nil, nil, 0, it}, true
 	}
 
-	if node.value.Eq(v) {
+	if node.item.Eq(it) {
 		// AVL tree doesn't allow repeated elements.
 		return node, false
 	}
 
-	if v.Less(node.value) {
-		node.ltree, inserted = insertValue(node.ltree, v)
+	if it.Less(node.item) {
+		node.ltree, inserted = insertItem(node.ltree, it)
 	} else {
-		node.rtree, inserted = insertValue(node.rtree, v)
+		node.rtree, inserted = insertItem(node.rtree, it)
 	}
 
 	if inserted {
@@ -131,12 +131,12 @@ func rebalance(node *avlNode) *avlNode {
 	return node
 }
 
-// Insert inserts the value to the avl tree. The value inserted must be unique in the tree;
-// else, the value isn't inserted. The function returns a flag indicating if v value was
+// Insert inserts the item to the avl tree. The item inserted must be unique in the tree;
+// else, the item isn't inserted. The function returns a flag indicating if the item was
 // inserted.
-func (avl *Avl) Insert(v Value) bool {
+func (avl *Avl) Insert(it Item) bool {
 	var inserted bool
-	avl.root, inserted = insertValue(avl.root, v)
+	avl.root, inserted = insertItem(avl.root, it)
 
 	if inserted {
 		avl.length++
@@ -150,53 +150,53 @@ func (avl *Avl) Length() int {
 	return avl.length
 }
 
-// search searchs the value in the node tree. Returns the avlNode that contains the value or nil
-// if v isn't found. Also returns a flag indicating if the value exists.
-func search(node *avlNode, v Value) (*avlNode, bool) {
+// search searchs the item in the node tree. Returns the avlNode that contains the item or nil
+// if the item isn't found. Also returns a flag indicating if the item exists.
+func search(node *avlNode, it Item) (*avlNode, bool) {
 	if node == nil {
-		// v value not found
+		// item  not found
 		return nil, false
 	}
 
-	if node.value.Eq(v) {
+	if node.item.Eq(it) {
 		return node, true
 	}
 
-	if node.value.Less(v) {
-		return search(node.rtree, v)
+	if node.item.Less(it) {
+		return search(node.rtree, it)
 	}
 
-	return search(node.ltree, v)
+	return search(node.ltree, it)
 }
 
-// Search searchs the value in the avl tree. It returns the value found and a flag indicating if
-// the value exists in the avl tree.
-func (avl *Avl) Search(v Value) (Value, bool) {
-	if node, found := search(avl.root, v); found {
-		return node.value, true
+// Search searchs the item in the avl tree. It returns the item found and a flag indicating if
+// the item exists in the avl tree.
+func (avl *Avl) Search(it Item) (Item, bool) {
+	if node, found := search(avl.root, it); found {
+		return node.item, true
 	}
 
 	return nil, false
 }
 
-// deleteAvl searchs the value in the node tree, it deletes it and rebalance the tree.  The
-// functions returns the node rebalanced, the node deleted and a flag indicating if the value
+// deleteAvl searchs the item in the node tree, it deletes it and rebalance the tree. The
+// functions returns the node rebalanced, the item deleted and a flag indicating if the item
 // existed in the tree.
-func deleteAvl(node *avlNode, v Value) (*avlNode, Value, bool) {
+func deleteAvl(node *avlNode, it Item) (*avlNode, Item, bool) {
 	var (
-		found    bool
-		vDeleted Value
+		found	  bool
+		itDeleted Item
 	)
 
 	if node == nil {
 		return node, nil, false
 	}
 
-	if node.value.Eq(v) {
+	if node.item.Eq(it) {
 		if node.ltree == nil {
-			return node.rtree, node.value, true
+			return node.rtree, node.item, true
 		} else if node.rtree == nil {
-			return node.ltree, node.value, true
+			return node.ltree, node.item, true
 		}
 
 		var nodeTemp *avlNode
@@ -206,28 +206,28 @@ func deleteAvl(node *avlNode, v Value) (*avlNode, Value, bool) {
 			nodeTemp = nodeTemp.ltree
 		}
 
-		vDeleted = node.value
-		node.value = nodeTemp.value
-		node.rtree, _, _ = deleteAvl(node.rtree, nodeTemp.value)
-		return node, vDeleted, true
+		itDeleted = node.item
+		node.item = nodeTemp.item
+		node.rtree, _, _ = deleteAvl(node.rtree, nodeTemp.item)
+		return node, itDeleted, true
 
-	} else if node.value.Less(v) {
-		node.rtree, vDeleted, found = deleteAvl(node.rtree, v)
+	} else if node.item.Less(it) {
+		node.rtree, itDeleted, found = deleteAvl(node.rtree, it)
 	} else {
-		node.ltree, vDeleted, found = deleteAvl(node.ltree, v)
+		node.ltree, itDeleted, found = deleteAvl(node.ltree, it)
 	}
 
 	if found {
 		node = rebalance(node)
 	}
 
-	return node, vDeleted, found
+	return node, itDeleted, found
 }
 
-// Delete deletes value v of the avl tree. Returns the value delete or nil and a flag indicating
-// if the value existed in the tree.
-func (avl *Avl) Delete(v Value) (vd Value, deleted bool) {
-	avl.root, vd, deleted = deleteAvl(avl.root, v)
+// Delete deletes the item of the avl tree. Returns the item delete or nil and a flag indicating
+// if the item existed in the tree.
+func (avl *Avl) Delete(it Item) (itd Item, deleted bool) {
+	avl.root, itd, deleted = deleteAvl(avl.root, it)
 	if deleted {
 		avl.length--
 	}

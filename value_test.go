@@ -7,70 +7,70 @@ import (
 	"testing"
 )
 
-type testValue struct {
+type testItem struct {
 	value int
 }
 
-func (tv testValue) Less(v Value) bool {
-	intvalue, valid := v.(testValue)
-	return valid &&  tv.value < intvalue.value
+func (ti testItem) Less(v Item) bool {
+	tip, valid := v.(testItem)
+	return valid && ti.value < tip.value
 }
 
-func (tv testValue) Eq(v Value) bool {
-	intvalue, valid := v.(testValue)
-	return valid &&  tv.value == intvalue.value
+func (ti testItem) Eq(v Item) bool {
+	tip, valid := v.(testItem)
+	return valid && ti.value == tip.value
 }
 
-func (tv testValue) String() string {
-	return fmt.Sprintf("%d", tv.value)
+func (ti testItem) String() string {
+	return fmt.Sprintf("%d", ti.value)
 }
 
-func (tv testValue) Number() int {
-	return tv.value
+func (ti testItem) Number() int {
+	return ti.value
 }
 
 //
 // Start tests here
 // ================
 //
-func Test_IntValue_Less_func(t *testing.T) {
+func Test_IntItem_Less_func(t *testing.T) {
 	for i := -100; i <= 100; i++ {
-		assert.True(t, (IntValue{i}).Less(IntValue{i+1}))
-		assert.False(t, (IntValue{i}).Less(IntValue{i}))
-		assert.False(t, (IntValue{i}).Less(IntValue{i-1}))
+		assert.True(t, (It(i)).Less(It(i+1)))
+		assert.False(t, (It(i)).Less(It(i)))
+		assert.False(t, (It(i)).Less(It(i-1)))
 	}
 
-	// The parameter of the Less function isn't type IntValue
-	assert.False(t, (IntValue{1}).Less(testValue{1}))
+	// The parameter of the Less function isn't type IntItem
+	assert.False(t, (It(1)).Less(testItem{1}))
 }
 
-func Test_IntValue_Eq_func(t *testing.T) {
+func Test_IntItem_Eq_func(t *testing.T) {
 	for i := -100; i <= 100; i++ {
-		assert.True(t, Iv(i).Eq(IntValue{i}))
-		assert.False(t, Iv(i).Eq(IntValue{i-1}))
-		assert.False(t, Iv(i).Eq(IntValue{i+1}))
+		assert.True(t, It(i).Eq(It(i)))
+		assert.False(t, It(i).Eq(It(i-1)))
+		assert.False(t, It(i).Eq(It(i+1)))
 	}
 
-	// The parameter of the Eq function isn't type IntValue
-	assert.False(t, (IntValue{1}).Eq(testValue{1}))
+	// The parameter of the Eq function isn't type IntItem
+	assert.False(t, (It(1)).Eq(testItem{1}))
 }
 
-func Test_IntValue_String_func(t *testing.T) {
+func Test_IntItem_String_func(t *testing.T) {
 	for i := -100; i <= 100; i++ {
-		assert.Equal(t, (IntValue{i}).String(), fmt.Sprintf("%d", i))
-	}
-}
-
-func Test_IntValue_Value_func(t *testing.T) {
-	for i := -100; i <= 100; i++ {
-		assert.Equal(t, (IntValue{i}).Value(), i)
+		assert.Equal(t, (It(i)).String(), fmt.Sprintf("%d", i))
 	}
 }
 
-func Test_Iv_fun(t *testing.T) {
+func Test_IntItem_Value_func(t *testing.T) {
 	for i := -100; i <= 100; i++ {
-		iv := Iv(i)
-		assert.Equal(t, iv.value, i)
+		assert.Equal(t, (It(i)).Value(), i)
+	}
+}
+
+func Test_It_func(t *testing.T) {
+	for i := -100; i <= 100; i++ {
+		it := It(i)
+		assert.Equal(t, it.value, i)
 	}
 }
 
