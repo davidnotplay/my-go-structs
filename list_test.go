@@ -36,7 +36,7 @@ func Test_List_AddAfter_func(t *testing.T) {
 	as := assert.New(t)
 	l := NewList()
 
-	// insert the first element
+	// insert the first item
 	l.AddAfter(It(1))
 
 	checkln(t, l.fnode, 1, nil, nil)
@@ -44,14 +44,14 @@ func Test_List_AddAfter_func(t *testing.T) {
 	checkln(t, l.lnode, 1, nil, nil)
 	as.Equal(l.length, 1)
 
-	// Insert more elements
+	// Insert more items
 	for _, a := range []int{2, 3, 4, 5} {
 		l.addAfter(It(a))
 
 		// first item always is the same
 		checkln(t, l.fnode, 1, nil, i(2))
 
-		// the item pointed and the last element is the last inserted.
+		// the item pointed and the last item is the last inserted.
 		checkln(t, l.lnode, a, i(a-1), nil)
 		checkln(t, l.pnode, a, i(a-1), nil)
 	}
@@ -81,7 +81,7 @@ func Test_List_AddBefore_func(t *testing.T) {
 	as := assert.New(t)
 	il := internalList{}
 
-	// insert the first element
+	// insert the first item
 	il.addBefore(It(5))
 
 	checkln(t, il.fnode, 5, nil, nil)
@@ -90,14 +90,14 @@ func Test_List_AddBefore_func(t *testing.T) {
 	as.Equal(il.length, 1)
 
 
-	// Insert more elements
+	// Insert more items
 	for _, a := range []int{4, 3, 2, 1} {
 		il.addBefore(It(a))
 
 		// last item always is the same
 		checkln(t, il.lnode, 5, i(4), nil)
 
-		// the item pointed and the first element is the last inserted.
+		// the item pointed and the first item is the last inserted.
 		checkln(t, il.fnode, a, nil, i(a+1))
 		checkln(t, il.pnode, a, nil, i(a+1))
 	}
@@ -242,7 +242,7 @@ func Test_List_Delete_func(t *testing.T) {
 	as.Nil(item)
 	as.False(deleted)
 
-	// only one element
+	// only one item
 	il.addAfter(It(3))
 	item, deleted = il.delete()
 
@@ -258,7 +258,7 @@ func Test_List_Delete_func(t *testing.T) {
 	il.addAfter(It(3))
 	il.addAfter(It(4))
 
-	//  remove the element 2
+	//  remove the item 2
 	il.first()
 	il.next()
 	item, _ = il.get()
@@ -273,7 +273,7 @@ func Test_List_Delete_func(t *testing.T) {
 	checkln(t, il.fnode, 1, nil, i(3))
 	checkln(t, il.lnode, 4, i(3), nil)
 
-	// remove the element 3
+	// remove the item 3
 	il.next()
 	as.Equal(il.pnode.item.(IntItem).value, 3)
 	item, deleted = il.delete()
@@ -286,7 +286,7 @@ func Test_List_Delete_func(t *testing.T) {
 	checkln(t, il.fnode, 1, nil, i(4))
 	checkln(t, il.lnode, 4, i(1), nil)
 
-	// remove the element 4
+	// remove the item 4
 	il.next()
 	as.Equal(il.pnode.item.(IntItem).value, 4)
 	item, deleted = il.delete()
@@ -298,7 +298,7 @@ func Test_List_Delete_func(t *testing.T) {
 	checkln(t, il.fnode, 1, nil, nil)
 	checkln(t, il.lnode, 1, nil, nil)
 
-	// insert 2 and remove element 1
+	// insert 2 and remove item 1
 	il.addAfter(It(2))
 	as.Equal(il.pnode.item.(IntItem).value, 2)
 	as.Equal(il.lnode.item.(IntItem).value, 2)
@@ -337,7 +337,7 @@ func Test_List_Search_func(t *testing.T) {
 	checkln(t, il.pnode, 6, i(5), nil)
 	checkln(t, il.lnode, 6, i(5), nil)
 
-	// Search elements they are in the list
+	// Search items they are in the list
 	for _, a := range []int{1, 2, 3, 4, 5, 6} {
 		item, found := il.search(It(a))
 		as.Equal(item.(IntItem).value, a)

@@ -85,7 +85,7 @@ func insertItem(node *treeNode, it Item, rebalanceIt bool) (*treeNode, bool) {
 	}
 
 	if node.item.Eq(it) {
-		// tree doesn't allow repeated elements.
+		// tree doesn't allow repeated items.
 		return node, false
 	}
 
@@ -141,7 +141,7 @@ func (tr *tree) Insert(it Item) bool {
 	return inserted
 }
 
-// Length returns the number of elements in the tree.
+// Length returns the number of items in the tree.
 func (tr *tree) Length() int {
 	return tr.length
 }

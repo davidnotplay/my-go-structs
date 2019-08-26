@@ -57,18 +57,18 @@ func (l *List) Get() (Item, bool) {
 // or advances one position, depending of the situation.
 //
 // The function returns 2 values: The value deleted and a flag indicating if the value was deleted.
-// The second value returned only will be false if it try delete an element in an empty list.
+// The second value returned only will be false if it try delete an item in an empty list.
 func (l *List) Delete() (Item, bool) {
 	return l.delete()
 }
 
 // Search searchs the item in the list. It returns the item found and a flag indicating if the item
-// exists in the list. This function also move the internal pointer to the element found.
+// exists in the list. This function also move the internal pointer to the item found.
 func (l *List) Search(it Item) (Item, bool) {
 	return l.search(it)
 }
 
-// Length returns the number of element in the list.
+// Length returns the number of items in the list.
 func (l *List)Length() int {
 	return l.length
 }

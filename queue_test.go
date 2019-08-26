@@ -17,14 +17,14 @@ func Test_NewQueue_func(t *testing.T) {
 func Test_Enqueue_Queue_func(t *testing.T) {
 	qu := NewQueue()
 
-	// insert one element
+	// insert one item
 	qu.Enqueue(It(1))
 	checkln(t, qu.fnode, 1, nil, nil)
 	checkln(t, qu.pnode, 1, nil, nil)
 	checkln(t, qu.lnode, 1, nil, nil)
 	assert.Equal(t, qu.length, 1)
 
-	// insert more elements
+	// insert more items
 	for _, a := range []int{2, 3, 4, 5, 6} {
 		qu.Enqueue(It(a))
 		checkln(t, qu.fnode, 1, nil, i(2))
@@ -46,7 +46,7 @@ func Test_Dequeue_Queue_func(t *testing.T) {
 	assert.Nil(t, it)
 	assert.False(t, dequeued)
 
-	// insert one element
+	// insert one item
 	for _, i := range []int{1, 2, 3, 4, 5, 6} {
 		qu.Enqueue(It(i))
 	}

@@ -16,7 +16,7 @@ func (qu *Queue) Enqueue (it Item) {
 	qu.addAfter(it)
 }
 
-// Dequeue gets the first element of the queue.
+// Dequeue gets the first item of the queue.
 func (qu *Queue) Dequeue() (Item, bool) {
 	qu.first()
 	return qu.delete()

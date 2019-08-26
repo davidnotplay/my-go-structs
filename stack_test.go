@@ -17,14 +17,14 @@ func Test_NewStack_func(t *testing.T) {
 func Test_Push_Stack_func(t *testing.T) {
 	st := NewStack()
 
-	// insert one element
+	// insert one item
 	st.Push(It(1))
 	checkln(t, st.fnode, 1, nil, nil)
 	checkln(t, st.pnode, 1, nil, nil)
 	checkln(t, st.lnode, 1, nil, nil)
 	assert.Equal(t, st.length, 1)
 
-	// insert more elements
+	// insert more items
 	for _, a := range []int{2, 3, 4, 5, 6} {
 		st.Push(It(a))
 		checkln(t, st.fnode, 1, nil, i(2))
@@ -46,7 +46,7 @@ func Test_Pop_Stack_func(t *testing.T) {
 	assert.Nil(t, it)
 	assert.False(t, popped)
 
-	// insert elements
+	// insert items
 	for a := 1; a<=5; a++ {
 		st.Push(It(a))
 	}

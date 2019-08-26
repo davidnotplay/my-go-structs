@@ -226,25 +226,25 @@ func Test_tree_Insert_func(t *testing.T) {
 		assert.True(t, tr.Insert(It(e)))
 	}
 
-	// Insert first element. Element 5
+	// Insert first item. Item 5
 	in(10)
 	checkVAndH(t, tr.root, 10, 0)
 	l(1)
 
-	// Insert element 5
+	// Insert item 5
 	in(5)
 	checkVAndH(t, tr.root, 10, 1)
 	checkVAndH(t, tr.root.ltree, 5, 0)
 	l(2)
 
-	// Insert element 3. Re-balance tree. Right rotate
+	// Insert item 3. Re-balance tree. Right rotate
 	in(3)
 	checkVAndH(t, tr.root, 5, 1)
 	checkVAndH(t, tr.root.ltree, 3, 0)
 	checkVAndH(t, tr.root.rtree, 10, 0)
 	l(3)
 
-	// Insert element 15
+	// Insert item 15
 	in(15)
 	checkVAndH(t, tr.root, 5, 2)
 	checkVAndH(t, tr.root.ltree, 3, 0)
@@ -252,7 +252,7 @@ func Test_tree_Insert_func(t *testing.T) {
 	checkVAndH(t, tr.root.rtree.rtree, 15, 0)
 	l(4)
 
-	// Insert element 7
+	// Insert item 7
 	in(7)
 	checkVAndH(t, tr.root, 5, 2)
 	checkVAndH(t, tr.root.ltree, 3, 0)
@@ -261,7 +261,7 @@ func Test_tree_Insert_func(t *testing.T) {
 	checkVAndH(t, tr.root.rtree.ltree, 7, 0)
 	l(5)
 
-	// Insert element 20. Re-balance tree. Left rotate
+	// Insert item 20. Re-balance tree. Left rotate
 	in(20)
 	checkVAndH(t, tr.root, 10, 2)
 	checkVAndH(t, tr.root.ltree, 5, 1)
@@ -292,7 +292,7 @@ func Test_tree_Insert_func(t *testing.T) {
 	checkVAndH(t, tr.root.rtree.rtree, 15, 0)
 	l(5)
 
-	// Insert duplicate element
+	// Insert duplicate item
 	assert.False(t, tr.Insert(It(5)))
 	checkVAndH(t, tr.root, 7, 2)
 	checkVAndH(t, tr.root.ltree, 5, 0)
