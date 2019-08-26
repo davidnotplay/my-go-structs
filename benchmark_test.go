@@ -2,14 +2,14 @@ package structs
 
 import "testing"
 
-func insertItems(num int) Avl {
-	avl := NewAvl()
+func insertItems(num int) tree {
+	tree := tree{}
 
 	for i := 0; i < num; i++ {
-		avl.Insert(It(i))
+		tree.Insert(It(i))
 	}
 
-	return avl
+	return tree
 }
 
 func insertItemsBenchmark(num int, b *testing.B) {
