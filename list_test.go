@@ -46,7 +46,7 @@ func Test_List_AddAfter_func(t *testing.T) {
 
 	// Insert more items
 	for _, a := range []int{2, 3, 4, 5} {
-		l.addAfter(It(a))
+		l.AddAfter(It(a))
 
 		// first item always is the same
 		checkln(t, l.fnode, 1, nil, i(2))
@@ -70,8 +70,8 @@ func Test_List_AddAfter_func(t *testing.T) {
 		tmpNode = tmpNode.next
 	}
 
-	l.first()
-	l.addAfter(It(12))
+	l.First()
+	l.AddAfter(It(12))
 	checkln(t, l.fnode, 1, nil, i(12))
 	checkln(t, l.pnode, 12, i(1), i(2))
 	checkln(t, l.lnode, 5, i(4), nil)
@@ -79,36 +79,36 @@ func Test_List_AddAfter_func(t *testing.T) {
 
 func Test_List_AddBefore_func(t *testing.T) {
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 
-	// insert the first item
-	il.addBefore(It(5))
+	// insert the First item
+	l.AddBefore(It(5))
 
-	checkln(t, il.fnode, 5, nil, nil)
-	checkln(t, il.pnode, 5, nil, nil)
-	checkln(t, il.lnode, 5, nil, nil)
-	as.Equal(il.length, 1)
+	checkln(t, l.fnode, 5, nil, nil)
+	checkln(t, l.pnode, 5, nil, nil)
+	checkln(t, l.lnode, 5, nil, nil)
+	as.Equal(l.length, 1)
 
 
 	// Insert more items
 	for _, a := range []int{4, 3, 2, 1} {
-		il.addBefore(It(a))
+		l.AddBefore(It(a))
 
 		// last item always is the same
-		checkln(t, il.lnode, 5, i(4), nil)
+		checkln(t, l.lnode, 5, i(4), nil)
 
-		// the item pointed and the first item is the last inserted.
-		checkln(t, il.fnode, a, nil, i(a+1))
-		checkln(t, il.pnode, a, nil, i(a+1))
+		// the item pointed and the First item is the last inserted.
+		checkln(t, l.fnode, a, nil, i(a+1))
+		checkln(t, l.pnode, a, nil, i(a+1))
 	}
 
-	as.Equal(il.length, 5)
+	as.Equal(l.length, 5)
 
-	// check the next and prev pointers.
-	for tmpNode, a := il.fnode, 1; a <= il.length; a++ {
+	// check the Next and prev pointers.
+	for tmpNode, a := l.fnode, 1; a <= l.length; a++ {
 		if a == 1 {
 			checkln(t, tmpNode, 1, nil, i(2))
-		} else if a == il.length {
+		} else if a == l.length {
 			checkln(t, tmpNode, 5, i(4), nil)
 		} else {
 			checkln(t, tmpNode, a, i(a-1), i(a+1))
@@ -116,116 +116,116 @@ func Test_List_AddBefore_func(t *testing.T) {
 		tmpNode = tmpNode.next
 	}
 
-	il.last()
-	il.addBefore(It(45))
-	checkln(t, il.fnode, 1, nil, i(2))
-	checkln(t, il.pnode, 45, i(4), i(5))
-	checkln(t, il.lnode, 5, i(45), nil)
+	l.last()
+	l.AddBefore(It(45))
+	checkln(t, l.fnode, 1, nil, i(2))
+	checkln(t, l.pnode, 45, i(4), i(5))
+	checkln(t, l.lnode, 5, i(45), nil)
 }
 
 func Test_List_Next_func(t *testing.T) {
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 	values := []int{1, 2, 3, 4, 5}
 
 	// insert the value
 	for _, i := range values {
-		il.addAfter(It(i))
+		l.AddAfter(It(i))
 	}
 
-	il.pnode = il.fnode // move the pointer to first item.
+	l.pnode = l.fnode // move the pointer to first item.
 
-	for i := 1; i <= il.length; i++ {
-		as.Equal(il.pnode.item.(IntItem).value, i)
-		if i < il.length {
-			as.True(il.next())
+	for i := 1; i <= l.length; i++ {
+		as.Equal(l.pnode.item.(IntItem).value, i)
+		if i < l.length {
+			as.True(l.Next())
 			continue
 		}
 
 		// last item
-		as.False(il.next()) // In the end of the list. No continue
-		as.Equal(il.pnode, il.lnode)
+		as.False(l.Next()) // In the end of the list. No continue
+		as.Equal(l.pnode, l.lnode)
 	}
 
-	as.False(il.next())
-	as.False(il.next())
+	as.False(l.Next())
+	as.False(l.Next())
 }
 
 func Test_List_Prev_func(t *testing.T) {
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 	values := []int{1, 2, 3, 4, 5}
 
 	// insert the value
 	for _, i := range values {
-		il.addAfter(It(i))
+		l.AddAfter(It(i))
 	}
 
-	il.pnode = il.lnode //move the pointer to the last item.
+	l.pnode = l.lnode //move the pointer to the last item.
 
-	for i := il.length; i >= 1 ; i-- {
-		as.Equal(il.pnode.item.(IntItem).value, i)
+	for i := l.length; i >= 1 ; i-- {
+		as.Equal(l.pnode.item.(IntItem).value, i)
 		if i > 1 {
-			as.True(il.prev())
+			as.True(l.Prev())
 			continue
 		}
 
 		// last item
-		as.False(il.prev()) // In the end of the list. No continue
-		as.Equal(il.pnode, il.fnode)
+		as.False(l.Prev()) // In the end of the list. No continue
+		as.Equal(l.pnode, l.fnode)
 	}
 
-	as.False(il.prev())
-	as.False(il.prev())
+	as.False(l.Prev())
+	as.False(l.Prev())
 }
 
 func Test_List_First_func(t *testing.T) {
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 
 	for i := 1; i <= 5; i++ {
-		il.addAfter(It(i))
+		l.AddAfter(It(i))
 	}
 
-	as.Equal(il.pnode, il.lnode)
-	il.first()
-	as.Equal(il.pnode, il.fnode)
+	as.Equal(l.pnode, l.lnode)
+	l.First()
+	as.Equal(l.pnode, l.fnode)
 }
 
 func Test_List_Last_func(t *testing.T) {
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 
 	for i := 1; i <= 5; i++ {
-		il.addBefore(It(i))
+		l.AddBefore(It(i))
 	}
 
-	as.Equal(il.pnode, il.fnode)
-	il.last()
-	as.Equal(il.pnode, il.lnode)
+	as.Equal(l.pnode, l.fnode)
+	l.Last()
+	as.Equal(l.pnode, l.lnode)
 }
 
 func Test_List_Get_func(t *testing.T) {
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 
 	// Get item in an empty list
-	v, exists := il.get()
+	v, exists := l.Get()
 	as.Nil(v)
 	as.False(exists)
 
 	for i := 1; i <= 5; i++ {
-		il.addAfter(It(i))
+		l.AddAfter(It(i))
 	}
 
-	as.Equal(il.length, 5)
+	as.Equal(l.length, 5)
 
-	il.first()
+	l.First()
 	for i := 1; i <= 5; i++ {
-		v, exists = il.get()
+		v, exists = l.Get()
 		as.True(exists)
 		as.Equal(v.(IntItem).value, i)
-		il.next()
+		l.Next()
 	}
 }
 
@@ -235,83 +235,83 @@ func Test_List_Delete_func(t *testing.T) {
 		deleted bool
 	)
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 
 	// test empty list
-	item, deleted = il.delete()
+	item, deleted = l.Delete()
 	as.Nil(item)
 	as.False(deleted)
 
 	// only one item
-	il.addAfter(It(3))
-	item, deleted = il.delete()
+	l.AddAfter(It(3))
+	item, deleted = l.Delete()
 
 	as.Equal(item.(IntItem).value, 3)
 	as.True(deleted)
-	as.Nil(il.pnode)
-	as.Nil(il.fnode)
-	as.Nil(il.lnode)
-	as.Equal(il.length, 0)
+	as.Nil(l.pnode)
+	as.Nil(l.fnode)
+	as.Nil(l.lnode)
+	as.Equal(l.length, 0)
 
-	il.addAfter(It(1))
-	il.addAfter(It(2))
-	il.addAfter(It(3))
-	il.addAfter(It(4))
+	l.AddAfter(It(1))
+	l.AddAfter(It(2))
+	l.AddAfter(It(3))
+	l.AddAfter(It(4))
 
 	//  remove the item 2
-	il.first()
-	il.next()
-	item, _ = il.get()
+	l.First()
+	l.Next()
+	item, _ = l.Get()
 	as.Equal(item.(IntItem).value, 2)
 
-	item, deleted = il.delete()
+	item, deleted = l.Delete()
 
 	as.Equal(item.(IntItem).value, 2)
 	as.True(deleted)
-	as.Equal(il.length, 3)
-	checkln(t, il.pnode, 1, nil, i(3))
-	checkln(t, il.fnode, 1, nil, i(3))
-	checkln(t, il.lnode, 4, i(3), nil)
+	as.Equal(l.length, 3)
+	checkln(t, l.pnode, 1, nil, i(3))
+	checkln(t, l.fnode, 1, nil, i(3))
+	checkln(t, l.lnode, 4, i(3), nil)
 
 	// remove the item 3
-	il.next()
-	as.Equal(il.pnode.item.(IntItem).value, 3)
-	item, deleted = il.delete()
+	l.Next()
+	as.Equal(l.pnode.item.(IntItem).value, 3)
+	item, deleted = l.Delete()
 
 	as.Equal(item.(IntItem).value, 3)
 	as.True(deleted)
-	as.Equal(il.length, 2)
+	as.Equal(l.length, 2)
 
-	checkln(t, il.pnode, 1, nil, i(4))
-	checkln(t, il.fnode, 1, nil, i(4))
-	checkln(t, il.lnode, 4, i(1), nil)
+	checkln(t, l.pnode, 1, nil, i(4))
+	checkln(t, l.fnode, 1, nil, i(4))
+	checkln(t, l.lnode, 4, i(1), nil)
 
 	// remove the item 4
-	il.next()
-	as.Equal(il.pnode.item.(IntItem).value, 4)
-	item, deleted = il.delete()
+	l.Next()
+	as.Equal(l.pnode.item.(IntItem).value, 4)
+	item, deleted = l.Delete()
 	as.Equal(item.(IntItem).value, 4)
 	as.True(deleted)
-	as.Equal(il.length, 1)
+	as.Equal(l.length, 1)
 
-	checkln(t, il.pnode, 1, nil, nil)
-	checkln(t, il.fnode, 1, nil, nil)
-	checkln(t, il.lnode, 1, nil, nil)
+	checkln(t, l.pnode, 1, nil, nil)
+	checkln(t, l.fnode, 1, nil, nil)
+	checkln(t, l.lnode, 1, nil, nil)
 
 	// insert 2 and remove item 1
-	il.addAfter(It(2))
-	as.Equal(il.pnode.item.(IntItem).value, 2)
-	as.Equal(il.lnode.item.(IntItem).value, 2)
+	l.AddAfter(It(2))
+	as.Equal(l.pnode.item.(IntItem).value, 2)
+	as.Equal(l.lnode.item.(IntItem).value, 2)
 
-	il.first()
-	item, deleted = il.delete()
+	l.First()
+	item, deleted = l.Delete()
 	as.Equal(item.(IntItem).value, 1)
 	as.True(deleted)
-	as.Equal(il.length, 1)
+	as.Equal(l.length, 1)
 
-	checkln(t, il.pnode, 2, nil, nil)
-	checkln(t, il.fnode, 2, nil, nil)
-	checkln(t, il.lnode, 2, nil, nil)
+	checkln(t, l.pnode, 2, nil, nil)
+	checkln(t, l.fnode, 2, nil, nil)
+	checkln(t, l.lnode, 2, nil, nil)
 }
 
 func Test_List_Search_func(t *testing.T) {
@@ -320,54 +320,54 @@ func Test_List_Search_func(t *testing.T) {
 		found bool
 	)
 	as := assert.New(t)
-	il := internalList{}
+	l := NewList()
 
 	// First checks an empty list
-	item, found = il.search(It(1))
+	item, found = l.Search(It(1))
 	as.Nil(item)
 	as.False(found)
 
 	for _, a := range []int{1, 2, 3, 4, 5, 6} {
-		il.addAfter(It(a))
+		l.AddAfter(It(a))
 	}
 
 
 	// Check the pointers are correct
-	checkln(t, il.fnode, 1, nil, i(2))
-	checkln(t, il.pnode, 6, i(5), nil)
-	checkln(t, il.lnode, 6, i(5), nil)
+	checkln(t, l.fnode, 1, nil, i(2))
+	checkln(t, l.pnode, 6, i(5), nil)
+	checkln(t, l.lnode, 6, i(5), nil)
 
 	// Search items they are in the list
 	for _, a := range []int{1, 2, 3, 4, 5, 6} {
-		item, found := il.search(It(a))
+		item, found := l.Search(It(a))
 		as.Equal(item.(IntItem).value, a)
 		as.True(found)
 
 		// Check the pointers are correct
-		checkln(t, il.fnode, 1, nil, i(2))
-		checkln(t, il.lnode, 6, i(5), nil)
+		checkln(t, l.fnode, 1, nil, i(2))
+		checkln(t, l.lnode, 6, i(5), nil)
 
 		switch {
 		case a == 1:
-			checkln(t, il.pnode, 1, nil, i(2))
+			checkln(t, l.pnode, 1, nil, i(2))
 		case a == 6:
-			checkln(t, il.pnode, 6, i(5), nil)
+			checkln(t, l.pnode, 6, i(5), nil)
 		default:
-			checkln(t, il.pnode, a, i(a-1), i(a+1))
+			checkln(t, l.pnode, a, i(a-1), i(a+1))
 		}
 
 	}
 
 	// Search items they arent' in the list
 	for _, a := range []int{7, 8, 9, 10, -1, -2} {
-		item, found := il.search(It(a))
+		item, found := l.Search(It(a))
 		as.Nil(item)
 		as.False(found)
 
 		// Check the pointers are correct
-		checkln(t, il.fnode, 1, nil, i(2))
-		checkln(t, il.pnode, 6, i(5), nil)
-		checkln(t, il.lnode, 6, i(5), nil)
+		checkln(t, l.fnode, 1, nil, i(2))
+		checkln(t, l.pnode, 6, i(5), nil)
+		checkln(t, l.lnode, 6, i(5), nil)
 	}
 }
 

@@ -27,14 +27,14 @@ func (l *List) AddBefore(it Item) {
 // was moved correctly or false if the internal pointer is in the last item and cannot advance
 // more.
 func (l *List) Next() bool {
-	return l.Next()
+	return l.next()
 }
 
 // Prev moves the internal pointer to the previous item, if it possible. Returns true if the
 // pointer was moved correctly or false if the internal pointer is in the first item and cannot
 // backwards more.
 func (l *List) Prev() bool {
-	return l.Prev()
+	return l.prev()
 }
 
 // First moves the internal pointer to the first item of the list.
