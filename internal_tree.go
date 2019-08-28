@@ -17,7 +17,7 @@ type treeNode struct {
 }
 
 // Height returns the `node.height` property. If node is nil, then returns -1
-func (node *treeNode) Height() int {
+func (node *treeNode) getHeight() int {
 	if node != nil {
 		return node.height
 	}
@@ -27,7 +27,7 @@ func (node *treeNode) Height() int {
 
 // maxHeights returns the max value of left tree height and right tree height
 func (node treeNode) maxHeight() int {
-	return max(node.ltree.Height(), node.rtree.Height())
+	return max(node.ltree.getHeight(), node.rtree.getHeight())
 }
 
 // rotateRight execute an AVL tree right rotation.
@@ -104,19 +104,19 @@ func insertItem(node *treeNode, it Item, rebalanceIt bool) (*treeNode, bool) {
 
 // rebalance rebalances the node and return it.
 func rebalance(node *treeNode) *treeNode {
-	if node.ltree.Height()-node.rtree.Height() == 2 {
+	if node.ltree.getHeight()-node.rtree.getHeight() == 2 {
 		ltree := node.ltree
 
-		if ltree.ltree.Height() <= ltree.rtree.Height() {
+		if ltree.ltree.getHeight() <= ltree.rtree.getHeight() {
 			node = node.rotateLeftRight()
 		} else {
 			node = node.rotateRight()
 		}
 
-	} else if node.rtree.Height()-node.ltree.Height() == 2 {
+	} else if node.rtree.getHeight()-node.ltree.getHeight() == 2 {
 		rtree := node.rtree
 
-		if rtree.rtree.Height() <= rtree.ltree.Height() {
+		if rtree.rtree.getHeight() <= rtree.ltree.getHeight() {
 			node = node.rotateRightLeft()
 		} else {
 			node = node.rotateLeft()
@@ -127,9 +127,8 @@ func rebalance(node *treeNode) *treeNode {
 	return node
 }
 
-// Insert inserts the item to the tree. The item inserted must be unique in the tree;
-// else, the item isn't inserted. The function returns a flag indicating if the item was
-// inserted.
+// Insert inserts the item in the tree. The function resturns true, if the item was inserted or
+// false if the item already in the tree (duplicated item).
 func (tr *tree) Insert(it Item) bool {
 	var inserted bool
 	tr.root, inserted = insertItem(tr.root, it, tr.rebalance)
@@ -220,8 +219,8 @@ func deleteNode(node *treeNode, it Item, rebalanceIt bool) (*treeNode, Item, boo
 	return node, itDeleted, found
 }
 
-// Delete deletes the item of the tree. Returns the item deleted or nil and a flag indicating
-// if the item existed in the tree.
+// Delete deletes the item of the tree. Returns the item deleted and a flag indicating if the item
+// existed in the tree.
 func (tr *tree) Delete(it Item) (itd Item, deleted bool) {
 	tr.root, itd, deleted = deleteNode(tr.root, it, tr.rebalance)
 	if deleted {

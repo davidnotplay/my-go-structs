@@ -1,11 +1,12 @@
 package mygostructs
 
-// Queue ...
+// Queue is the classic queue type data structure (FIFO). More info:
+// https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
 type Queue struct {
 	internalList
 }
 
-// NewQueue creates a new Queue struct.
+// NewQueue returns a an empty queue.
 func NewQueue() Queue{
 	return Queue{}
 }

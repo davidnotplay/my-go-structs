@@ -1,18 +1,18 @@
 package mygostructs
 
-// List is a structure for saves items sequentially, The struct allows: insert an item in any
-// position, get, search or delete any item and iterate for get all elements.
+// List is the clasic data-struct list, used to save items sequentially and manipulate they More
+// info: https://en.wikipedia.org/wiki/List_(abstract_data_type)
 type List struct {
 	internalList
 }
 
-// NewList creates and returns a new empty List.
+// NewList returns an empty List.
 func NewList() List{
 	return List{}
 }
 
 // AddAfter adds the item after the item pointed by internal pointer and moves the internal
-//pointer to the new item inserted.
+// pointer to the new item inserted.
 func (l *List) AddAfter(it Item) {
 	l.addAfter(it)
 }
@@ -53,8 +53,8 @@ func (l *List) Get() (Item, bool) {
 	return l.get()
 }
 
-// Delete deletes the item pointed by the internal pointer. After the pointer backwards
-// or advances one position, depending of the situation.
+// Delete deletes the item pointed by the internal pointer. After the pointer backwards one
+// position. If this is posible then it advances one position.
 //
 // The function returns 2 values: The value deleted and a flag indicating if the value was deleted.
 // The second value returned only will be false if it try delete an item in an empty list.

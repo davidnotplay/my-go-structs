@@ -104,11 +104,11 @@ func Test_max_func(t *testing.T) {
 	assert.Equal(t, max(-1, 2), 2)
 }
 
-func Test_treeNode_Height_func(t *testing.T) {
+func Test_treeNode_getHeight_func(t *testing.T) {
 	as := assert.New(t)
 
-	as.Equal((*treeNode)(nil).Height(), -1, "When node is nil, must returns -1")
-	as.Equal((&treeNode{nil, nil, 33, nil}).Height(), 33, "Return invalid height")
+	as.Equal((*treeNode)(nil).getHeight(), -1, "When node is nil, must returns -1")
+	as.Equal((&treeNode{nil, nil, 33, nil}).getHeight(), 33, "Return invalid height")
 }
 
 func Test_treeNode_maxHeight_func(t *testing.T) {

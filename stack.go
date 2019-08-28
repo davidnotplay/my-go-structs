@@ -1,6 +1,6 @@
 package mygostructs
 
-// Stack is a clasic data structure type LIFO.
+// Stack is the classic stack type data structure (LIFO). More info:
 // https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
 type Stack struct {
 	internalList

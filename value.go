@@ -3,7 +3,8 @@ package mygostructs
 import "fmt"
 
 // Item the interface used as main item in the different structs. Any data that you
-// want store in a struct must be implements this interface.
+// want store in a struct must be implements this interface. You can find an example if you revise
+// the code of the IntItem struct.
 type Item interface {
 	// Less checks if the item is more less than the item of the parameter.
 	Less(Item) bool
