@@ -1,5 +1,4 @@
-
-package structs
+package mygostructs
 
 import (
 	"fmt"

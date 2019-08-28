@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 /*
  All methods of the internalList are used and are very similiar to the methods

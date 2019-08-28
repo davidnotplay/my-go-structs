@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 // Stack is a clasic data structure type LIFO.
 // https://en.wikipedia.org/wiki/Stack_(abstract_data_type)

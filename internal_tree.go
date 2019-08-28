@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 // max returns the param more large
 func max(a, b int) int {

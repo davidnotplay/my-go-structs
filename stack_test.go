@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 import (
 	"github.com/stretchr/testify/assert"

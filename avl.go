@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 // Avl is the clasic data-struct AVL tree. More info:
 // https://en.wikipedia.org/wiki/AVL_tree

@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 // List is a structure for saves items sequentially, The struct allows: insert an item in any
 // position, get, search or delete any item and iterate for get all elements.

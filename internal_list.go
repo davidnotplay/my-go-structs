@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 // listNode is the node for the internal list.
 type listNode struct {

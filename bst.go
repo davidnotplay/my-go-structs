@@ -1,4 +1,4 @@
-package structs
+package mygostructs
 
 
 // Bst is the classic Binary search tree. more info:
