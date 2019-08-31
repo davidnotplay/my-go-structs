@@ -116,7 +116,7 @@ func Test_List_AddBefore_func(t *testing.T) {
 		tmpNode = tmpNode.next
 	}
 
-	l.last()
+	l.Last()
 	l.AddBefore(It(45))
 	checkln(t, l.fnode, 1, nil, i(2))
 	checkln(t, l.pnode, 45, i(4), i(5))
@@ -253,65 +253,30 @@ func Test_List_Delete_func(t *testing.T) {
 	as.Nil(l.lnode)
 	as.Equal(l.length, 0)
 
-	l.AddAfter(It(1))
-	l.AddAfter(It(2))
-	l.AddAfter(It(3))
-	l.AddAfter(It(4))
 
-	//  remove the item 2
-	l.First()
-	l.Next()
-	item, _ = l.Get()
-	as.Equal(item.(IntItem).value, 2)
+	for i := 1; i <= 10; i++ {
+		l.AddAfter(It(i))
+	}
 
-	item, deleted = l.Delete()
+	maxLength := l.Length()
+	for i, a := range []int{3, 4, 6, 9, 1, 2, 7, 5, 10, 8} {
+		_, found := l.Search(It(a))
+		as.True(found)
 
-	as.Equal(item.(IntItem).value, 2)
-	as.True(deleted)
-	as.Equal(l.length, 3)
-	checkln(t, l.pnode, 1, nil, i(3))
-	checkln(t, l.fnode, 1, nil, i(3))
-	checkln(t, l.lnode, 4, i(3), nil)
+		vdeleted, deleted := l.Delete()
+		as.True(deleted)
+		as.Equal(vdeleted.(IntItem).value, a)
+		as.Equal(l.pnode, l.fnode)
+		as.Equal(l.Length(), maxLength - (i+1))
 
-	// remove the item 3
-	l.Next()
-	as.Equal(l.pnode.item.(IntItem).value, 3)
-	item, deleted = l.Delete()
+		_, found = l.Search(It(a))
+		as.False(found)
+	}
 
-	as.Equal(item.(IntItem).value, 3)
-	as.True(deleted)
-	as.Equal(l.length, 2)
-
-	checkln(t, l.pnode, 1, nil, i(4))
-	checkln(t, l.fnode, 1, nil, i(4))
-	checkln(t, l.lnode, 4, i(1), nil)
-
-	// remove the item 4
-	l.Next()
-	as.Equal(l.pnode.item.(IntItem).value, 4)
-	item, deleted = l.Delete()
-	as.Equal(item.(IntItem).value, 4)
-	as.True(deleted)
-	as.Equal(l.length, 1)
-
-	checkln(t, l.pnode, 1, nil, nil)
-	checkln(t, l.fnode, 1, nil, nil)
-	checkln(t, l.lnode, 1, nil, nil)
-
-	// insert 2 and remove item 1
-	l.AddAfter(It(2))
-	as.Equal(l.pnode.item.(IntItem).value, 2)
-	as.Equal(l.lnode.item.(IntItem).value, 2)
-
-	l.First()
-	item, deleted = l.Delete()
-	as.Equal(item.(IntItem).value, 1)
-	as.True(deleted)
-	as.Equal(l.length, 1)
-
-	checkln(t, l.pnode, 2, nil, nil)
-	checkln(t, l.fnode, 2, nil, nil)
-	checkln(t, l.lnode, 2, nil, nil)
+	as.Equal(l.Length(), 0)
+	as.Nil(l.fnode)
+	as.Nil(l.pnode)
+	as.Nil(l.lnode)
 }
 
 func Test_List_Search_func(t *testing.T) {

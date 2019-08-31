@@ -17,16 +17,19 @@ func ExampleAvl() {
 	}
 	/*
 	Output:
-	 Item 3 found
+
+		Item 3 found
 	*/
 
 	// Delete the item 2
 	if itemDeleted, deleted := avl.Delete(It(2)); deleted {
 		fmt.Printf("Item %s deleted", itemDeleted.String())
 	}
-	/*
+
+	/**
 	Output:
-	 Item 2 deleted
+
+		Item 2 deleted
 	*/
 }
 
@@ -45,16 +48,18 @@ func ExampleBst() {
 	}
 	/*
 	Output:
-	 Item 3 found
+
+		Item 3 found
 	*/
 
 	// Delete the item 2
 	if itemDeleted, deleted := bst.Delete(It(2)); deleted {
 		fmt.Printf("Item %s deleted", itemDeleted.String())
 	}
-	/*
+	/**
 	Output:
-	 Item 2 deleted
+
+		Item 2 deleted
 	*/
 }
 
@@ -71,47 +76,57 @@ func ExampleList() {
 	// Iterate the List
 
 	// Move the internal pointer to the first of the list.
-	list.first()
+	list.First()
 	for it, found := list.Get(); found; found = list.Next() {
 		fmt.Printf("List item %s", it.String())
 	}
 
 	/**
 	Output:
-	 List item 1
-	 List item 2
-	 List item 3
-	 List item 4
-	 List item 5
+
+		 List item 1
+		 List item 2
+		 List item 3
+		 List item 4
+		 List item 5
 	*/
 
 	// Iterate the list reversed.
 
 	// Move the internal pointer to the end of the list.
-	list.last()
+	list.Last()
 	for it, found := list.Get(); found; found = list.Prev() {
 		fmt.Printf("List item %s", it.String())
 	}
 
 	/**
 	Output:
-	 List item 5
-	 List item 4
-	 List item 3
-	 List item 2
-	 List item 1
+
+		 List item 5
+		 List item 4
+		 List item 3
+		 List item 2
+		 List item 1
 	*/
 
 	// Search an item
 	if item, found := list.Search(It(3)); found {
-		println("Element found ", item.String())
+		println("Item found ", item.String())
 	} else {
-		println("Element not found")
+		println("Item not found")
 	}
 
-	// delete the first element of the list.
-	list.first()
-	list.Delete()
+	// Delete the item 4
+	if _, found := list.Search(It(4)); found {
+		itemDeleted, _ := list.Delete();
+		println("Item %s deleted", itemDeleted.String())
+	}
+
+	/**
+	Output:
+
+		Item 4 deleted.
+	*/
 }
 
 // Basic usage
@@ -124,17 +139,18 @@ func ExampleQueue() {
 	}
 
 
-	// Get and remove the first element of the queue.
+	// Get and remove the first item of the queue.
 	for item, found := queue.Dequeue(); found; item, found = queue.Dequeue() {
 		fmt.Printf("Item is number is: %s", item.String())
 	}
 	/**
 	Output:
-	 Item is number: 1
-	 Item is number: 2
-	 Item is number: 3
-	 Item is number: 4
-	 Item is number: 5
+
+		 Item is number: 1
+		 Item is number: 2
+		 Item is number: 3
+		 Item is number: 4
+		 Item is number: 5
 	*/
 }
 
@@ -148,16 +164,17 @@ func ExampleStack() {
 	}
 
 
-	// Get and remove the first element of the stack.
+	// Get and remove the first item of the stack.
 	for item, found := stack.Pop(); found; item, found = stack.Pop() {
 		fmt.Printf("Item is number is: %s", item.String())
 	}
 	/**
 	Output:
-	 Item is number: 5
-	 Item is number: 4
-	 Item is number: 3
-	 Item is number: 2
-	 Item is number: 1
+
+		Item is number: 5
+		Item is number: 4
+		Item is number: 3
+		Item is number: 2
+		Item is number: 1
 	*/
 }
