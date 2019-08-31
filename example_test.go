@@ -65,7 +65,7 @@ func ExampleBst() {
 
 // Basic usage
 func ExampleList() {
-	list := NewList() // Create en empty List
+	list := NewList(true) // Create en empty List
 
 	// Insert in the list, the numbers: 1, 2, 3, 4, 5
 	for _, i := range []int{1, 2, 3, 4, 5} {

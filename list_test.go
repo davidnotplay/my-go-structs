@@ -23,109 +23,204 @@ func checkln(t *testing.T, node *listNode, value int, prev, next *int) {
 
 func Test_NewList_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList()
 
+	l := NewList(true)
 	as.Nil(l.fnode)
 	as.Nil(l.pnode)
 	as.Nil(l.lnode)
 	as.Equal(l.length, 0)
+	as.Equal(l.avl.length, 0)
+	as.True(l.avl.duplicated)
+	as.True(l.avl.rebalance)
+
+	l = NewList(false)
+	as.Nil(l.fnode)
+	as.Nil(l.pnode)
+	as.Nil(l.lnode)
+	as.Equal(l.length, 0)
+	as.Equal(l.avl.length, 0)
+	as.False(l.avl.duplicated)
+	as.True(l.avl.rebalance)
 }
 
 
 func Test_List_AddAfter_func(t *testing.T) {
-	as := assert.New(t)
-	l := NewList()
+	var (
+		inserted bool
+		found    bool
+		node     *listNode
+		values   = []int{1, 2, 2, 3, 4, 5, 5}
+		ndvalues = []int{1, 2, 3, 4, 5}
+		as	 = assert.New(t)
+		l	 = NewList(true)
+	)
 
-	// insert the first item
-	l.AddAfter(It(1))
+	for indx, value := range values {
+		// Test value inserted
+		inserted = l.AddAfter(It(value))
+		as.True(inserted)
 
-	checkln(t, l.fnode, 1, nil, nil)
-	checkln(t, l.pnode, 1, nil, nil)
-	checkln(t, l.lnode, 1, nil, nil)
-	as.Equal(l.length, 1)
+		// Test the internal pointers are corrects.
+		if indx == 0 {
+			checkln(t, l.fnode, values[0], nil, nil)
+			checkln(t, l.pnode, values[0], nil, nil)
+			checkln(t, l.lnode, values[0], nil, nil)
 
-	// Insert more items
-	for _, a := range []int{2, 3, 4, 5} {
-		l.AddAfter(It(a))
-
-		// first item always is the same
-		checkln(t, l.fnode, 1, nil, i(2))
-
-		// the item pointed and the last item is the last inserted.
-		checkln(t, l.lnode, a, i(a-1), nil)
-		checkln(t, l.pnode, a, i(a-1), nil)
-	}
-
-	as.Equal(l.length, 5)
-
-	// check the next and prev pointers.
-	for tmpNode, a := l.fnode, 1; a <= l.length; a++ {
-		if a == 1 {
-			checkln(t, tmpNode, 1, nil, i(2))
-		} else if a == l.length {
-			checkln(t, tmpNode, 5, i(4), nil)
 		} else {
-			checkln(t, tmpNode, a, i(a-1), i(a+1))
+			checkln(t, l.fnode, values[0], nil, i(values[1]))
+			checkln(t, l.lnode, values[indx], i(values[indx - 1]), nil)
+			checkln(t, l.pnode, values[indx], i(values[indx - 1]), nil)
 		}
-		tmpNode = tmpNode.next
+
+		// node saved in the avl
+		_, found = l.avl.Search(l.pnode)
+		as.True(found)
 	}
 
-	l.First()
-	l.AddAfter(It(12))
-	checkln(t, l.fnode, 1, nil, i(12))
-	checkln(t, l.pnode, 12, i(1), i(2))
+	// next pointers.
+	node = l.fnode
+	for i := 0; i < len(values); i++ {
+		// as.Equal(node.item.(IntItem).value, values[i])
+		as.Equal(node.item.(IntItem).value, values[i])
+		node = node.next
+	}
+	as.Nil(node)
+
+	// prev pointers.
+	node = l.lnode
+	for i := len(values) - 1; i >= 0; i-- {
+		as.Equal(node.item.(IntItem).value, values[i])
+		node = node.prev
+	}
+	as.Nil(node)
+
+
+	// No duplicates items.
+	l = NewList(false)
+
+	for indx, value := range values {
+		// Test value inserted
+		inserted = l.AddAfter(It(value))
+		// 2 and 6 index with items duplicated.
+		as.Equalf(inserted, indx != 2 && indx != 6, "index %d", indx)
+
+		// node saved in the avl
+		_, found = l.avl.Search(l.pnode)
+		as.True(found)
+	}
+
+	checkln(t, l.fnode, 1, nil, i(2))
+	checkln(t, l.pnode, 5, i(4), nil)
 	checkln(t, l.lnode, 5, i(4), nil)
+
+	// next pointers.
+	node = l.fnode
+	for i := 0; i < len(ndvalues); i++ {
+		// as.Equal(node.item.(IntItem).value, values[i])
+		as.Equal(node.item.(IntItem).value, ndvalues[i])
+		node = node.next
+	}
+	as.Nil(node)
+
+	// prev pointers.
+	node = l.lnode
+	for i := len(ndvalues) - 1; i >= 0; i-- {
+		as.Equal(node.item.(IntItem).value, ndvalues[i])
+		node = node.prev
+	}
+	as.Nil(node)
 }
 
 func Test_List_AddBefore_func(t *testing.T) {
-	as := assert.New(t)
-	l := NewList()
+	var (
+		inserted bool
+		found    bool
+		node     *listNode
+		values   = []int{1, 2, 2, 3, 4, 5, 5}
+		ndvalues = []int{1, 2, 3, 4, 5}
+		as	 = assert.New(t)
+		l	 = NewList(true)
+	)
 
-	// insert the First item
-	l.AddBefore(It(5))
+	for indx, value := range values {
+		// Test value inserted
+		inserted = l.AddBefore(It(value))
+		as.True(inserted)
 
-	checkln(t, l.fnode, 5, nil, nil)
-	checkln(t, l.pnode, 5, nil, nil)
-	checkln(t, l.lnode, 5, nil, nil)
-	as.Equal(l.length, 1)
+		// Test the internal pointers are corrects.
+		if indx == 0 {
+			checkln(t, l.fnode, values[0], nil, nil)
+			checkln(t, l.pnode, values[0], nil, nil)
+			checkln(t, l.lnode, values[0], nil, nil)
 
-
-	// Insert more items
-	for _, a := range []int{4, 3, 2, 1} {
-		l.AddBefore(It(a))
-
-		// last item always is the same
-		checkln(t, l.lnode, 5, i(4), nil)
-
-		// the item pointed and the First item is the last inserted.
-		checkln(t, l.fnode, a, nil, i(a+1))
-		checkln(t, l.pnode, a, nil, i(a+1))
-	}
-
-	as.Equal(l.length, 5)
-
-	// check the Next and prev pointers.
-	for tmpNode, a := l.fnode, 1; a <= l.length; a++ {
-		if a == 1 {
-			checkln(t, tmpNode, 1, nil, i(2))
-		} else if a == l.length {
-			checkln(t, tmpNode, 5, i(4), nil)
 		} else {
-			checkln(t, tmpNode, a, i(a-1), i(a+1))
+			checkln(t, l.fnode, values[indx], nil, i(values[indx-1]))
+			checkln(t, l.pnode, values[indx], nil, i(values[indx-1]))
+			checkln(t, l.lnode, values[0], i(values[1]), nil)
 		}
-		tmpNode = tmpNode.next
+
+		// node saved in the avl
+		_, found = l.avl.Search(l.pnode)
+		as.True(found)
 	}
 
-	l.Last()
-	l.AddBefore(It(45))
-	checkln(t, l.fnode, 1, nil, i(2))
-	checkln(t, l.pnode, 45, i(4), i(5))
-	checkln(t, l.lnode, 5, i(45), nil)
+	// next pointers.
+	node = l.lnode
+	for i := 0; i < len(values); i++ {
+		// as.Equal(node.item.(IntItem).value, values[i])
+		as.Equal(node.item.(IntItem).value, values[i])
+		node = node.prev
+	}
+	as.Nil(node)
+
+	// prev pointers.
+	node = l.fnode
+	for i := len(values) - 1; i >= 0; i-- {
+		as.Equal(node.item.(IntItem).value, values[i])
+		node = node.next
+	}
+	as.Nil(node)
+
+
+	// No duplicates items.
+	l = NewList(false)
+
+	for indx, value := range values {
+		// Test value inserted
+		inserted = l.AddBefore(It(value))
+		// 2 and 6 index with items duplicated.
+		as.Equalf(inserted, indx != 2 && indx != 6, "index %d", indx)
+
+		// node saved in the avl
+		_, found = l.avl.Search(l.pnode)
+		as.True(found)
+	}
+
+	checkln(t, l.fnode, 5, nil, i(4))
+	checkln(t, l.pnode, 5, nil, i(4))
+	checkln(t, l.lnode, 1, i(2), nil)
+
+	// next pointers.
+	node = l.lnode
+	for i := 0; i < len(ndvalues); i++ {
+		// as.Equal(node.item.(IntItem).value, values[i])
+		as.Equal(node.item.(IntItem).value, ndvalues[i])
+		node = node.prev
+	}
+	as.Nil(node)
+
+	// prev pointers.
+	node = l.fnode
+	for i := len(ndvalues) - 1; i >= 0; i-- {
+		as.Equal(node.item.(IntItem).value, ndvalues[i])
+		node = node.next
+	}
+	as.Nil(node)
 }
 
 func Test_List_Next_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 	values := []int{1, 2, 3, 4, 5}
 
 	// insert the value
@@ -153,7 +248,7 @@ func Test_List_Next_func(t *testing.T) {
 
 func Test_List_Prev_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 	values := []int{1, 2, 3, 4, 5}
 
 	// insert the value
@@ -181,7 +276,7 @@ func Test_List_Prev_func(t *testing.T) {
 
 func Test_List_First_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 
 	for i := 1; i <= 5; i++ {
 		l.AddAfter(It(i))
@@ -194,7 +289,7 @@ func Test_List_First_func(t *testing.T) {
 
 func Test_List_Last_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 
 	for i := 1; i <= 5; i++ {
 		l.AddBefore(It(i))
@@ -207,7 +302,7 @@ func Test_List_Last_func(t *testing.T) {
 
 func Test_List_Get_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 
 	// Get item in an empty list
 	v, exists := l.Get()
@@ -235,7 +330,7 @@ func Test_List_Delete_func(t *testing.T) {
 		deleted bool
 	)
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 
 	// test empty list
 	item, deleted = l.Delete()
@@ -258,8 +353,13 @@ func Test_List_Delete_func(t *testing.T) {
 		l.AddAfter(It(i))
 	}
 
+	// insert items duplicated
+	l.AddAfter(It(2))
+	l.AddAfter(It(4))
+	l.AddAfter(It(7))
+
 	maxLength := l.Length()
-	for i, a := range []int{3, 4, 6, 9, 1, 2, 7, 5, 10, 8} {
+	for i, a := range []int{3, 2, 4, 6, 9, 1, 2, 7, 5, 10, 8, 7, 4} {
 		_, found := l.Search(It(a))
 		as.True(found)
 
@@ -270,7 +370,7 @@ func Test_List_Delete_func(t *testing.T) {
 		as.Equal(l.Length(), maxLength - (i+1))
 
 		_, found = l.Search(It(a))
-		as.False(found)
+		as.Equal(found, i == 1 || i == 2 || i == 7)
 	}
 
 	as.Equal(l.Length(), 0)
@@ -285,7 +385,7 @@ func Test_List_Search_func(t *testing.T) {
 		found bool
 	)
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 
 	// First checks an empty list
 	item, found = l.Search(It(1))
@@ -338,7 +438,7 @@ func Test_List_Search_func(t *testing.T) {
 
 func Test_List_Length_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList()
+	l := NewList(true)
 
 	as.Equal(l.Length(), 0)
 

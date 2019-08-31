@@ -7,26 +7,48 @@ type listNode struct {
 	item  Item
 }
 
+func (ln listNode) Less(it Item) bool {
+	lnn, valid := it.(*listNode)
+	return valid && ln.item.Less(lnn.item)
+}
+
+func (ln listNode) Eq(it Item) bool {
+	lnn, valid := it.(*listNode)
+	return valid && ln.item.Eq(lnn.item)
+}
+
+func (ln listNode) String() string {
+	return ln.item.String()
+}
+
+
 // List is a doubly linked list type data structure. More info:
 // https://en.wikipedia.org/wiki/Doubly_linked_list
 type List struct {
-	fnode *listNode // pointer to the first node of the list.
-	lnode *listNode // ponter to the last node of the list
-	pnode *listNode // Internal pointer. It is moved using the struct functions.
-	length int      // List size
+	fnode	   *listNode // pointer to the first node of the list.
+	lnode	   *listNode // ponter to the last node of the list
+	pnode	   *listNode // Internal pointer. It is moved using the struct functions.
+	length     int       // List size
+	avl        tree	     // avl tree
 }
 
-
-// NewList returns an empty List.
-func NewList() List{
-	return List{}
+// NewList returns an empty List. The duplicated parameter is flag indicating if the list allows
+// items duplicated.
+func NewList(duplicated bool) List{
+	return List{avl: tree{rebalance: true, duplicated: duplicated}}
 }
 
 // AddAfter adds the item after the item pointed by internal pointer and moves the internal
-// pointer to the new item inserted.
-func (l *List) AddAfter(it Item) {
+// pointer to the new item inserted. The function returns true if the item was inserted or false
+// if the item is duplicated, and duplicated property is false.
+func (l *List) AddAfter(it Item) bool {
 	node := listNode{}
 	node.item = it
+
+	// Insert in tree
+	if !l.avl.Insert(&node) {
+		return false
+	}
 
 	if l.fnode == nil {
 		// List is empty. Add the first node
@@ -34,7 +56,7 @@ func (l *List) AddAfter(it Item) {
 		l.lnode = &node
 		l.pnode = &node
 		l.length++
-		return
+		return true
 	}
 
 	node.next = l.pnode.next
@@ -52,13 +74,20 @@ func (l *List) AddAfter(it Item) {
 	}
 
 	l.pnode =  &node
+	return true
 }
 
 // AddBefore adds the item before the item pointed by internal pointer and moves the internal
-// pointer to the new item inserted.
-func (l *List) AddBefore(it Item) {
+// pointer to the new item inserted. The function returns true if the item was inserted or false
+// if the item is duplicated, and duplicated property is false.
+func (l *List) AddBefore(it Item) bool{
 	node := listNode{}
 	node.item = it
+
+	// Insert in tree
+	if !l.avl.Insert(&node) {
+		return false
+	}
 
 	if l.fnode == nil {
 		// List is empty. Add the first node
@@ -66,7 +95,7 @@ func (l *List) AddBefore(it Item) {
 		l.lnode = &node
 		l.pnode = &node
 		l.length++
-		return
+		return true
 	}
 
 	node.next = l.pnode
@@ -84,6 +113,7 @@ func (l *List) AddBefore(it Item) {
 	}
 
 	l.pnode = &node
+	return true
 }
 
 // Next moves the internal pointer to the next item, if it possible. Returns true if the pointer
@@ -141,6 +171,9 @@ func (l *List) Delete() (Item, bool) {
 		return item, false
 	}
 
+	// Delete from tree
+	l.avl.Delete(l.pnode)
+
 	if l.length == 1 {
 		item = l.pnode.item
 
@@ -177,18 +210,10 @@ func (l *List) Delete() (Item, bool) {
 // Search searchs the item in the list. It returns the item found and a flag indicating if the item
 // exists in the list. This function also move the internal pointer to the item found.
 func (l *List) Search(it Item) (Item, bool) {
-	if (l.fnode == nil) {
-		return nil, false // list is empty.
-	}
-
-	var tmpn *listNode
-
-	for tmpn = l.fnode; tmpn != nil && !tmpn.item.Eq(it); tmpn = tmpn.next {
-	}
-
-	if tmpn != nil {
-		l.pnode = tmpn
-		return tmpn.item, true
+	node, found := l.avl.Search(&listNode{item:it})
+	if found {
+		l.pnode = node.(*listNode)
+		return l.pnode.item, true
 	}
 
 	return nil, false
