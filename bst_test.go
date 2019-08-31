@@ -11,4 +11,5 @@ func Test_NewBst_func(t *testing.T) {
 	assert.Nil(t, bst.root)
 	assert.Equal(t, bst.length, 0)
 	assert.False(t, bst.rebalance)
+	assert.False(t, bst.duplicated)
 }

@@ -11,4 +11,5 @@ func Test_NewAvl_func(t *testing.T) {
 	assert.Nil(t, avl.root)
 	assert.Equal(t, avl.length, 0)
 	assert.True(t, avl.rebalance)
+	assert.False(t, avl.duplicated)
 }

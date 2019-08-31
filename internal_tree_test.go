@@ -5,9 +5,6 @@ import (
 	"testing"
 )
 
-// utils function
-// ==============
-
 // i returns the address of the i param
 func i(i int) *int {
 	return &i
@@ -311,6 +308,26 @@ func Test_tree_Insert_func(t *testing.T) {
 			assert.Nil(t, trNode.rtree)
 		}
 	}
+
+	// allows duplicate items.
+	tr = tree{rebalance: true, duplicated: true}
+
+	for _, i := range []int{1, 2, 3, 1}{
+		inserted := tr.Insert(It(i))
+		assert.True(t, inserted)
+	}
+
+	checkVAndH(t, tr.root, 2, 2)
+	checkTree(t, tr.root, i(1), i(3))
+
+	checkVAndH(t, tr.root.ltree, 1, 1)
+	checkTree(t, tr.root.ltree, nil, i(1))
+
+	checkVAndH(t, tr.root.ltree.rtree, 1, 0)
+	checkTree(t, tr.root.ltree.rtree, nil, nil)
+
+	checkVAndH(t, tr.root.rtree, 3, 0)
+	checkTree(t, tr.root.rtree, nil, nil)
 }
 
 func Test_search_func(t *testing.T) {

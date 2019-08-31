@@ -69,30 +69,30 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 // tree is the struct where the tree info will store.
 type tree struct {
 	root      *treeNode // Tree root.
-	length	  int      // Number of tree nodes.
-	rebalance bool     // Rebalance the tree after modify it.
+	length	   int      // Number of tree nodes.
+	rebalance  bool     // Rebalance the tree after modify it.
+	duplicated bool	    // Flag indicating if allows duplicated items.
 }
 
 // insertItem searchs the correct position inside of the param tree node, inserts the
-// it item and rebalance the node, if rebalance flag is true. The item inserted must be unique. If
-// it is repeated then item doesn't add to the tree. The function returns the node rebalanced and
-// a flag indicating it item was added.
-func insertItem(node *treeNode, it Item, rebalanceIt bool) (*treeNode, bool) {
+// it item and rebalance the node, if rebalance flag is true. If duplicated paramater is false, the
+// item inserted must be unique. The function returns the node rebalanced and a flag indicating it
+// item was added. The item isn't added if the item isn't unique and duplicated flag is false.
+func insertItem(node *treeNode, it Item, rebalanceIt bool, duplicated bool) (*treeNode, bool) {
 	var inserted bool
 
 	if node == nil {
 		return &treeNode{nil, nil, 0, it}, true
 	}
 
-	if node.item.Eq(it) {
-		// tree doesn't allow repeated items.
+	if node.item.Eq(it) && !duplicated {
 		return node, false
 	}
 
 	if it.Less(node.item) {
-		node.ltree, inserted = insertItem(node.ltree, it, rebalanceIt)
+		node.ltree, inserted = insertItem(node.ltree, it, rebalanceIt, duplicated)
 	} else {
-		node.rtree, inserted = insertItem(node.rtree, it, rebalanceIt)
+		node.rtree, inserted = insertItem(node.rtree, it, rebalanceIt, duplicated)
 	}
 
 	if inserted && rebalanceIt{
@@ -131,7 +131,7 @@ func rebalance(node *treeNode) *treeNode {
 // false if the item already in the tree (duplicated item).
 func (tr *tree) Insert(it Item) bool {
 	var inserted bool
-	tr.root, inserted = insertItem(tr.root, it, tr.rebalance)
+	tr.root, inserted = insertItem(tr.root, it, tr.rebalance, tr.duplicated)
 
 	if inserted {
 		tr.length++
