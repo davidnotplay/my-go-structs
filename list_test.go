@@ -43,7 +43,6 @@ func Test_NewList_func(t *testing.T) {
 	as.True(l.avl.rebalance)
 }
 
-
 func Test_List_AddAfter_func(t *testing.T) {
 	var (
 		inserted bool
@@ -51,8 +50,8 @@ func Test_List_AddAfter_func(t *testing.T) {
 		node     *listNode
 		values   = []int{1, 2, 2, 3, 4, 5, 5}
 		ndvalues = []int{1, 2, 3, 4, 5}
-		as	 = assert.New(t)
-		l	 = NewList(true)
+		as       = assert.New(t)
+		l        = NewList(true)
 	)
 
 	for indx, value := range values {
@@ -68,8 +67,8 @@ func Test_List_AddAfter_func(t *testing.T) {
 
 		} else {
 			checkln(t, l.fnode, values[0], nil, i(values[1]))
-			checkln(t, l.lnode, values[indx], i(values[indx - 1]), nil)
-			checkln(t, l.pnode, values[indx], i(values[indx - 1]), nil)
+			checkln(t, l.lnode, values[indx], i(values[indx-1]), nil)
+			checkln(t, l.pnode, values[indx], i(values[indx-1]), nil)
 		}
 
 		// node saved in the avl
@@ -93,7 +92,6 @@ func Test_List_AddAfter_func(t *testing.T) {
 		node = node.prev
 	}
 	as.Nil(node)
-
 
 	// No duplicates items.
 	l = NewList(false)
@@ -138,8 +136,8 @@ func Test_List_AddBefore_func(t *testing.T) {
 		node     *listNode
 		values   = []int{1, 2, 2, 3, 4, 5, 5}
 		ndvalues = []int{1, 2, 3, 4, 5}
-		as	 = assert.New(t)
-		l	 = NewList(true)
+		as       = assert.New(t)
+		l        = NewList(true)
 	)
 
 	for indx, value := range values {
@@ -180,7 +178,6 @@ func Test_List_AddBefore_func(t *testing.T) {
 		node = node.next
 	}
 	as.Nil(node)
-
 
 	// No duplicates items.
 	l = NewList(false)
@@ -258,7 +255,7 @@ func Test_List_Prev_func(t *testing.T) {
 
 	l.pnode = l.lnode //move the pointer to the last item.
 
-	for i := l.length; i >= 1 ; i-- {
+	for i := l.length; i >= 1; i-- {
 		as.Equal(l.pnode.item.(IntItem).value, i)
 		if i > 1 {
 			as.True(l.Prev())
@@ -326,7 +323,7 @@ func Test_List_Get_func(t *testing.T) {
 
 func Test_List_Delete_func(t *testing.T) {
 	var (
-		item   Item
+		item    Item
 		deleted bool
 	)
 	as := assert.New(t)
@@ -348,7 +345,6 @@ func Test_List_Delete_func(t *testing.T) {
 	as.Nil(l.lnode)
 	as.Equal(l.length, 0)
 
-
 	for i := 1; i <= 10; i++ {
 		l.AddAfter(It(i))
 	}
@@ -367,7 +363,7 @@ func Test_List_Delete_func(t *testing.T) {
 		as.True(deleted)
 		as.Equal(vdeleted.(IntItem).value, a)
 		as.Equal(l.pnode, l.fnode)
-		as.Equal(l.Length(), maxLength - (i+1))
+		as.Equal(l.Length(), maxLength-(i+1))
 
 		_, found = l.Search(It(a))
 		as.Equal(found, i == 1 || i == 2 || i == 7)
@@ -395,7 +391,6 @@ func Test_List_Search_func(t *testing.T) {
 	for _, a := range []int{1, 2, 3, 4, 5, 6} {
 		l.AddAfter(It(a))
 	}
-
 
 	// Check the pointers are correct
 	checkln(t, l.fnode, 1, nil, i(2))
@@ -444,6 +439,6 @@ func Test_List_Length_func(t *testing.T) {
 
 	for i, a := range []int{1, 2, 3, 4, 5, 6} {
 		l.AddAfter(It(a))
-		as.Equal(l.Length(), i + 1)
+		as.Equal(l.Length(), i+1)
 	}
 }

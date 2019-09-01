@@ -38,7 +38,7 @@ func Test_Push_Stack_func(t *testing.T) {
 
 func Test_Pop_Stack_func(t *testing.T) {
 	var (
-		it Item
+		it     Item
 		popped bool
 	)
 	st := NewStack()
@@ -49,7 +49,7 @@ func Test_Pop_Stack_func(t *testing.T) {
 	assert.False(t, popped)
 
 	// insert items
-	for a := 1; a<=5; a++ {
+	for a := 1; a <= 5; a++ {
 		st.Push(It(a))
 	}
 

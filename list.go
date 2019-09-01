@@ -2,9 +2,9 @@ package mygostructs
 
 // listNode is the node for the List struct.
 type listNode struct {
-	prev  *listNode
-	next  *listNode
-	item  Item
+	prev *listNode
+	next *listNode
+	item Item
 }
 
 func (ln listNode) Less(it Item) bool {
@@ -21,20 +21,19 @@ func (ln listNode) String() string {
 	return ln.item.String()
 }
 
-
 // List is a doubly linked list type data structure. More info:
 // https://en.wikipedia.org/wiki/Doubly_linked_list
 type List struct {
-	fnode	   *listNode // pointer to the first node of the list.
-	lnode	   *listNode // ponter to the last node of the list
-	pnode	   *listNode // Internal pointer. It is moved using the struct functions.
-	length     int       // List size
-	avl        tree	     // avl tree
+	fnode  *listNode // pointer to the first node of the list.
+	lnode  *listNode // ponter to the last node of the list
+	pnode  *listNode // Internal pointer. It is moved using the struct functions.
+	length int       // List size
+	avl    tree      // avl tree
 }
 
 // NewList returns an empty List. The duplicated parameter is flag indicating if the list allows
 // items duplicated.
-func NewList(duplicated bool) List{
+func NewList(duplicated bool) List {
 	return List{avl: tree{rebalance: true, duplicated: duplicated}}
 }
 
@@ -73,14 +72,14 @@ func (l *List) AddAfter(it Item) bool {
 		l.lnode = &node
 	}
 
-	l.pnode =  &node
+	l.pnode = &node
 	return true
 }
 
 // AddBefore adds the item before the item pointed by internal pointer and moves the internal
 // pointer to the new item inserted. The function returns true if the item was inserted or false
 // if the item is duplicated, and duplicated property is false.
-func (l *List) AddBefore(it Item) bool{
+func (l *List) AddBefore(it Item) bool {
 	node := listNode{}
 	node.item = it
 
@@ -210,7 +209,7 @@ func (l *List) Delete() (Item, bool) {
 // Search searchs the item in the list. It returns the item found and a flag indicating if the item
 // exists in the list. This function also move the internal pointer to the item found.
 func (l *List) Search(it Item) (Item, bool) {
-	node, found := l.avl.Search(&listNode{item:it})
+	node, found := l.avl.Search(&listNode{item: it})
 	if found {
 		l.pnode = node.(*listNode)
 		return l.pnode.item, true
@@ -220,6 +219,6 @@ func (l *List) Search(it Item) (Item, bool) {
 }
 
 // Length returns the number of items in the list.
-func (l *List)Length() int {
+func (l *List) Length() int {
 	return l.length
 }

@@ -72,5 +72,3 @@ func Test_It_func(t *testing.T) {
 		assert.Equal(t, it.value, i)
 	}
 }
-
-

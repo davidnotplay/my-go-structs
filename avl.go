@@ -7,6 +7,6 @@ type Avl struct {
 }
 
 // NewAvl creates an empty AVL tree.
-func NewAvl() Avl{
+func NewAvl() Avl {
 	return Avl{tree{rebalance: true}}
 }

@@ -68,10 +68,10 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 
 // tree is the struct where the tree info will store.
 type tree struct {
-	root      *treeNode // Tree root.
-	length	   int      // Number of tree nodes.
-	rebalance  bool     // Rebalance the tree after modify it.
-	duplicated bool	    // Flag indicating if allows duplicated items.
+	root       *treeNode // Tree root.
+	length     int       // Number of tree nodes.
+	rebalance  bool      // Rebalance the tree after modify it.
+	duplicated bool      // Flag indicating if allows duplicated items.
 }
 
 // insertItem searchs the correct position inside of the param tree node, inserts the
@@ -95,7 +95,7 @@ func insertItem(node *treeNode, it Item, rebalanceIt bool, duplicated bool) (*tr
 		node.rtree, inserted = insertItem(node.rtree, it, rebalanceIt, duplicated)
 	}
 
-	if inserted && rebalanceIt{
+	if inserted && rebalanceIt {
 		node = rebalance(node)
 	}
 
@@ -179,7 +179,7 @@ func (tr *tree) Search(it Item) (Item, bool) {
 // the item existed in the tree.
 func deleteNode(node *treeNode, it Item, rebalanceIt bool) (*treeNode, Item, bool) {
 	var (
-		found	  bool
+		found     bool
 		itDeleted Item
 	)
 

@@ -15,7 +15,7 @@ func ExampleAvl() {
 	if item, found := avl.Search(It(3)); found {
 		fmt.Printf("Item %s found", item.String())
 	}
-	/*
+	/**
 	Output:
 
 		Item 3 found
@@ -46,7 +46,7 @@ func ExampleBst() {
 	if item, found := bst.Search(It(3)); found {
 		fmt.Printf("Item %s found", item.String())
 	}
-	/*
+	/**
 	Output:
 
 		Item 3 found
@@ -72,7 +72,6 @@ func ExampleList() {
 	for _, i := range []int{1, 2, 3, 4, 5} {
 		list.AddAfter(It(i))
 	}
-
 
 	// Iterate the List
 
@@ -119,7 +118,7 @@ func ExampleList() {
 
 	// Delete the item 4
 	if _, found := list.Search(It(4)); found {
-		itemDeleted, _ := list.Delete();
+		itemDeleted, _ := list.Delete()
 		println("Item %s deleted", itemDeleted.String())
 	}
 
@@ -138,7 +137,6 @@ func ExampleQueue() {
 	for i := 1; i <= 5; i++ {
 		queue.Enqueue(It(5))
 	}
-
 
 	// Get and remove the first item of the queue.
 	for item, found := queue.Dequeue(); found; item, found = queue.Dequeue() {
@@ -163,7 +161,6 @@ func ExampleStack() {
 	for i := 1; i <= 5; i++ {
 		stack.Push(It(5))
 	}
-
 
 	// Get and remove the first item of the stack.
 	for item, found := stack.Pop(); found; item, found = stack.Pop() {

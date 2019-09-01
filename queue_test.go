@@ -42,7 +42,7 @@ func Test_Enqueue_Queue_func(t *testing.T) {
 
 func Test_Dequeue_Queue_func(t *testing.T) {
 	var (
-		it	 Item
+		it       Item
 		dequeued bool
 	)
 	qu := NewQueue()

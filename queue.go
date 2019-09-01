@@ -15,7 +15,7 @@ type Queue struct {
 }
 
 // NewQueue returns a an empty queue.
-func NewQueue() Queue{
+func NewQueue() Queue {
 	return Queue{}
 }
 

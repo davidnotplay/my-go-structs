@@ -34,7 +34,7 @@ func getAllItems(node *treeNode) (items map[int]*Item) {
 }
 
 func createTreeAvl(intItems ...int) (tree, map[int]Item) {
-	tree := tree{rebalance:true}
+	tree := tree{rebalance: true}
 
 	items := map[int]Item{}
 
@@ -47,7 +47,7 @@ func createTreeAvl(intItems ...int) (tree, map[int]Item) {
 }
 
 func createTreeBst(intItems ...int) (tree, map[int]Item) {
-	tree := tree{rebalance:false}
+	tree := tree{rebalance: false}
 
 	items := map[int]Item{}
 
@@ -58,7 +58,6 @@ func createTreeBst(intItems ...int) (tree, map[int]Item) {
 
 	return tree, items
 }
-
 
 // checkVAndH checks the v value and the h height of the `node` tree node.
 func checkVAndH(t *testing.T, node *treeNode, v, h int) {
@@ -213,7 +212,7 @@ func Test_treeNode_rotateLeftRight_func(t *testing.T) {
 }
 
 func Test_tree_Insert_func(t *testing.T) {
-	tr := tree{rebalance:true}
+	tr := tree{rebalance: true}
 
 	l := func(l int) {
 		assert.Equal(t, tr.Length(), l)
@@ -270,7 +269,7 @@ func Test_tree_Insert_func(t *testing.T) {
 	l(6)
 
 	// New tree to check the double rotations. Left right
-	tr = tree{rebalance:true}
+	tr = tree{rebalance: true}
 	in(10)
 	in(5)
 	in(7)
@@ -300,7 +299,7 @@ func Test_tree_Insert_func(t *testing.T) {
 
 	//insert without rebalancer
 	tr, _ = createTreeBst(1, 2, 3, 4, 5, 6)
-	for trNode, i := tr.root, 1; i <= tr.length; trNode, i = trNode.rtree, i + 1 {
+	for trNode, i := tr.root, 1; i <= tr.length; trNode, i = trNode.rtree, i+1 {
 		assert.Equal(t, trNode.item.(IntItem).value, i)
 		assert.Nil(t, trNode.ltree)
 
@@ -312,7 +311,7 @@ func Test_tree_Insert_func(t *testing.T) {
 	// allows duplicate items.
 	tr = tree{rebalance: true, duplicated: true}
 
-	for _, i := range []int{1, 2, 3, 1}{
+	for _, i := range []int{1, 2, 3, 1} {
 		inserted := tr.Insert(It(i))
 		assert.True(t, inserted)
 	}
@@ -332,7 +331,7 @@ func Test_tree_Insert_func(t *testing.T) {
 
 func Test_search_func(t *testing.T) {
 	as := assert.New(t)
-	tr := tree{rebalance:true}
+	tr := tree{rebalance: true}
 
 	v1 := It(1)
 	v2 := It(2)
@@ -359,7 +358,7 @@ func Test_search_func(t *testing.T) {
 
 func Test_tree_Search_func(t *testing.T) {
 	as := assert.New(t)
-	tr := tree{rebalance:true}
+	tr := tree{rebalance: true}
 
 	items := map[int]Item{
 		1:  It(1),
@@ -496,7 +495,7 @@ func Test_tree_Delete_func(t *testing.T) {
 	for i := 1; i <= 6; i++ {
 		tr.Delete(It(i))
 
-		for trNode, j := tr.root, i + 1; j <= 6; trNode, j = trNode.rtree, j + 1{
+		for trNode, j := tr.root, i+1; j <= 6; trNode, j = trNode.rtree, j+1 {
 			assert.Equal(t, trNode.item.(IntItem).value, j)
 			assert.Nil(t, trNode.ltree)
 

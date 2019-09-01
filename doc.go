@@ -7,4 +7,4 @@
 //  - Stack
 //  - Binary search tree
 //  - AVL tree
-package	mygostructs
+package mygostructs
