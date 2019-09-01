@@ -170,6 +170,7 @@ Output:
 ```
 
 ### [Avl](https://en.wikipedia.org/wiki/AVL_tree)
+Basic usage:
 ```go
 // create new avl
 avl := NewAvl()
@@ -202,9 +203,13 @@ Output:
 
 Item iterface
 -------------
-Any item you want use in the structs must implements the `Item` interface. 
-Example of an item implementation to store numbers in the structs:
+Item interface is the type used as item in all structs. Any item you want use in the structs must 
+implements the `Item` interface. 
 ```go
+/* 
+	Example of an item implementation to store numbers in the structs:
+*/
+
 // IntItem structs is an implementation of the Item interface specific for storing int numbers.
 type IntItem struct {
 	value int // number stored
