@@ -2,49 +2,50 @@ package mygostructs
 
 import "testing"
 
-func insertItems(num int) tree {
-	tree := tree{}
+// List benchmarks
+// ---------------
+func listInsertItem(num int) *List {
+	l :=NewList(true)
 
-	for i := 0; i < num; i++ {
-		tree.Insert(It(i))
+	for i := 1; i <= num; i++ {
+		l.AddAfter(It(i))
 	}
 
-	return tree
+	return &l
 }
 
-func insertItemsBenchmark(num int, b *testing.B) {
+func searchInListNElem(num int, b *testing.B) *List {
+	println("prev")
+	list := listInsertItem(num)
+	println("finish")
+
 	for i := 0; i < b.N; i++ {
-		insertItems(num)
+		list.Search(It(i))
 	}
+
+	return list
 }
 
-func Benchmark_AVLInsert1(b *testing.B) {
-	insertItemsBenchmark(1, b)
-}
+// func Benchmark_ListSearch100(b *testing.B) {
+// 	searchInListNElem(100, b)
+// }
 
-func Benchmark_AVLInsert10(b *testing.B) {
-	insertItemsBenchmark(10, b)
-}
+// func Benchmark_ListSearch1000(b *testing.B) {
+// 	searchInListNElem(1000, b)
+// }
 
-func Benchmark_AVLInsert100(b *testing.B) {
-	insertItemsBenchmark(100, b)
-}
+// func Benchmark_ListSearch10000(b *testing.B) {
+// 	searchInListNElem(10000, b)
+// }
 
-func Benchmark_AVLInsert1000(b *testing.B) {
-	insertItemsBenchmark(1000, b)
-}
-func Benchmark_AVLInsert10000(b *testing.B) {
-	insertItemsBenchmark(10000, b)
-}
+// func Benchmark_ListSearch100000(b *testing.B) {
+// 	searchInListNElem(100000, b)
+// }
 
-func Benchmark_AVLInsert100000(b *testing.B) {
-	insertItemsBenchmark(100000, b)
-}
+// func Benchmark_ListSearch1000000(b *testing.B) {
+// 	searchInListNElem(1000000, b)
+// }
 
-func Benchmark_AVLInsert1000000(b *testing.B) {
-	insertItemsBenchmark(1000000, b)
-}
-
-func Benchmark_AVLInsert10000000(b *testing.B) {
-	insertItemsBenchmark(1000000, b)
+func Benchmark_ListSearch10000000(b *testing.B) {
+	searchInListNElem(10000000, b)
 }

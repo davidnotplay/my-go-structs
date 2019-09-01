@@ -65,7 +65,8 @@ func ExampleBst() {
 
 // Basic usage
 func ExampleList() {
-	list := NewList(true) // Create en empty List
+	// Create en empty List, that accepts duplicated items.
+	list := NewList(true)
 
 	// Insert in the list, the numbers: 1, 2, 3, 4, 5
 	for _, i := range []int{1, 2, 3, 4, 5} {
