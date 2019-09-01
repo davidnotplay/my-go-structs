@@ -25,14 +25,14 @@ type IntItem struct {
 // The function also returns false if it paramater isn't type IntItem.
 func (iit IntItem) Less(it Item) bool {
 	iitp, valid := it.(IntItem)
-	return valid &&  iit.value < iitp.value
+	return valid && iit.value < iitp.value
 }
 
 // Eq checks if the iit item is equal to the item of the paramater.
 // The function also returns false if it paramater isn't type IntItem.
 func (iit IntItem) Eq(it Item) bool {
 	iitp, valid := it.(IntItem)
-	return valid &&  iit.value == iitp.value
+	return valid && iit.value == iitp.value
 }
 
 // String returns the number as string.
@@ -46,6 +46,6 @@ func (iit IntItem) Value() int {
 }
 
 // It creates an IntItem object with the number of the param.
-func It(num int) IntItem{
+func It(num int) IntItem {
 	return IntItem{num}
 }

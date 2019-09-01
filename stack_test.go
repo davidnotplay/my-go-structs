@@ -5,13 +5,21 @@ import (
 	"testing"
 )
 
+func checkStackNode(t *testing.T, node *stackNode, item int , next *int) {
+	assert.Equal(t, node.item.(IntItem).value, item)
+
+	if next != nil {
+		assert.Equal(t, node.prev.item.(IntItem).value, *next)
+	} else {
+		assert.Nil(t, node.prev)
+	}
+}
+
+
 func Test_NewStack_func(t *testing.T) {
 	st := NewStack()
-
-	assert.Nil(t, st.list.fnode)
-	assert.Nil(t, st.list.pnode)
-	assert.Nil(t, st.list.lnode)
-	assert.Equal(t, st.list.length, 0)
+	assert.Nil(t, st.top)
+	assert.Equal(t, st.length, 0)
 }
 
 func Test_Push_Stack_func(t *testing.T) {
@@ -19,18 +27,12 @@ func Test_Push_Stack_func(t *testing.T) {
 
 	// insert one item
 	st.Push(It(1))
-	checkln(t, st.list.fnode, 1, nil, nil)
-	checkln(t, st.list.pnode, 1, nil, nil)
-	checkln(t, st.list.lnode, 1, nil, nil)
-	assert.Equal(t, st.list.length, 1)
+	checkStackNode(t, st.top, 1, nil)
 
 	// insert more items
 	for _, a := range []int{2, 3, 4, 5, 6} {
 		st.Push(It(a))
-		checkln(t, st.list.fnode, 1, nil, i(2))
-		checkln(t, st.list.pnode, a, i(a-1), nil)
-		checkln(t, st.list.lnode, a, i(a-1), nil)
-		assert.Equal(t, st.list.length, a)
+		checkStackNode(t, st.top, a, i(a-1))
 	}
 }
 
@@ -52,22 +54,15 @@ func Test_Pop_Stack_func(t *testing.T) {
 	}
 
 	for _, a := range []int{5, 4, 3, 2, 1} {
-		// first check pointers
-		assert.Equal(t, st.list.pnode, st.list.lnode)
-
 		it, popped = st.Pop()
 		assert.True(t, popped)
 		assert.Equal(t, it.(IntItem).value, a)
-
 	}
 
 	it, popped = st.Pop()
 	assert.Nil(t, it)
 	assert.False(t, popped)
-
-	assert.Nil(t, st.list.fnode)
-	assert.Nil(t, st.list.pnode)
-	assert.Nil(t, st.list.lnode)
+	assert.Nil(t, st.top)
 }
 
 func Test_Length_Stack_func(t *testing.T) {
