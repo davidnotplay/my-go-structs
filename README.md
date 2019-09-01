@@ -203,8 +203,10 @@ Output:
 
 Item iterface
 -------------
-Item interface is the type used as item in all structs. Any item you want use in the structs must 
-implements the `Item` interface. 
+The `Item` interface is the type used as item in all structs. Any item you want use in the structs
+must implements the this interface. 
+
+Example:
 ```go
 /* 
 	Example of an item implementation to store numbers in the structs:
