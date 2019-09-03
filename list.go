@@ -149,6 +149,30 @@ func (l *List) Last() {
 	l.pnode = l.lnode
 }
 
+// Advance advances the internal pointer one position and returns the item pointed and the true
+// value. If it isn't possible advance more, because the internal pointer at end, the function
+// returns nil and false then.
+func (l *List) Advance() (Item, bool) {
+	if l.pnode.next != nil {
+		defer l.Next()
+		return l.pnode.next.item, true
+	}
+
+	return nil, false
+}
+
+// Rewind rewinds the internal pointer one position and returns the item pointed and the true
+// value. If it can not rewind, because the internal pointer is in the begin, the function returns
+// nil and false then.
+func (l *List) Rewind() (Item, bool) {
+	if l.pnode.prev != nil {
+		defer l.Prev()
+		return l.pnode.prev.item, true
+	}
+
+	return nil, false
+}
+
 // Get gets the item pointed by the internal pointer. Returns the item and a boolean flag with
 // the true value if the item was getted or false if the list is empty.
 func (l *List) Get() (Item, bool) {
@@ -158,6 +182,18 @@ func (l *List) Get() (Item, bool) {
 
 	return nil, false
 
+}
+
+// Replace replaces the item pointed by the internal pointer by the item of parameter.
+// Returns true if the function has replaced the item. False if it is impossible: The list is
+// empty.
+func (l *List)Replace(it Item) bool {
+	if l.Length() == 0 {
+		return false //list empty
+	}
+
+	l.pnode.item = it
+	return true
 }
 
 // Delete deletes the item pointed by the internal pointer and move the internal pointer to the
@@ -203,7 +239,12 @@ func (l *List) Delete() (Item, bool) {
 
 	l.First()
 	return item, true
+}
 
+// Clear clears the list.
+func (l *List) Clear() {
+	duplicated := l.avl.duplicated
+	*l = NewList(duplicated)
 }
 
 // Search searchs the item in the list. It returns the item found and a flag indicating if the item
@@ -221,4 +262,59 @@ func (l *List) Search(it Item) (Item, bool) {
 // Length returns the number of items in the list.
 func (l *List) Length() int {
 	return l.length
+}
+
+// ForEach excutes the function of the parameter in all elements of the list, consecutively and
+// from the begining.
+func (l *List) ForEach(f func(Item)) {
+	var item Item
+
+	if l.Length() == 0 {
+		// empty list
+		return
+	}
+
+	oldpnode := l.pnode
+	l.First()
+	for cont := true; cont; cont = l.Next() {
+		item, _ = l.Get()
+		f(item)
+	}
+
+	l.pnode = oldpnode
+}
+
+// Map creates a new list using the results of execute parser function in all elements of the list.
+func (l *List)Map(parser func(Item)Item) *List {
+	var (
+		newList List
+		forFunc func(Item)
+	)
+
+	newList = NewList(l.avl.duplicated)
+	forFunc = func(it Item) {
+		newList.AddAfter(parser(it))
+	}
+
+	l.ForEach(forFunc)
+	return &newList
+}
+
+// Filter create a new list with all elements that pass the test implemented in the filter
+// function.
+func (l *List)Filter(filter func(Item)bool) *List {
+	var (
+		newList List
+		forFunc func(Item)
+	)
+
+	newList = NewList(l.avl.duplicated)
+	forFunc = func(it Item) {
+		if (filter(it)) {
+			newList.AddAfter(it)
+		}
+	}
+
+	l.ForEach(forFunc)
+	return &newList
 }

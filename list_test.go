@@ -297,6 +297,38 @@ func Test_List_Last_func(t *testing.T) {
 	as.Equal(l.pnode, l.lnode)
 }
 
+func Test_List_Advance_func(t *testing.T) {
+	as := assert.New(t)
+	l := NewList(true)
+
+	for i := 1; i <= 5; i++ {
+		l.AddAfter(It(i))
+	}
+
+	l.First()
+	i := 1
+	for item, cont := l.Get(); cont; item, cont = l.Advance() {
+		as.Equal(item.(IntItem).value, i)
+		i++
+	}
+}
+
+func Test_List_Rewind_func(t *testing.T) {
+	as := assert.New(t)
+	l := NewList(true)
+
+	for i := 1; i <= 5; i++ {
+		l.AddAfter(It(i))
+	}
+
+	l.Last()
+	i := 5
+	for item, cont := l.Get(); cont; item, cont = l.Rewind() {
+		as.Equal(item.(IntItem).value, i)
+		i--
+	}
+}
+
 func Test_List_Get_func(t *testing.T) {
 	as := assert.New(t)
 	l := NewList(true)
@@ -319,6 +351,30 @@ func Test_List_Get_func(t *testing.T) {
 		as.Equal(v.(IntItem).value, i)
 		l.Next()
 	}
+}
+
+func Test_List_Replace_func(t *testing.T) {
+	list := NewList(true)
+
+	for i := 1; i <= 5; i++ {
+		list.AddAfter(It(i))
+	}
+
+	// replace element.
+	list.First()
+	for item, cont := list.Get(); cont; item, cont = list.Advance() {
+		num := item.(IntItem).value
+		list.Replace(It(num + 10))
+	}
+
+	list.First()
+	i := 11
+	for item, cont := list.Get(); cont; item, cont = list.Advance() {
+		assert.Equal(t, item.(IntItem).value, i)
+		i++
+	}
+
+	assert.Equal(t, i, 16)
 }
 
 func Test_List_Delete_func(t *testing.T) {
@@ -373,6 +429,41 @@ func Test_List_Delete_func(t *testing.T) {
 	as.Nil(l.fnode)
 	as.Nil(l.pnode)
 	as.Nil(l.lnode)
+}
+
+
+func Test_List_Clear_func(t *testing.T) {
+	as := assert.New(t)
+
+	for _, duplicated := range []bool{true, false} {
+		l := NewList(duplicated)
+		as.Nil(l.fnode)
+		as.Nil(l.pnode)
+		as.Nil(l.lnode)
+		as.Equal(l.length, 0)
+
+		as.Equal(l.avl.duplicated, duplicated)
+		as.Equal(l.avl.length, 0)
+		as.True(l.avl.rebalance)
+		as.Nil(l.avl.root)
+
+		for i := 1; i <= 10; i++ {
+			l.AddAfter(It(i))
+		}
+
+		// clear the list
+		l.Clear()
+
+		as.Nil(l.fnode)
+		as.Nil(l.pnode)
+		as.Nil(l.lnode)
+		as.Equal(l.length, 0)
+
+		as.Equal(l.avl.duplicated, duplicated)
+		as.Equal(l.avl.length, 0)
+		as.True(l.avl.rebalance)
+		as.Nil(l.avl.root)
+	}
 }
 
 func Test_List_Search_func(t *testing.T) {
@@ -440,5 +531,92 @@ func Test_List_Length_func(t *testing.T) {
 	for i, a := range []int{1, 2, 3, 4, 5, 6} {
 		l.AddAfter(It(a))
 		as.Equal(l.Length(), i+1)
+	}
+}
+
+func Test_List_ForEach_func(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+
+	for i := 1; i <= 5; i++ {
+		list.AddAfter(It(i))
+	}
+
+	// Move the internal pointer.
+	list.First()
+	list.Next()
+	list.Next()
+	itPrev, _ := list.Get()
+
+	i := 1
+	list.ForEach(func (it Item) {
+		as.Equal(it.(IntItem).value, i)
+		i++
+	})
+	as.Equal(i, 6)
+
+	// test if the internal pointer is pointed the same node that before of execute the
+	// ForEach function.
+	itNext, _ := list.Get()
+	as.Equal(itNext, itPrev)
+	as.Equal(itNext.(IntItem).value, 3)
+}
+
+func Test_List_Map_func(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+
+	for i := 1; i <= 5; i++ {
+		list.AddAfter(It(i))
+	}
+
+	// Move the internal pointer.
+	list.First()
+	list.Next()
+	list.Next()
+	itPrev, _ := list.Get()
+
+	pow2List := list.Map(func (it Item) Item {
+		num := it.(IntItem).value
+		return It(num * num)
+	})
+
+	as.Equal(pow2List.Length(), 5)
+	pow2List.First()
+	for _, i := range []int{1, 4, 9, 16, 25} {
+		it, _ := pow2List.Get()
+		as.Equal(it.(IntItem).value, i)
+		pow2List.Next()
+	}
+
+	as.False(pow2List.Next())
+
+	// test if the internal pointer is pointed the same node that before of execute the
+	// ForEach function.
+	itNext, _ := list.Get()
+	as.Equal(itNext, itPrev)
+	as.Equal(itNext.(IntItem).value, 3)
+}
+
+
+func Test_List_Filter_func(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+
+	filter := func (it Item) bool {
+		return it.(IntItem).value % 2 == 1
+	}
+
+	for i := 1; i <= 10; i++ {
+		list.AddAfter(It(i))
+	}
+
+	newList := list.Filter(filter)
+
+	i := 0;
+	newList.First()
+	for it, cont := newList.Get(); cont; it, cont = newList.Advance() {
+		as.Equal(it.(IntItem).value, i * 2 + 1)
+		i++
 	}
 }
