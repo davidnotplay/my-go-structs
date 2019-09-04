@@ -33,8 +33,8 @@ func getAllItems(node *treeNode) (items map[int]*Item) {
 	return
 }
 
-func createTreeAvl(intItems ...int) (tree, map[int]Item) {
-	tree := tree{rebalance: true}
+func createTreeAvl(intItems ...int) (Tree, map[int]Item) {
+	tree := Tree{rebalance: true}
 
 	items := map[int]Item{}
 
@@ -46,8 +46,8 @@ func createTreeAvl(intItems ...int) (tree, map[int]Item) {
 	return tree, items
 }
 
-func createTreeBst(intItems ...int) (tree, map[int]Item) {
-	tree := tree{rebalance: false}
+func createTreeBst(intItems ...int) (Tree, map[int]Item) {
+	tree := Tree{rebalance: false}
 
 	items := map[int]Item{}
 
@@ -212,7 +212,7 @@ func Test_treeNode_rotateLeftRight_func(t *testing.T) {
 }
 
 func Test_tree_Insert_func(t *testing.T) {
-	tr := tree{rebalance: true}
+	tr := Tree{rebalance: true}
 
 	l := func(l int) {
 		assert.Equal(t, tr.Length(), l)
@@ -269,7 +269,7 @@ func Test_tree_Insert_func(t *testing.T) {
 	l(6)
 
 	// New tree to check the double rotations. Left right
-	tr = tree{rebalance: true}
+	tr = Tree{rebalance: true}
 	in(10)
 	in(5)
 	in(7)
@@ -309,7 +309,7 @@ func Test_tree_Insert_func(t *testing.T) {
 	}
 
 	// allows duplicate items.
-	tr = tree{rebalance: true, duplicated: true}
+	tr = Tree{rebalance: true, duplicated: true}
 
 	for _, i := range []int{1, 2, 3, 1} {
 		inserted := tr.Insert(It(i))
@@ -331,7 +331,7 @@ func Test_tree_Insert_func(t *testing.T) {
 
 func Test_search_func(t *testing.T) {
 	as := assert.New(t)
-	tr := tree{rebalance: true}
+	tr := Tree{rebalance: true}
 
 	v1 := It(1)
 	v2 := It(2)
@@ -358,7 +358,7 @@ func Test_search_func(t *testing.T) {
 
 func Test_tree_Search_func(t *testing.T) {
 	as := assert.New(t)
-	tr := tree{rebalance: true}
+	tr := Tree{rebalance: true}
 
 	items := map[int]Item{
 		1:  It(1),

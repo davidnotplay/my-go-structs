@@ -66,8 +66,8 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 	return node.rotateRight()
 }
 
-// tree is the struct where the tree info will store.
-type tree struct {
+// Tree is the struct where the tree info will store.
+type Tree struct {
 	root       *treeNode // Tree root.
 	length     int       // Number of tree nodes.
 	rebalance  bool      // Rebalance the tree after modify it.
@@ -129,7 +129,7 @@ func rebalance(node *treeNode) *treeNode {
 
 // Insert inserts the item in the tree. The function resturns true, if the item was inserted or
 // false if the item already in the tree (duplicated item).
-func (tr *tree) Insert(it Item) bool {
+func (tr *Tree) Insert(it Item) bool {
 	var inserted bool
 	tr.root, inserted = insertItem(tr.root, it, tr.rebalance, tr.duplicated)
 
@@ -141,7 +141,7 @@ func (tr *tree) Insert(it Item) bool {
 }
 
 // Length returns the number of items in the tree.
-func (tr *tree) Length() int {
+func (tr *Tree) Length() int {
 	return tr.length
 }
 
@@ -166,7 +166,7 @@ func search(node *treeNode, it Item) (*treeNode, bool) {
 
 // Search searchs the item in the tree. It returns the item found and a flag indicating if
 // the item exists in the tree tree.
-func (tr *tree) Search(it Item) (Item, bool) {
+func (tr *Tree) Search(it Item) (Item, bool) {
 	if node, found := search(tr.root, it); found {
 		return node.item, true
 	}
@@ -221,7 +221,7 @@ func deleteNode(node *treeNode, it Item, rebalanceIt bool) (*treeNode, Item, boo
 
 // Delete deletes the item of the tree. Returns the item deleted and a flag indicating if the item
 // existed in the tree.
-func (tr *tree) Delete(it Item) (itd Item, deleted bool) {
+func (tr *Tree) Delete(it Item) (itd Item, deleted bool) {
 	tr.root, itd, deleted = deleteNode(tr.root, it, tr.rebalance)
 	if deleted {
 		tr.length--

@@ -28,13 +28,13 @@ type List struct {
 	lnode  *listNode // ponter to the last node of the list
 	pnode  *listNode // Internal pointer. It is moved using the struct functions.
 	length int       // List size
-	avl    tree      // avl tree
+	avl    Tree      // avl tree
 }
 
 // NewList returns an empty List. The duplicated parameter is flag indicating if the list allows
 // items duplicated.
 func NewList(duplicated bool) List {
-	return List{avl: tree{rebalance: true, duplicated: duplicated}}
+	return List{avl: Tree{rebalance: true, duplicated: duplicated}}
 }
 
 // AddAfter adds the item after the item pointed by internal pointer and moves the internal
