@@ -127,7 +127,7 @@ func rebalance(node *treeNode) *treeNode {
 	return node
 }
 
-// Insert inserts the item in the tree. The function resturns true, if the item was inserted or
+// Insert inserts the item in the tree. The function returns true, if the item was inserted or
 // false if the item already in the tree (duplicated item).
 func (tr *Tree) Insert(it Item) bool {
 	var inserted bool
@@ -227,4 +227,10 @@ func (tr *Tree) Delete(it Item) (itd Item, deleted bool) {
 		tr.length--
 	}
 	return
+}
+
+// Clear clears the tree.
+func (tr *Tree) Clear() {
+	tr.root = nil
+	tr.length = 0
 }

@@ -211,7 +211,7 @@ func Test_treeNode_rotateLeftRight_func(t *testing.T) {
 	checkTree(t, tree1, nil, nil)
 }
 
-func Test_tree_Insert_func(t *testing.T) {
+func Test_Tree_Insert_func(t *testing.T) {
 	tr := Tree{rebalance: true}
 
 	l := func(l int) {
@@ -356,7 +356,7 @@ func Test_search_func(t *testing.T) {
 	as.Nil(node)
 }
 
-func Test_tree_Search_func(t *testing.T) {
+func Test_Tree_Search_func(t *testing.T) {
 	as := assert.New(t)
 	tr := Tree{rebalance: true}
 
@@ -388,7 +388,7 @@ func Test_tree_Search_func(t *testing.T) {
 	}
 }
 
-func Test_tree_Delete_func(t *testing.T) {
+func Test_Tree_Delete_func(t *testing.T) {
 	as := assert.New(t)
 
 	// Delete leaf
@@ -503,5 +503,36 @@ func Test_tree_Delete_func(t *testing.T) {
 				assert.Nil(t, trNode.rtree)
 			}
 		}
+	}
+}
+
+func Test_Tree_Clear_func(t *testing.T) {
+	params := []struct {
+		rebalance, duplicated bool
+	}{
+		{false, false},
+		{false, true},
+		{true, false},
+		{true, true},
+	}
+
+	for _, param := range params {
+		tr := Tree{rebalance: param.rebalance, duplicated: param.duplicated}
+
+		for i := 1; i <= 10; i++ {
+			tr.Insert(It(i))
+		}
+
+		assert.NotNil(t, tr.root)
+		assert.Equal(t, tr.length, 10)
+		assert.Equal(t, tr.rebalance, param.rebalance)
+		assert.Equal(t, tr.duplicated, param.duplicated)
+
+		// Clear
+		tr.Clear()
+		assert.Nil(t, tr.root)
+		assert.Equal(t, tr.length, 0)
+		assert.Equal(t, tr.rebalance, param.rebalance)
+		assert.Equal(t, tr.duplicated, param.duplicated)
 	}
 }
