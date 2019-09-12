@@ -40,7 +40,22 @@ func (st *Stack) Pop() (Item, bool) {
 	return node.item, true
 }
 
+// Top reads the top item in the stack. The second value returned is false if the stack is
+// empty.
+func (st *Stack) Top() (Item, bool) {
+	if st.Length() > 0 {
+		return st.top.item, true
+	}
+
+	return nil, false
+}
+
 // Length returns the number of items in the stack.
 func (st *Stack) Length() int {
 	return st.length
+}
+
+// Clear clears the stack.
+func (st *Stack) Clear() {
+	*st = NewStack()
 }

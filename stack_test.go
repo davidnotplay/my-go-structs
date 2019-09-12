@@ -65,6 +65,36 @@ func Test_Pop_Stack_func(t *testing.T) {
 	assert.Nil(t, st.top)
 }
 
+func Test_Top_Stack_func(t *testing.T) {
+	var (
+		it     Item
+		exists bool
+	)
+	st := NewStack()
+
+	// empty list
+	it, exists = st.Top()
+	assert.Nil(t, it)
+	assert.False(t, exists)
+
+	// insert items
+	for a := 1; a <= 5; a++ {
+		st.Push(It(a))
+	}
+
+	for _, a := range []int{5, 4, 3, 2, 1} {
+		it, exists = st.Top()
+		assert.True(t, exists)
+		assert.Equal(t, it.(IntItem).value, a)
+		st.Pop()
+	}
+
+	it, exists = st.Top()
+	assert.Nil(t, it)
+	assert.False(t, exists)
+	assert.Nil(t, st.top)
+}
+
 func Test_Length_Stack_func(t *testing.T) {
 	st := NewStack()
 
@@ -81,4 +111,16 @@ func Test_Length_Stack_func(t *testing.T) {
 	assert.Equal(t, st.Length(), 0)
 	_, popped := st.Pop()
 	assert.False(t, popped)
+}
+
+func Test_Clear_Stack_func(t *testing.T) {
+	st := NewStack()
+
+	for _, i := range []int{1, 2, 3, 4, 5} {
+		st.Push(It(i))
+	}
+
+	st.Clear()
+	assert.Nil(t, st.top)
+	assert.Equal(t, st.length, 0)
 }

@@ -921,6 +921,31 @@ Item is number: 1
 }
 
 // Basic usage
+func ExampleStack_Top() {
+	stack := NewStack()
+
+	// Insert (push) in the stack, the numbers: 1, 2, 3, 4, 5
+	for i := 1; i <= 5; i++ {
+		stack.Push(It(i))
+	}
+
+	// Get and remove the first item of the stack.
+	for item, found := stack.Top(); found; item, found = stack.Top() {
+		fmt.Printf("Item is number: %s\n", item.String())
+		stack.Pop()
+	}
+	/*
+	Output:
+
+Item is number: 5
+Item is number: 4
+Item is number: 3
+Item is number: 2
+Item is number: 1
+	*/
+}
+
+// Basic usage
 func ExampleStack_Length() {
 	stack := NewStack()
 
@@ -938,5 +963,27 @@ Number of items: 2
 Number of items: 3
 Number of items: 4
 Number of items: 5
+	*/
+}
+
+// Basic usage
+func ExampleStack_Clear() {
+	stack := NewStack()
+
+	// Insert (pus) in the stack, the numbers: 1, 2, 3, 4, 5
+	for i := 1; i <= 5; i++ {
+		stack.Push(It(i))
+	}
+
+	fmt.Printf("Number of items: %d\n", stack.Length())
+
+	stack.Clear()
+	fmt.Printf("Number of items: %d\n", stack.Length())
+	/*
+
+	Output:
+
+Number of items: 5
+Number of items: 0
 	*/
 }
