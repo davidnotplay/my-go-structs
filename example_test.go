@@ -775,6 +775,30 @@ Item is number: 5
 	*/
 }
 
+// Basic usage
+func ExampleQueue_Front() {
+	queue := NewQueue()
+
+	// Insert (Enqueue) in the queue, the numbers: 1, 2, 3, 4, 5
+	for i := 1; i <= 5; i++ {
+		queue.Enqueue(It(i))
+	}
+
+	// Get and remove the first item of the queue.
+	for item, cont := queue.Front(); cont; item, cont = queue.Front() {
+		fmt.Printf("Item is number: %s\n", item.String())
+		queue.Dequeue()
+	}
+	/*
+	Output:
+
+Item is number: 1
+Item is number: 2
+Item is number: 3
+Item is number: 4
+Item is number: 5
+	*/
+}
 
 // Basic usage
 func ExampleQueue_Length() {
@@ -794,6 +818,29 @@ Number of items: 2
 Number of items: 3
 Number of items: 4
 Number of items: 5
+	*/
+}
+
+// Basic usage
+func ExampleQueue_Clear() {
+	queue := NewQueue()
+
+	// Insert (Enqueue) in the queue, the numbers: 1, 2, 3, 4, 5
+	for i := 1; i <= 5; i++ {
+		queue.Enqueue(It(i))
+	}
+
+	fmt.Printf("Number of items: %d\n", queue.Length())
+
+	// clear the queue
+	queue.Clear()
+	fmt.Printf("Number of items: %d\n", queue.Length())
+
+	/*
+	Output:
+
+Number of items: 5
+Number of items: 0
 	*/
 }
 

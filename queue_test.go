@@ -68,6 +68,30 @@ func Test_Dequeue_Queue_func(t *testing.T) {
 	assert.False(t, dequeued)
 }
 
+func Test_Front_Queue_func(t *testing.T) {
+	qu := NewQueue()
+
+	// Queue empty
+	item, cont := qu.Front()
+	assert.Nil(t, item)
+	assert.False(t, cont)
+
+	for i := 1; i <= 5; i++ {
+		qu.Enqueue(It(i))
+	}
+
+	for i := 1; qu.Length() > 0; i++ {
+		item, cont := qu.Front()
+		assert.Equal(t, item.(IntItem).value, i)
+		assert.True(t, cont)
+
+		qu.Dequeue()
+	}
+
+	assert.Nil(t, item)
+	assert.False(t, cont)
+}
+
 func Test_Length_Queue_func(t *testing.T) {
 	qu := NewQueue()
 
@@ -84,4 +108,19 @@ func Test_Length_Queue_func(t *testing.T) {
 	assert.Equal(t, qu.Length(), 0)
 	_, popped := qu.Dequeue()
 	assert.False(t, popped)
+}
+
+
+func Test_Clear_Queue_func(t *testing.T) {
+	qu := NewQueue()
+
+	for i := 1; i <=5; i++ {
+		qu.Enqueue(It(i))
+	}
+
+	qu.Clear()
+
+	assert.Nil(t, qu.fnode)
+	assert.Nil(t, qu.lnode)
+	assert.Equal(t, qu.length, 0)
 }
