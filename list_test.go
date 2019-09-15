@@ -21,6 +21,35 @@ func checkln(t *testing.T, node *listNode, value int, prev, next *int) {
 	}
 }
 
+func Test_Less_listNode_func(t *testing.T) {
+	for i := 0; i <= 10; i++ {
+		for j := 0; j <= 10; j++ {
+			nodei := listNode{item: It(i)}
+			nodej := listNode{item: It(j)}
+			assert.Equal(t,nodei.Less(&nodej), i < j)
+		}
+	}
+}
+
+func Test_Eq_listNode_func(t *testing.T) {
+	for i := 0; i <= 10; i++ {
+		for j := 0; j <= 10; j++ {
+			nodei := listNode{item: It(i)}
+			nodej := listNode{item: It(j)}
+			assert.Equal(t,nodei.Eq(&nodej), i == j)
+		}
+	}
+}
+
+func Test_String_listNode_func(t *testing.T) {
+	for i := 0; i <= 10; i++ {
+		item := It(i)
+		node := listNode{item: item}
+		assert.Equal(t, node.String(), item.String())
+	}
+}
+
+
 func Test_NewList_func(t *testing.T) {
 	as := assert.New(t)
 
