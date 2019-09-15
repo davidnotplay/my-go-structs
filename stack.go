@@ -20,7 +20,7 @@ func NewStack() Stack {
 
 // Push inserts a the item to top of the stack
 func (st *Stack) Push(it Item) {
-	node := &stackNode{item:it}
+	node := &stackNode{item: it}
 	node.prev = st.top
 	st.top = node
 	st.length++

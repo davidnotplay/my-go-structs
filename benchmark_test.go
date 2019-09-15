@@ -5,7 +5,7 @@ import "testing"
 // List benchmarks
 // ---------------
 func listInsertItem(num int) *List {
-	l :=NewList(true)
+	l := NewList(true)
 
 	for i := 1; i <= num; i++ {
 		l.AddAfter(It(i))

@@ -187,7 +187,7 @@ func (l *List) Get() (Item, bool) {
 // Replace replaces the item pointed by the internal pointer by the item of parameter.
 // Returns true if the function has replaced the item. False if it is impossible: The list is
 // empty.
-func (l *List)Replace(it Item) bool {
+func (l *List) Replace(it Item) bool {
 	if l.Length() == 0 {
 		return false //list empty
 	}
@@ -302,7 +302,7 @@ func (l *List) ForEach(f func(Item)) {
 }
 
 // Map creates a new list using the results of execute parser function in all elements of the list.
-func (l *List)Map(parser func(Item)Item) *List {
+func (l *List) Map(parser func(Item) Item) *List {
 	var (
 		newList List
 		forFunc func(Item)
@@ -319,7 +319,7 @@ func (l *List)Map(parser func(Item)Item) *List {
 
 // Filter create a new list with all elements that pass the test implemented in the filter
 // function.
-func (l *List)Filter(filter func(Item)bool) *List {
+func (l *List) Filter(filter func(Item) bool) *List {
 	var (
 		newList List
 		forFunc func(Item)
@@ -327,7 +327,7 @@ func (l *List)Filter(filter func(Item)bool) *List {
 
 	newList = NewList(l.avl.duplicated)
 	forFunc = func(it Item) {
-		if (filter(it)) {
+		if filter(it) {
 			newList.AddAfter(it)
 		}
 	}

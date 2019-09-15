@@ -18,11 +18,8 @@ func ExampleTree_Insert() {
 
 	fmt.Printf("Number of items is %d.", tree.Length())
 
-	/*
-	Output:
-
-Number of items is 10.
-	*/
+	// Output:
+	// Number of items is 10.
 }
 
 func ExampleTree_Length() {
@@ -35,11 +32,8 @@ func ExampleTree_Length() {
 
 	fmt.Printf("Number of items is %d.", tree.Length())
 
-	/*
-	Output:
-
-Number of items is 10.
-	*/
+	// Output:
+	// Number of items is 10.
 }
 
 // Basic usage
@@ -62,12 +56,9 @@ func ExampleTree_Search() {
 	} else {
 		fmt.Printf("Item not found.\n")
 	}
-	/*
-	Output:
-
-Item 1 found.
-Item not found.
-	*/
+	// Output:
+	// Item 1 found.
+	// Item not found.
 }
 
 // Basic usage
@@ -106,14 +97,12 @@ func ExampleTree_Delete() {
 	} else {
 		fmt.Printf("Item not deleted.\n")
 	}
-	/*
-	Output:
 
-Item 1 found.
-Item 1 deleted.
-Item not found.
-Item not deleted.
-	*/
+	// Output:
+	// Item 1 found.
+	// Item 1 deleted.
+	// Item not found.
+	// Item not deleted.
 }
 
 func ExampleTree_Clear() {
@@ -130,12 +119,9 @@ func ExampleTree_Clear() {
 	tree.Clear()
 	fmt.Printf("Number of items is %d.\n", tree.Length())
 
-	/*
-	Output:
-
-Number of items is 10.
-Number of items is 0.
-	*/
+	// Output:
+	// Number of items is 10.
+	// Number of items is 0.
 }
 
 // Basic usage
@@ -157,12 +143,9 @@ func ExampleAvl() {
 		fmt.Printf("Item %s deleted.\n", itemDeleted.String())
 	}
 
-	/*
-	Output:
-
-Item 3 found.
-Item 2 deleted.
-	*/
+	// Output:
+	// Item 3 found.
+	// Item 2 deleted.
 }
 
 // Basic usage
@@ -184,12 +167,9 @@ func ExampleBst() {
 		fmt.Printf("Item %s deleted.\n", itemDeleted.String())
 	}
 
-	/*
-	Output:
-
-Item 3 found.
-Item 2 deleted.
-	*/
+	// Output:
+	// Item 3 found.
+	// Item 2 deleted.
 }
 
 /*
@@ -231,7 +211,6 @@ func ExampleList() {
 		fmt.Printf("Item not found.\n")
 	}
 
-
 	// Delete an item
 	fmt.Printf("\nDelete items:\n")
 	if _, found := list.Search(It(4)); found {
@@ -239,29 +218,26 @@ func ExampleList() {
 		fmt.Printf("Item %s deleted.\n", itemDeleted)
 	}
 
-	/*
-	Output:
+	// Output:
+	// Iterate the list:
+	// List item: 1
+	// List item: 2
+	// List item: 3
+	// List item: 4
+	// List item: 5
 
-Iterate the list:
-List item: 1
-List item: 2
-List item: 3
-List item: 4
-List item: 5
+	// Iterate the list in reverse:
+	// List item: 5
+	// List item: 4
+	// List item: 3
+	// List item: 2
+	// List item: 1
 
-Iterate the list in reverse:
-List item: 5
-List item: 4
-List item: 3
-List item: 2
-List item: 1
+	// Search items:
+	// Item 3 found.
 
-Search items:
-Item 3 found.
-
-Delete items:
-Item 4 deleted.
-	*/
+	// Delete items:
+	// Item 4 deleted.
 }
 
 func ExampleList_AddAfter() {
@@ -277,15 +253,12 @@ func ExampleList_AddAfter() {
 		fmt.Printf("List item %s\n", it)
 	}
 
-	/*
-	Output:
-
-List item 1
-List item 2
-List item 3
-List item 4
-List item 5
-	*/
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
 }
 
 func ExampleList_AddBefore() {
@@ -301,15 +274,12 @@ func ExampleList_AddBefore() {
 		fmt.Printf("List item %s\n", it)
 	}
 
-	/*
-	Output:
-
-List item 5
-List item 4
-List item 3
-List item 2
-List item 1
-	*/
+	// Output:
+	// List item 5
+	// List item 4
+	// List item 3
+	// List item 2
+	// List item 1
 }
 
 func ExampleList_Next() {
@@ -325,15 +295,13 @@ func ExampleList_Next() {
 		it, _ := list.Get()
 		fmt.Printf("List item %s\n", it)
 	}
-	/*
-	Output:
 
-List item 1
-List item 2
-List item 3
-List item 4
-List item 5
-	*/
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
 }
 
 func ExampleList_Prev() {
@@ -349,15 +317,12 @@ func ExampleList_Prev() {
 		it, _ := list.Get()
 		fmt.Printf("List item %s\n", it)
 	}
-	/*
-	Output:
-
-List item 5
-List item 4
-List item 3
-List item 2
-List item 1
-	*/
+	// Output:
+	// List item 5
+	// List item 4
+	// List item 3
+	// List item 2
+	// List item 1
 }
 
 func ExampleList_First() {
@@ -372,11 +337,8 @@ func ExampleList_First() {
 	it, _ := list.Get() // get first item
 	fmt.Printf("List item %s\n", it)
 
-	/*
-	Output:
-
-List item 1
-	*/
+	// Output:
+	// List item 1
 }
 
 func ExampleList_Last() {
@@ -391,11 +353,8 @@ func ExampleList_Last() {
 	it, _ := list.Get() // get first item
 	fmt.Printf("List item %s\n", it)
 
-	/*
-	Output:
-
-List item 5
-	*/
+	// Output:
+	// List item 5
 }
 
 func ExampleList_Advance() {
@@ -412,15 +371,12 @@ func ExampleList_Advance() {
 		fmt.Printf("List item %s\n", item.String())
 	}
 
-	/*
-	Output:
-
-List item 1
-List item 2
-List item 3
-List item 4
-List item 5
-	*/
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
 }
 
 func ExampleList_Rewind() {
@@ -437,15 +393,12 @@ func ExampleList_Rewind() {
 		fmt.Printf("List item %s\n", item.String())
 	}
 
-	/*
-	Output:
-
-List item 5
-List item 4
-List item 3
-List item 2
-List item 1
-	*/
+	// Output:
+	// List item 5
+	// List item 4
+	// List item 3
+	// List item 2
+	// List item 1
 }
 
 func ExampleList_Get() {
@@ -464,15 +417,12 @@ func ExampleList_Get() {
 		fmt.Printf("List item %s\n", item.String())
 	}
 
-	/*
-	Output:
-
-List item 1
-List item 2
-List item 3
-List item 4
-List item 5
-	*/
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
 }
 
 func ExampleList_Replace() {
@@ -493,15 +443,13 @@ func ExampleList_Replace() {
 	for item, cont := list.Get(); cont; item, cont = list.Advance() {
 		fmt.Printf("List item %s.\n", item)
 	}
-	/*
-	Output:
 
-List item 11.
-List item 12.
-List item 13.
-List item 14.
-List item 15.
-	*/
+	// Output:
+	// List item 11.
+	// List item 12.
+	// List item 13.
+	// List item 14.
+	// List item 15.
 }
 
 func ExampleList_Delete() {
@@ -515,7 +463,7 @@ func ExampleList_Delete() {
 	// Delete even numbers
 	list.First()
 	for item, cont := list.Get(); cont; item, cont = list.Advance() {
-		if item.(IntItem).value % 2 == 0 {
+		if item.(IntItem).value%2 == 0 {
 			list.Delete()
 		}
 	}
@@ -524,13 +472,11 @@ func ExampleList_Delete() {
 	for item, cont := list.Get(); cont; item, cont = list.Advance() {
 		fmt.Printf("List item %s.\n", item)
 	}
-	/*
-	Output:
 
-List item 1.
-List item 3.
-List item 5.
-	*/
+	// Output:
+	// List item 1.
+	// List item 3.
+	// List item 5.
 }
 
 // Basic usage
@@ -548,12 +494,9 @@ func ExampleList_Clear() {
 	list.Clear()
 	fmt.Printf("Number of items in the list is %d.\n", list.Length())
 
-	/*
-	Output:
-
-Number of items in the list is 5.
-Number of items in the list is 0.
-	*/
+	// Output:
+	// Number of items in the list is 5.
+	// Number of items in the list is 0.
 }
 
 // Basic usage
@@ -577,12 +520,9 @@ func ExampleList_Search() {
 		fmt.Printf("Item not found.\n")
 	}
 
-	/*
-	Output:
-
-Item 3 found.
-Item not found.
-	*/
+	// Output:
+	// Item 3 found.
+	// Item not found.
 }
 
 // Basic usage
@@ -594,16 +534,13 @@ func ExampleList_Length() {
 		list.AddAfter(It(i))
 		fmt.Printf("Number of items: %d\n", list.Length())
 	}
-	/*
-	Output:
 
-Number of items: 1
-Number of items: 2
-Number of items: 3
-Number of items: 4
-Number of items: 5
-	*/
-
+	// Output:
+	// Number of items: 1
+	// Number of items: 2
+	// Number of items: 3
+	// Number of items: 4
+	// Number of items: 5
 }
 
 // Basic usage
@@ -616,19 +553,17 @@ func ExampleList_ForEach() {
 		list.AddAfter(It(i))
 	}
 
-	list.ForEach(func (it Item) {
+	list.ForEach(func(it Item) {
 		fmt.Printf("List item %s\n", it.String())
 	})
 
-	/*
-	Output:
+	// Output:
 
-List item 1
-List item 2
-List item 3
-List item 4
-List item 5
-	*/
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
 }
 
 // Basic usage
@@ -641,7 +576,7 @@ func ExampleList_Map() {
 		list.AddAfter(It(i))
 	}
 
-	pow2List := list.Map(func (it Item) Item {
+	pow2List := list.Map(func(it Item) Item {
 
 		if number, valid := it.(IntItem); valid {
 			return It(number.value * number.value)
@@ -656,23 +591,20 @@ func ExampleList_Map() {
 		fmt.Printf("List item %s\n", it.String())
 	}
 
-	/*
-	Output:
-
-List item 1
-List item 4
-List item 9
-List item 16
-List item 25
-	*/
+	// Output:
+	// List item 1
+	// List item 4
+	// List item 9
+	// List item 16
+	// List item 25
 }
 
 // Basic usage
 func ExampleList_Filter() {
 	list := NewList(true)
 
-	filter := func (it Item) bool {
-		return it.(IntItem).value % 2 == 1
+	filter := func(it Item) bool {
+		return it.(IntItem).value%2 == 1
 	}
 
 	// Create list with the numbers from 1 to 10
@@ -687,15 +619,12 @@ func ExampleList_Filter() {
 		fmt.Printf("List item: %s\n", it)
 	}
 
-	/*
-	Output:
-
-List item: 1
-List item: 3
-List item: 5
-List item: 7
-List item: 9
-	*/
+	// Output:
+	// List item: 1
+	// List item: 3
+	// List item: 5
+	// List item: 7
+	// List item: 9
 }
 
 /*
@@ -716,15 +645,12 @@ func ExampleQueue() {
 	for item, cont := queue.Dequeue(); cont; item, cont = queue.Dequeue() {
 		fmt.Printf("Item is number: %s\n", item.String())
 	}
-	/*
-	Output:
-
-Item is number: 1
-Item is number: 2
-Item is number: 3
-Item is number: 4
-Item is number: 5
-	*/
+	// Output:
+	// Item is number: 1
+	// Item is number: 2
+	// Item is number: 3
+	// Item is number: 4
+	// Item is number: 5
 }
 
 // Basic usage
@@ -740,15 +666,12 @@ func ExampleQueue_Enqueue() {
 	for item, cont := queue.Dequeue(); cont; item, cont = queue.Dequeue() {
 		fmt.Printf("Item is number: %s\n", item.String())
 	}
-	/*
-	Output:
-
-Item is number: 1
-Item is number: 2
-Item is number: 3
-Item is number: 4
-Item is number: 5
-	*/
+	// Output:
+	// Item is number: 1
+	// Item is number: 2
+	// Item is number: 3
+	// Item is number: 4
+	// Item is number: 5
 }
 
 // Basic usage
@@ -764,15 +687,12 @@ func ExampleQueue_Dequeue() {
 	for item, cont := queue.Dequeue(); cont; item, cont = queue.Dequeue() {
 		fmt.Printf("Item is number: %s\n", item.String())
 	}
-	/*
-	Output:
-
-Item is number: 1
-Item is number: 2
-Item is number: 3
-Item is number: 4
-Item is number: 5
-	*/
+	// Output:
+	// Item is number: 1
+	// Item is number: 2
+	// Item is number: 3
+	// Item is number: 4
+	// Item is number: 5
 }
 
 // Basic usage
@@ -789,15 +709,12 @@ func ExampleQueue_Front() {
 		fmt.Printf("Item is number: %s\n", item.String())
 		queue.Dequeue()
 	}
-	/*
-	Output:
-
-Item is number: 1
-Item is number: 2
-Item is number: 3
-Item is number: 4
-Item is number: 5
-	*/
+	// Output:
+	// Item is number: 1
+	// Item is number: 2
+	// Item is number: 3
+	// Item is number: 4
+	// Item is number: 5
 }
 
 // Basic usage
@@ -809,16 +726,12 @@ func ExampleQueue_Length() {
 		queue.Enqueue(It(i))
 		fmt.Printf("Number of items: %d\n", queue.Length())
 	}
-	/*
-
-	Output:
-
-Number of items: 1
-Number of items: 2
-Number of items: 3
-Number of items: 4
-Number of items: 5
-	*/
+	// Output:
+	// Number of items: 1
+	// Number of items: 2
+	// Number of items: 3
+	// Number of items: 4
+	// Number of items: 5
 }
 
 // Basic usage
@@ -836,12 +749,9 @@ func ExampleQueue_Clear() {
 	queue.Clear()
 	fmt.Printf("Number of items: %d\n", queue.Length())
 
-	/*
-	Output:
-
-Number of items: 5
-Number of items: 0
-	*/
+	// Output:
+	// Number of items: 5
+	// Number of items: 0
 }
 
 /*
@@ -862,15 +772,13 @@ func ExampleStack() {
 	for item, found := stack.Pop(); found; item, found = stack.Pop() {
 		fmt.Printf("Item is number: %s\n", item.String())
 	}
-	/*
-	Output:
 
-Item is number: 5
-Item is number: 4
-Item is number: 3
-Item is number: 2
-Item is number: 1
-	*/
+	// Output:
+	// Item is number: 5
+	// Item is number: 4
+	// Item is number: 3
+	// Item is number: 2
+	// Item is number: 1
 }
 
 // Basic usage
@@ -886,15 +794,12 @@ func ExampleStack_Push() {
 	for item, found := stack.Pop(); found; item, found = stack.Pop() {
 		fmt.Printf("Item is number: %s\n", item.String())
 	}
-	/*
-	Output:
-
-Item is number: 5
-Item is number: 4
-Item is number: 3
-Item is number: 2
-Item is number: 1
-	*/
+	// Output:
+	// Item is number: 5
+	// Item is number: 4
+	// Item is number: 3
+	// Item is number: 2
+	// Item is number: 1
 }
 
 func ExampleStack_Pop() {
@@ -909,15 +814,13 @@ func ExampleStack_Pop() {
 	for item, found := stack.Pop(); found; item, found = stack.Pop() {
 		fmt.Printf("Item is number: %s\n", item.String())
 	}
-	/*
-	Output:
 
-Item is number: 5
-Item is number: 4
-Item is number: 3
-Item is number: 2
-Item is number: 1
-	*/
+	// Output:
+	// Item is number: 5
+	// Item is number: 4
+	// Item is number: 3
+	// Item is number: 2
+	// Item is number: 1
 }
 
 // Basic usage
@@ -934,15 +837,13 @@ func ExampleStack_Top() {
 		fmt.Printf("Item is number: %s\n", item.String())
 		stack.Pop()
 	}
-	/*
-	Output:
 
-Item is number: 5
-Item is number: 4
-Item is number: 3
-Item is number: 2
-Item is number: 1
-	*/
+	// Output:
+	// Item is number: 5
+	// Item is number: 4
+	// Item is number: 3
+	// Item is number: 2
+	// Item is number: 1
 }
 
 // Basic usage
@@ -954,16 +855,13 @@ func ExampleStack_Length() {
 		stack.Push(It(i))
 		fmt.Printf("Number of items: %d\n", stack.Length())
 	}
-	/*
 
-	Output:
-
-Number of items: 1
-Number of items: 2
-Number of items: 3
-Number of items: 4
-Number of items: 5
-	*/
+	// Output:
+	// Number of items: 1
+	// Number of items: 2
+	// Number of items: 3
+	// Number of items: 4
+	// Number of items: 5
 }
 
 // Basic usage
@@ -979,11 +877,7 @@ func ExampleStack_Clear() {
 
 	stack.Clear()
 	fmt.Printf("Number of items: %d\n", stack.Length())
-	/*
-
-	Output:
-
-Number of items: 5
-Number of items: 0
-	*/
+	// Output:
+	// Number of items: 5
+	// Number of items: 0
 }

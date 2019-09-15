@@ -11,7 +11,7 @@ type queueNode struct {
 type Queue struct {
 	length int
 	fnode  *queueNode
-	lnode   *queueNode
+	lnode  *queueNode
 }
 
 // NewQueue returns a an empty queue.
@@ -21,7 +21,7 @@ func NewQueue() Queue {
 
 // Enqueue adds a new item in the queue.
 func (qu *Queue) Enqueue(it Item) {
-	node := &queueNode{item:it}
+	node := &queueNode{item: it}
 
 	if qu.length == 0 {
 		qu.fnode = node

@@ -26,7 +26,7 @@ func Test_Less_listNode_func(t *testing.T) {
 		for j := 0; j <= 10; j++ {
 			nodei := listNode{item: It(i)}
 			nodej := listNode{item: It(j)}
-			assert.Equal(t,nodei.Less(&nodej), i < j)
+			assert.Equal(t, nodei.Less(&nodej), i < j)
 		}
 	}
 }
@@ -36,7 +36,7 @@ func Test_Eq_listNode_func(t *testing.T) {
 		for j := 0; j <= 10; j++ {
 			nodei := listNode{item: It(i)}
 			nodej := listNode{item: It(j)}
-			assert.Equal(t,nodei.Eq(&nodej), i == j)
+			assert.Equal(t, nodei.Eq(&nodej), i == j)
 		}
 	}
 }
@@ -48,7 +48,6 @@ func Test_String_listNode_func(t *testing.T) {
 		assert.Equal(t, node.String(), item.String())
 	}
 }
-
 
 func Test_NewList_func(t *testing.T) {
 	as := assert.New(t)
@@ -417,7 +416,7 @@ func Test_List_Replace_func(t *testing.T) {
 	for item, cont := list.Get(); cont; item, cont = list.Advance() {
 		num := item.(IntItem).value
 
-		if num % 2 != 0 {
+		if num%2 != 0 {
 			num = num * -2
 		} else {
 			num = num * +2
@@ -429,7 +428,7 @@ func Test_List_Replace_func(t *testing.T) {
 	indx := 1
 	list.ForEach(func(item Item) {
 		num := indx
-		if num % 2 != 0 {
+		if num%2 != 0 {
 			num = num * -2
 		} else {
 			num = num * +2
@@ -443,7 +442,7 @@ func Test_List_Replace_func(t *testing.T) {
 
 	for i := 1; i <= 10; i++ {
 		num := i
-		if num % 2 != 0 {
+		if num%2 != 0 {
 			num = num * -2
 		} else {
 			num = num * +2
@@ -510,7 +509,6 @@ func Test_List_Delete_func(t *testing.T) {
 	as.Nil(l.pnode)
 	as.Nil(l.lnode)
 }
-
 
 func Test_List_Clear_func(t *testing.T) {
 	as := assert.New(t)
@@ -629,7 +627,7 @@ func Test_List_ForEach_func(t *testing.T) {
 	itPrev, _ := list.Get()
 
 	i := 1
-	list.ForEach(func (it Item) {
+	list.ForEach(func(it Item) {
 		as.Equal(it.(IntItem).value, i)
 		i++
 	})
@@ -656,7 +654,7 @@ func Test_List_Map_func(t *testing.T) {
 	list.Next()
 	itPrev, _ := list.Get()
 
-	pow2List := list.Map(func (it Item) Item {
+	pow2List := list.Map(func(it Item) Item {
 		num := it.(IntItem).value
 		return It(num * num)
 	})
@@ -678,13 +676,12 @@ func Test_List_Map_func(t *testing.T) {
 	as.Equal(itNext.(IntItem).value, 3)
 }
 
-
 func Test_List_Filter_func(t *testing.T) {
 	as := assert.New(t)
 	list := NewList(true)
 
-	filter := func (it Item) bool {
-		return it.(IntItem).value % 2 == 1
+	filter := func(it Item) bool {
+		return it.(IntItem).value%2 == 1
 	}
 
 	for i := 1; i <= 10; i++ {
@@ -693,10 +690,10 @@ func Test_List_Filter_func(t *testing.T) {
 
 	newList := list.Filter(filter)
 
-	i := 0;
+	i := 0
 	newList.First()
 	for it, cont := newList.Get(); cont; it, cont = newList.Advance() {
-		as.Equal(it.(IntItem).value, i * 2 + 1)
+		as.Equal(it.(IntItem).value, i*2+1)
 		i++
 	}
 }

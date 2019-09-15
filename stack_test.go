@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func checkStackNode(t *testing.T, node *stackNode, item int , next *int) {
+func checkStackNode(t *testing.T, node *stackNode, item int, next *int) {
 	assert.Equal(t, node.item.(IntItem).value, item)
 
 	if next != nil {
@@ -14,7 +14,6 @@ func checkStackNode(t *testing.T, node *stackNode, item int , next *int) {
 		assert.Nil(t, node.prev)
 	}
 }
-
 
 func Test_NewStack_func(t *testing.T) {
 	st := NewStack()

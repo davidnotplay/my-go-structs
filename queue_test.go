@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func checkQueueNode(t *testing.T, node *queueNode, item int , next *int) {
+func checkQueueNode(t *testing.T, node *queueNode, item int, next *int) {
 	assert.Equal(t, node.item.(IntItem).value, item)
 
 	if next != nil {
@@ -30,7 +30,6 @@ func Test_Enqueue_Queue_func(t *testing.T) {
 	qu.Enqueue(It(1))
 	checkQueueNode(t, qu.fnode, 1, nil)
 	checkQueueNode(t, qu.lnode, 1, nil)
-
 
 	// insert more items
 	for _, a := range []int{2, 3, 4, 5, 6} {
@@ -110,11 +109,10 @@ func Test_Length_Queue_func(t *testing.T) {
 	assert.False(t, popped)
 }
 
-
 func Test_Clear_Queue_func(t *testing.T) {
 	qu := NewQueue()
 
-	for i := 1; i <=5; i++ {
+	for i := 1; i <= 5; i++ {
 		qu.Enqueue(It(i))
 	}
 
