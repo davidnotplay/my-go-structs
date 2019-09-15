@@ -192,7 +192,24 @@ func (l *List)Replace(it Item) bool {
 		return false //list empty
 	}
 
-	l.pnode.item = it
+	nodeReplaced := &listNode{l.pnode.prev, l.pnode.next, it}
+	l.avl.Delete(l.pnode)
+
+	if l.pnode == l.fnode {
+		l.fnode = nodeReplaced
+	} else {
+		nodeReplaced.prev.next = nodeReplaced
+	}
+
+	if l.pnode == l.lnode {
+		l.lnode = nodeReplaced
+	} else {
+		nodeReplaced.next.prev = nodeReplaced
+	}
+
+	l.pnode = nodeReplaced
+	l.avl.Insert(nodeReplaced)
+
 	return true
 }
 

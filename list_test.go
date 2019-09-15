@@ -389,7 +389,7 @@ func Test_List_Replace_func(t *testing.T) {
 		list.AddAfter(It(i))
 	}
 
-	// replace element.
+	// replace items.
 	list.First()
 	for item, cont := list.Get(); cont; item, cont = list.Advance() {
 		num := item.(IntItem).value
@@ -404,6 +404,57 @@ func Test_List_Replace_func(t *testing.T) {
 	}
 
 	assert.Equal(t, i, 16)
+
+	// Search in tree correctly when the item is replaced.
+	list.Clear()
+
+	for i := 1; i <= 10; i++ {
+		list.AddAfter(It(i))
+	}
+
+	// Replace and search the items.
+	list.First()
+	for item, cont := list.Get(); cont; item, cont = list.Advance() {
+		num := item.(IntItem).value
+
+		if num % 2 != 0 {
+			num = num * -2
+		} else {
+			num = num * +2
+		}
+
+		list.Replace(It(num))
+	}
+
+	indx := 1
+	list.ForEach(func(item Item) {
+		num := indx
+		if num % 2 != 0 {
+			num = num * -2
+		} else {
+			num = num * +2
+		}
+		assert.Equal(t, item.(IntItem).value, num)
+
+		indx++
+	})
+
+	assert.Equal(t, indx, 11)
+
+	for i := 1; i <= 10; i++ {
+		num := i
+		if num % 2 != 0 {
+			num = num * -2
+		} else {
+			num = num * +2
+		}
+
+		_, found := list.Search(It(num))
+		assert.Truef(t, found, "Num %d not found", num)
+	}
+
+	assert.Equal(t, list.length, 10)
+	assert.Equal(t, list.avl.length, 10)
 }
 
 func Test_List_Delete_func(t *testing.T) {
