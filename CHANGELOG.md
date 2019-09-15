@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 1.1.1
+-------------
+
+- Fix bug in List.Replace method
+
+
 Version 1.1.0
 -------------
 
