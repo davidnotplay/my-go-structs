@@ -27,7 +27,6 @@ type List struct {
 	fnode  *listNode // pointer to the first node of the list.
 	lnode  *listNode // ponter to the last node of the list
 	pnode  *listNode // Internal pointer. It is moved using the struct functions.
-	length int       // List size
 	avl    Tree      // avl tree
 }
 
@@ -54,7 +53,6 @@ func (l *List) AddAfter(it Item) bool {
 		l.fnode = &node
 		l.lnode = &node
 		l.pnode = &node
-		l.length++
 		return true
 	}
 
@@ -65,7 +63,6 @@ func (l *List) AddAfter(it Item) bool {
 	if node.next != nil {
 		node.next.prev = &node
 	}
-	l.length++
 
 	if node.next == nil {
 		// the node has been inserted in the last position.
@@ -93,7 +90,6 @@ func (l *List) AddBefore(it Item) bool {
 		l.fnode = &node
 		l.lnode = &node
 		l.pnode = &node
-		l.length++
 		return true
 	}
 
@@ -104,7 +100,6 @@ func (l *List) AddBefore(it Item) bool {
 	if node.prev != nil {
 		node.prev.next = &node
 	}
-	l.length++
 
 	if node.prev == nil {
 		// the value inserted is the first.
@@ -219,28 +214,26 @@ func (l *List) Replace(it Item) bool {
 func (l *List) Delete() (Item, bool) {
 	var item Item
 
-	if l.length == 0 {
+	if l.avl.length == 0 {
 		return item, false
 	}
 
 	// Delete from tree
 	l.avl.Delete(l.pnode)
 
-	if l.length == 1 {
+	if l.avl.length == 0 {
 		item = l.pnode.item
 
 		// create empty list.
 		l.fnode = nil
 		l.pnode = nil
 		l.lnode = nil
-		l.length = 0
 
 		return item, true
 	}
 
 	tmpPnode := l.pnode
 	item = tmpPnode.item
-	l.length--
 
 	if tmpPnode.prev != nil {
 		tmpPnode.prev.next = tmpPnode.next
@@ -278,7 +271,7 @@ func (l *List) Search(it Item) (Item, bool) {
 
 // Length returns the number of items in the list.
 func (l *List) Length() int {
-	return l.length
+	return l.avl.length
 }
 
 // ForEach excutes the function of the parameter in all elements of the list, consecutively and

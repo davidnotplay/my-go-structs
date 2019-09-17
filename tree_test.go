@@ -11,7 +11,7 @@ func i(i int) *int {
 }
 
 // getAllItems returns a map with all items inside of `node` tree node.
-func getAllItems(node *treeNode) (items map[int]*Item) {
+func getAllItems(node *treeNode) (items []*Item) {
 	var getItem func(node *treeNode)
 
 	getItem = func(node *treeNode) {
@@ -19,13 +19,12 @@ func getAllItems(node *treeNode) (items map[int]*Item) {
 			return
 		}
 		getItem(node.ltree)
-		item := node.item
-		it, _ := node.item.(IntItem)
-		items[it.value] = &item
+		items = append(items, &node.item)
 		getItem(node.rtree)
 	}
 
-	items = map[int]*Item{}
+	items = []*Item{}
+
 	if node != nil {
 		getItem(node)
 	}

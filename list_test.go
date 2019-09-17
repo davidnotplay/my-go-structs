@@ -56,7 +56,6 @@ func Test_NewList_func(t *testing.T) {
 	as.Nil(l.fnode)
 	as.Nil(l.pnode)
 	as.Nil(l.lnode)
-	as.Equal(l.length, 0)
 	as.Equal(l.avl.length, 0)
 	as.True(l.avl.duplicated)
 	as.True(l.avl.rebalance)
@@ -65,7 +64,6 @@ func Test_NewList_func(t *testing.T) {
 	as.Nil(l.fnode)
 	as.Nil(l.pnode)
 	as.Nil(l.lnode)
-	as.Equal(l.length, 0)
 	as.Equal(l.avl.length, 0)
 	as.False(l.avl.duplicated)
 	as.True(l.avl.rebalance)
@@ -255,9 +253,9 @@ func Test_List_Next_func(t *testing.T) {
 
 	l.pnode = l.fnode // move the pointer to first item.
 
-	for i := 1; i <= l.length; i++ {
+	for i := 1; i <= l.avl.length; i++ {
 		as.Equal(l.pnode.item.(IntItem).value, i)
-		if i < l.length {
+		if i < l.avl.length {
 			as.True(l.Next())
 			continue
 		}
@@ -283,7 +281,7 @@ func Test_List_Prev_func(t *testing.T) {
 
 	l.pnode = l.lnode //move the pointer to the last item.
 
-	for i := l.length; i >= 1; i-- {
+	for i := l.avl.length; i >= 1; i-- {
 		as.Equal(l.pnode.item.(IntItem).value, i)
 		if i > 1 {
 			as.True(l.Prev())
@@ -370,7 +368,7 @@ func Test_List_Get_func(t *testing.T) {
 		l.AddAfter(It(i))
 	}
 
-	as.Equal(l.length, 5)
+	as.Equal(l.avl.length, 5)
 
 	l.First()
 	for i := 1; i <= 5; i++ {
@@ -452,7 +450,7 @@ func Test_List_Replace_func(t *testing.T) {
 		assert.Truef(t, found, "Num %d not found", num)
 	}
 
-	assert.Equal(t, list.length, 10)
+	assert.Equal(t, list.avl.length, 10)
 	assert.Equal(t, list.avl.length, 10)
 }
 
@@ -478,7 +476,7 @@ func Test_List_Delete_func(t *testing.T) {
 	as.Nil(l.pnode)
 	as.Nil(l.fnode)
 	as.Nil(l.lnode)
-	as.Equal(l.length, 0)
+	as.Equal(l.avl.length, 0)
 
 	for i := 1; i <= 10; i++ {
 		l.AddAfter(It(i))
@@ -518,7 +516,7 @@ func Test_List_Clear_func(t *testing.T) {
 		as.Nil(l.fnode)
 		as.Nil(l.pnode)
 		as.Nil(l.lnode)
-		as.Equal(l.length, 0)
+		as.Equal(l.avl.length, 0)
 
 		as.Equal(l.avl.duplicated, duplicated)
 		as.Equal(l.avl.length, 0)
@@ -535,7 +533,7 @@ func Test_List_Clear_func(t *testing.T) {
 		as.Nil(l.fnode)
 		as.Nil(l.pnode)
 		as.Nil(l.lnode)
-		as.Equal(l.length, 0)
+		as.Equal(l.avl.length, 0)
 
 		as.Equal(l.avl.duplicated, duplicated)
 		as.Equal(l.avl.length, 0)
