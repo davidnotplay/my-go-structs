@@ -35,7 +35,7 @@ func (qu *Queue) Enqueue(it Item) {
 }
 
 // Dequeue gets the first item of the queue. The second value returned, is a flag indicating if
-// was possible fetch the first element or if the Queue was empty.
+// was possible fetch the first item or if the Queue was empty.
 func (qu *Queue) Dequeue() (Item, bool) {
 	if qu.length == 0 {
 		return nil, false
@@ -48,8 +48,11 @@ func (qu *Queue) Dequeue() (Item, bool) {
 	return node.item, true
 }
 
-// Front reads the first element in the queue, if the que isn't empty. The second value returned,
-// is a flag indicating if element was read, true, or if the Queue is empty, false.
+// Front reads the first item in the queue, if the queue isn't empty. The second value returned,
+// is a flag indicating if item was read, true, or if the Queue is empty, false.
+
+// Front reads the first item in the queue. The second value is a flag indicating if the item
+// was read successlly.
 func (qu *Queue) Front() (Item, bool) {
 	if qu.Length() > 0 {
 		return qu.fnode.item, true

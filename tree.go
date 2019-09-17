@@ -16,7 +16,7 @@ type treeNode struct {
 	item         Item
 }
 
-// Height returns the `node.height` property. If node is nil, then returns -1
+// getHeight returns the `node.height` property. If node is nil, then returns -1
 func (node *treeNode) getHeight() int {
 	if node != nil {
 		return node.height
@@ -54,19 +54,20 @@ func (node *treeNode) rotateLeft() *treeNode {
 	return newNode
 }
 
-// rotateRightLeft executes the AVL double rotation (right left)
+// rotateRightLeft executes the AVL double rotation (right, left)
 func (node *treeNode) rotateRightLeft() *treeNode {
 	node.rtree = node.rtree.rotateRight()
 	return node.rotateLeft()
 }
 
-// rotateLeftRight executes the AVL double rotation (left right)
+// rotateLeftRight executes the AVL double rotation (left, right)
 func (node *treeNode) rotateLeftRight() *treeNode {
 	node.ltree = node.ltree.rotateLeft()
 	return node.rotateRight()
 }
 
-// Tree is the struct where the tree info will store.
+
+// Tree struct is the base for the Bst struct and AVL struct.
 type Tree struct {
 	root       *treeNode // Tree root.
 	length     int       // Number of tree nodes.
@@ -102,6 +103,43 @@ func insertItem(node *treeNode, it Item, rebalanceIt bool, duplicated bool) (*tr
 	return node, inserted
 }
 
+// insertGetAdy searchs the position in the node, inserts the item and rebalance the node if reb
+// flag is true. If duplicated paramater is false, the item inserted must be unique. The function
+// returns the node rebalanced, the item previous already inserted in the tree, and a flag
+// indicating it item was added. The item isn't added if the item isn't unique and duplicated flag
+// is false.
+func insertGetAdy(node *treeNode, item Item, reb, duplicated bool) (*treeNode, *Item, bool) {
+	var (
+		inserted bool
+		prev     *Item
+	)
+
+	if node == nil {
+		return &treeNode{nil, nil, 0, item}, nil, true
+	}
+
+	if node.item.Eq(item) && !duplicated {
+		return node, nil, false
+	}
+
+	if item.Less(node.item) {
+		node.ltree, prev, inserted = insertGetAdy(node.ltree, item, reb, duplicated)
+	} else {
+		node.rtree, prev, inserted = insertGetAdy(node.rtree, item, reb, duplicated)
+	}
+
+	if prev == nil && node.item.Less(item)  {
+		prev = &node.item
+	}
+
+	if inserted && reb {
+		node = rebalance(node)
+	}
+
+
+	return node, prev, inserted
+}
+
 // rebalance rebalances the node and return it.
 func rebalance(node *treeNode) *treeNode {
 	if node.ltree.getHeight()-node.rtree.getHeight() == 2 {
@@ -127,8 +165,8 @@ func rebalance(node *treeNode) *treeNode {
 	return node
 }
 
-// Insert inserts the item in the tree. The function returns true, if the item was inserted or
-// false if the item already in the tree (duplicated item).
+// Insert inserts the item in the tree. The function returns a flag indicating if the operation
+// was success or the item cannot be inserted because it was duplicated.
 func (tr *Tree) Insert(it Item) bool {
 	var inserted bool
 	tr.root, inserted = insertItem(tr.root, it, tr.rebalance, tr.duplicated)

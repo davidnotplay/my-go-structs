@@ -881,3 +881,411 @@ func ExampleStack_Clear() {
 	// Number of items: 5
 	// Number of items: 0
 }
+
+
+/*
+	Sorted List
+	===========
+*/
+
+// Basic usage
+func ExampleSortedList() {
+	// Create en empty List, that accepts duplicated items.
+	slist := NewSortedList(true)
+
+	// Insert in the list, the numbers: 3, 2, 4, 5, 1
+	for _, i := range []int{3, 2, 4, 5, 1} {
+		slist.Add(It(i))
+	}
+
+	// Iterate the List
+	fmt.Printf("\nIterate the list:\n")
+	slist.First()
+	for item := true; item; item = slist.Next() {
+		item, _ := slist.Get()
+		fmt.Printf("List item: %s\n", item.String())
+	}
+
+	// Iterate the list in reverse.
+	fmt.Printf("\nIterate the list in reverse:\n")
+	slist.Last()
+	for found := true; found; found = slist.Prev() {
+		item, _ := slist.Get()
+		fmt.Printf("List item: %s\n", item.String())
+	}
+
+	// Search an item
+	fmt.Printf("\nSearch items:\n")
+	if item, found := slist.Search(It(3)); found {
+		fmt.Printf("Item %s found.\n", item)
+	} else {
+		fmt.Printf("Item not found.\n")
+	}
+
+	// Delete an item
+	fmt.Printf("\nDelete items:\n")
+	if _, found := slist.Search(It(4)); found {
+		itemDeleted, _ := slist.Delete()
+		fmt.Printf("Item %s deleted.\n", itemDeleted)
+	}
+
+	// Output:
+	// Iterate the list:
+	// List item: 1
+	// List item: 2
+	// List item: 3
+	// List item: 4
+	// List item: 5
+
+	// Iterate the list in reverse:
+	// List item: 5
+	// List item: 4
+	// List item: 3
+	// List item: 2
+	// List item: 1
+
+	// Search items:
+	// Item 3 found.
+
+	// Delete items:
+	// Item 4 deleted.
+}
+
+func ExampleSortedList_Add() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	slist.First()
+	for it, cont := slist.Get(); cont; it, cont = slist.Advance() {
+		fmt.Printf("List item %s\n", it)
+	}
+
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
+}
+
+func ExampleSortedList_Next() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	slist.First()
+	for cont := true; cont; cont = slist.Next() {
+		it, _ := slist.Get()
+		fmt.Printf("List item %s\n", it)
+	}
+
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
+}
+
+func ExampleSortedList_Prev() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	slist.Last()
+	for cont := true; cont; cont = slist.Prev() {
+		it, _ := slist.Get()
+		fmt.Printf("List item %s\n", it)
+	}
+	// Output:
+	// List item 5
+	// List item 4
+	// List item 3
+	// List item 2
+	// List item 1
+}
+
+func ExampleSortedList_First() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	slist.First()
+	it, _ := slist.Get() // get first item
+	fmt.Printf("List item %s\n", it)
+
+	// Output:
+	// List item 1
+}
+
+func ExampleSortedList_Last() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	slist.Last()
+	it, _ := slist.Get() // get first item
+	fmt.Printf("List item %s\n", it)
+
+	// Output:
+	// List item 5
+}
+
+func ExampleSortedList_Advance() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	// Iterate the List
+	slist.First()
+	for item, cont := slist.Get(); cont; item, cont = slist.Advance() {
+		fmt.Printf("List item %s\n", item.String())
+	}
+
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
+}
+
+func ExampleSortedList_Rewind() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	// Iterate the list reversed.
+	slist.Last()
+	for item, cont := slist.Get(); cont; item, cont = slist.Rewind() {
+		fmt.Printf("List item %s\n", item.String())
+	}
+
+	// Output:
+	// List item 5
+	// List item 4
+	// List item 3
+	// List item 2
+	// List item 1
+}
+
+func ExampleSortedList_Get() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	// Iterate the List
+	slist.First()
+
+	// Get the items pointed by internal pointer.
+	for item, cont := slist.Get(); cont; item, cont = slist.Advance() {
+		fmt.Printf("List item %s\n", item.String())
+	}
+
+	// Output:
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
+}
+
+func ExampleSortedList_Delete() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	// Delete even numbers
+	slist.First()
+	for item, cont := slist.Get(); cont; item, cont = slist.Advance() {
+		if item.(IntItem).value%2 == 0 {
+			slist.Delete()
+		}
+	}
+
+	slist.First()
+	for item, cont := slist.Get(); cont; item, cont = slist.Advance() {
+		fmt.Printf("List item %s.\n", item)
+	}
+
+	// Output:
+	// List item 1.
+	// List item 3.
+	// List item 5.
+}
+
+// Basic usage
+func ExampleSortedList_Clear() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	fmt.Printf("Number of items in the list is %d.\n", slist.Length())
+
+	// Clear the list
+	slist.Clear()
+	fmt.Printf("Number of items in the list is %d.\n", slist.Length())
+
+	// Output:
+	// Number of items in the list is 5.
+	// Number of items in the list is 0.
+}
+
+// Basic usage
+func ExampleSortedList_Search() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	if it, found := slist.Search(It(3)); found {
+		fmt.Printf("Item %s found.\n", it.String())
+	} else {
+		fmt.Printf("Item not found.\n")
+	}
+
+	if it, found := slist.Search(It(11)); found {
+		fmt.Printf("Item %s found.\n", it.String())
+	} else {
+		fmt.Printf("Item not found.\n")
+	}
+
+	// Output:
+	// Item 3 found.
+	// Item not found.
+}
+
+// Basic usage
+func ExampleSortedList_Length() {
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+		fmt.Printf("Number of items: %d\n", slist.Length())
+	}
+
+	// Output:
+	// Number of items: 1
+	// Number of items: 2
+	// Number of items: 3
+	// Number of items: 4
+	// Number of items: 5
+}
+
+// Basic usage
+func ExampleSortedList_ForEach() {
+	// Create en empty List, that accepts duplicated items.
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	slist.ForEach(func(it Item) {
+		fmt.Printf("List item %s\n", it.String())
+	})
+
+	// Output:
+
+	// List item 1
+	// List item 2
+	// List item 3
+	// List item 4
+	// List item 5
+}
+
+// Basic usage
+func ExampleSortedList_Map() {
+	// Create en empty List, that accepts duplicated items.
+	slist := NewSortedList(true)
+
+	// insert the sequence: 3, 4, 2, 1, 5
+	for _, i := range []int{3, 4, 2, 1, 5} {
+		slist.Add(It(i))
+	}
+
+	pow2List := slist.Map(func(it Item) Item {
+
+		if number, valid := it.(IntItem); valid {
+			return It(number.value * number.value)
+		}
+
+		return nil
+	})
+
+	// Move the internal pointer to the first of the slist.
+	pow2List.First()
+	for it, found := pow2List.Get(); found; it, found = pow2List.Advance() {
+		fmt.Printf("List item %s\n", it.String())
+	}
+
+	// Output:
+	// List item 1
+	// List item 4
+	// List item 9
+	// List item 16
+	// List item 25
+}
+
+// Basic usage
+func ExampleSortedList_Filter() {
+	slist := NewSortedList(true)
+
+	filter := func(it Item) bool {
+		return it.(IntItem).value%2 == 1
+	}
+
+	// insert the sequence: 3, 4, 2, 1, 5, 7, 8, 6, 10, 9
+	for _, i := range []int{3, 4, 2, 1, 5, 7, 8, 6, 10, 9} {
+		slist.Add(It(i))
+	}
+
+	newList := slist.Filter(filter)
+
+	newList.First()
+	for it, cont := newList.Get(); cont; it, cont = newList.Advance() {
+		fmt.Printf("List item: %s\n", it)
+	}
+
+	// Output:
+	// List item: 1
+	// List item: 3
+	// List item: 5
+	// List item: 7
+	// List item: 9
+}

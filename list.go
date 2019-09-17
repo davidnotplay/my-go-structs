@@ -30,8 +30,8 @@ type List struct {
 	avl    Tree      // avl tree
 }
 
-// NewList returns an empty List. The duplicated parameter is flag indicating if the list allows
-// items duplicated.
+// NewList returns an empty List. The parameter is flag indicating if the list allows items
+// duplicated.
 func NewList(duplicated bool) List {
 	return List{avl: Tree{rebalance: true, duplicated: duplicated}}
 }
@@ -168,7 +168,7 @@ func (l *List) Rewind() (Item, bool) {
 	return nil, false
 }
 
-// Get gets the item pointed by the internal pointer. Returns the item and a boolean flag with
+// Get gets the item pointed by the internal pointer. It returns the item and a boolean flag with
 // the true value if the item was getted or false if the list is empty.
 func (l *List) Get() (Item, bool) {
 	if l.pnode != nil {
@@ -274,8 +274,8 @@ func (l *List) Length() int {
 	return l.avl.length
 }
 
-// ForEach excutes the function of the parameter in all elements of the list, consecutively and
-// from the begining.
+// ForEach excutes the function of the parameter in all items of the list, consecutively and from
+// the begining.
 func (l *List) ForEach(f func(Item)) {
 	var item Item
 
@@ -294,7 +294,7 @@ func (l *List) ForEach(f func(Item)) {
 	l.pnode = oldpnode
 }
 
-// Map creates a new list using the results of execute parser function in all elements of the list.
+// Map creates a new list using the results of parser function execution in all items of the list.
 func (l *List) Map(parser func(Item) Item) *List {
 	var (
 		newList List
@@ -310,7 +310,7 @@ func (l *List) Map(parser func(Item) Item) *List {
 	return &newList
 }
 
-// Filter create a new list with all elements that pass the test implemented in the filter
+// Filter create a new list with all items that pass the test implemented in the filter
 // function.
 func (l *List) Filter(filter func(Item) bool) *List {
 	var (
