@@ -2,74 +2,75 @@ My Go structs
 =============
 
 My Go structs is package that contains a set of differents abstract data types:
-* [Queue](https://en.wikipedia.org/wiki/Queue_\(abstract_data_type\))
-* [Stack](https://en.wikipedia.org/wiki/Stack_\(abstract_data_type\))
-* [List](https://en.wikipedia.org/wiki/Doubly_linked_list)
-* [Bst](https://en.wikipedia.org/wiki/Binary_search_tree)
-* [Avl](https://en.wikipedia.org/wiki/AVL_tree)
+* [Queue](#queue)
+* [Stack](#stack)
+* [List](#list)
+* [Sorted list](#sortedlist)
+* [Bst](#bst)
+* [Avl](#avl)
 
 Available structs
 -----------------
 
-### [Queue](https://en.wikipedia.org/wiki/Queue_\(abstract_data_type\))
+### Queue
+- [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#Queue)
+
 Basic usage:
 ```go
 queue := NewQueue()
 
 // Insert (Enqueue) in the queue, the numbers: 1, 2, 3, 4, 5
 for i := 1; i <= 5; i++ {
-	queue.Enqueue(It(5))
+	queue.Enqueue(It(i))
 }
 
-// Get and remove the first item of the queue.
-for item, found := queue.Dequeue(); found; item, found = queue.Dequeue() {
-	fmt.Printf("Item is number is: %s", item.String())
+// Dequeue.
+for item, cont := queue.Dequeue(); cont; item, cont = queue.Dequeue() {
+	fmt.Printf("Item is number: %s\n", item.String())
 }
-/**
-Output:
-
-	 Item is number: 1
-	 Item is number: 2
-	 Item is number: 3
-	 Item is number: 4
-	 Item is number: 5
-*/
+// Output:
+// Item is number: 1
+// Item is number: 2
+// Item is number: 3
+// Item is number: 4
+// Item is number: 5
 ```
 
-### [Stack](https://en.wikipedia.org/wiki/Stack_\(abstract_data_type\))
+### Stack
+- [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#Stack)
+
 Basic usage:
 ```go
 stack := NewStack()
 
 // Insert (push) in the stack, the numbers: 1, 2, 3, 4, 5
 for i := 1; i <= 5; i++ {
-	stack.Push(It(5))
+	stack.Push(It(i))
 }
 
 // Get and remove the first item of the stack.
 for item, found := stack.Pop(); found; item, found = stack.Pop() {
-	fmt.Printf("Item is number is: %s", item.String())
+	fmt.Printf("Item is number: %s\n", item.String())
 }
-/**
-Output:
 
-	Item is number: 5
-	Item is number: 4
-	Item is number: 3
-	Item is number: 2
-	Item is number: 1
-*/
+// Output:
+// Item is number: 5
+// Item is number: 4
+// Item is number: 3
+// Item is number: 2
+// Item is number: 1
 ```
 
-### [List](https://en.wikipedia.org/wiki/Doubly_linked_list)
-List features:
-* Insert in items in any position of the list.
-* Get any element in the list.
-* Update any element in the list.
-* Delete any element in the list.
-* Iterate list.
-* Optimized searchs. Internaly the items are stored in an AVL tree.
-* Create list without duplicated elements.
+### List
+- [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#List)
+- List features:
+  * Insert in items in any position of the list.
+  * Get any item in the list.
+  * Update any item in the list.
+  * Delete any item in the list.
+  * Iterate list.
+  * Optimized searchs. Internaly the items are stored in an AVL tree.
+  * Create list without duplicated items.
 
 Basic usage:
 ```go
@@ -82,129 +83,183 @@ for _, i := range []int{1, 2, 3, 4, 5} {
 }
 
 // Iterate the List
-
-// Move the internal pointer to the first of the list.
+fmt.Printf("\nIterate the list:\n")
 list.First()
-for it, found := list.Get(); found; found = list.Next() {
-	fmt.Printf("List item %s", it.String())
+for item := true; item; item = list.Next() {
+	item, _ := list.Get()
+	fmt.Printf("List item: %s\n", item.String())
 }
 
-/**
-Output:
-
-	 List item 1
-	 List item 2
-	 List item 3
-	 List item 4
-	 List item 5
-*/
-
-// Iterate the list reversed.
-
-// Move the internal pointer to the end of the list.
+// Iterate the list in reverse.
+fmt.Printf("\nIterate the list in reverse:\n")
 list.Last()
-for it, found := list.Get(); found; found = list.Prev() {
-	fmt.Printf("List item %s", it.String())
+for found := true; found; found = list.Prev() {
+	item, _ := list.Get()
+	fmt.Printf("List item: %s\n", item.String())
 }
-
-/**
-Output:
-
-	 List item 5
-	 List item 4
-	 List item 3
-	 List item 2
-	 List item 1
-*/
 
 // Search an item
+fmt.Printf("\nSearch items:\n")
 if item, found := list.Search(It(3)); found {
-	println("Item found ", item.String())
+	fmt.Printf("Item %s found.\n", item)
 } else {
-	println("Item not found")
+	fmt.Printf("Item not found.\n")
 }
 
-// Delete the item 4
+// Delete an item
+fmt.Printf("\nDelete items:\n")
 if _, found := list.Search(It(4)); found {
 	itemDeleted, _ := list.Delete()
-	println("Item %s deleted", itemDeleted.String())
+	fmt.Printf("Item %s deleted.\n", itemDeleted)
 }
 
-/**
-Output:
+// Output:
+// Iterate the list:
+// List item: 1
+// List item: 2
+// List item: 3
+// List item: 4
+// List item: 5
 
-	Item 4 deleted.
-*/
+// Iterate the list in reverse:
+// List item: 5
+// List item: 4
+// List item: 3
+// List item: 2
+// List item: 1
+
+// Search items:
+// Item 3 found.
+
+// Delete items:
+// Item 4 deleted.
 ```
 
-### [Bst](https://en.wikipedia.org/wiki/Binary_search_tree)
+### Sorted list
+- [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#SortedList)
+
+```go
+// Create en empty List, that accepts duplicated items.
+slist := NewSortedList(true)
+
+// Insert in the list, the numbers: 3, 2, 4, 5, 1
+for _, i := range []int{3, 2, 4, 5, 1} {
+	slist.Add(It(i))
+}
+
+// Iterate the List
+fmt.Printf("\nIterate the list:\n")
+slist.First()
+for item := true; item; item = slist.Next() {
+	item, _ := slist.Get()
+	fmt.Printf("List item: %s\n", item.String())
+}
+
+// Iterate the list in reverse.
+fmt.Printf("\nIterate the list in reverse:\n")
+slist.Last()
+for found := true; found; found = slist.Prev() {
+	item, _ := slist.Get()
+	fmt.Printf("List item: %s\n", item.String())
+}
+
+// Search an item
+fmt.Printf("\nSearch items:\n")
+if item, found := slist.Search(It(3)); found {
+	fmt.Printf("Item %s found.\n", item)
+} else {
+	fmt.Printf("Item not found.\n")
+}
+
+// Delete an item
+fmt.Printf("\nDelete items:\n")
+if _, found := slist.Search(It(4)); found {
+	itemDeleted, _ := slist.Delete()
+	fmt.Printf("Item %s deleted.\n", itemDeleted)
+}
+
+// Output:
+// Iterate the list:
+// List item: 1
+// List item: 2
+// List item: 3
+// List item: 4
+// List item: 5
+
+// Iterate the list in reverse:
+// List item: 5
+// List item: 4
+// List item: 3
+// List item: 2
+// List item: 1
+
+// Search items:
+// Item 3 found.
+
+// Delete items:
+// Item 4 deleted.
+```
+
+### Bst
+- [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#Bst)
+
 Basic usage:
 ```go
-// create new bst
+// create new Bst
 bst := NewBst()
 
 for i := 1; i <= 5; i++ {
-	bst.Insert(It(1))
+	bst.Insert(It(i))
 }
 
 // Search the item 3
 if item, found := bst.Search(It(3)); found {
-	fmt.Printf("Item %s found", item.String())
+	fmt.Printf("Item %s found.\n", item.String())
 }
-/**
-Output:
-
-	Item 3 found
-*/
 
 // Delete the item 2
 if itemDeleted, deleted := bst.Delete(It(2)); deleted {
-	fmt.Printf("Item %s deleted", itemDeleted.String())
+	fmt.Printf("Item %s deleted.\n", itemDeleted.String())
 }
-/**
-Output:
 
-	Item 2 deleted
-*/
-
+// Output:
+// Item 3 found.
+// Item 2 deleted.
 ```
 
-### [Avl](https://en.wikipedia.org/wiki/AVL_tree)
+### Avl
+- [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#Avl)
+
 Basic usage:
 ```go
 // create new avl
 avl := NewAvl()
 
 for i := 1; i <= 5; i++ {
-	avl.Insert(It(1))
+	avl.Insert(It(i))
 }
 
 // Search the item 3
 if item, found := avl.Search(It(3)); found {
-	fmt.Printf("Item %s found", item.String())
+	fmt.Printf("Item %s found.\n", item.String())
 }
-/**
-Output:
-
-	Item 3 found
-*/
 
 // Delete the item 2
 if itemDeleted, deleted := avl.Delete(It(2)); deleted {
-	fmt.Printf("Item %s deleted", itemDeleted.String())
+	fmt.Printf("Item %s deleted.\n", itemDeleted.String())
 }
 
-/**
-Output:
-
-	Item 2 deleted
-*/
+// Output:
+// Item 3 found.
+// Item 2 deleted.
 ```
 
 Item iterface
 -------------
-The `Item` interface is the type used as item in all structs. Any item you want use in the structs
-must implements the this interface. 
+The `Item` interface is the data type used as item in all structs. Any item you want use in the 
+structs must implements the this interface. 
+
+- [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#Item)
 
 Example:
 ```go

@@ -2,6 +2,10 @@
 Changelog
 =========
 
+Version 1.2.0
+-------------
+- Create Sorted list struct
+
 Version 1.1.1
 -------------
 
