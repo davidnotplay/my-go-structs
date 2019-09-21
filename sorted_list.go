@@ -1,5 +1,8 @@
 package mygostructs
 
+// SortedList is a struct it implements a ordered doubly linked list type data structure. The items
+// are inserted ordered. It can access and manipulate any item of the list. Also it allows search
+// quickly, if an item exists in the list.
 type SortedList struct {
 	list List
 }
@@ -9,7 +12,8 @@ func NewSortedList(duplicated bool) SortedList{
 	return SortedList{NewList(duplicated)}
 }
 
-// Add adds to the sorted list. Returns a flag indicating if the item was added successfully.
+// Add adds the item to sorted list. Returns a flag indicating if the item wass added
+// successfully.
 func (so *SortedList) Add(item Item) bool {
 	var (
 		prev	 *Item
@@ -59,16 +63,14 @@ func (so *SortedList) Add(item Item) bool {
 	return true
 }
 
-// Next moves the internal pointer to the next item, if it possible. Returns true if the pointer
-// was moved correctly or false if it is impossible (the list is empty or the internal pointer is
-// pointed to the last item)
+// Next moves the internal pointer to the next item. Returns a flag indicating if the operation
+// was possible.
 func (so *SortedList) Next() bool {
 	return so.list.Next()
 }
 
-// Prev moves the internal pointer to the previous item, if it possible. Returns true if the
-// pointer was moved correctly or false if it is impossible (the list is empty or the internal
-// pointer is pointed to the first item)
+// Prev moves the internal pointer to the previous item. Returns a flag indicating if the operation
+// was possible.
 func (so *SortedList) Prev() bool {
 	return so.list.Prev()
 }
@@ -83,22 +85,20 @@ func (so *SortedList) Last() {
 	so.list.Last()
 }
 
-// Advance advances the internal pointer one position and returns the item pointed and the true
-// value. If it isn't possible advance more, because the internal pointer at end, the function
-// returns nil and false then.
+// Advance advances the internal pointer one position and returns the item pointed. The second
+// value returned is a flag indicating if the operation was successfully.
 func (so *SortedList) Advance() (Item, bool) {
 	return so.list.Advance()
 }
 
-// Rewind rewinds the internal pointer one position and returns the item pointed and the true
-// value. If it can not rewind, because the internal pointer is in the begin, the function returns
-// nil and false then.
+// Rewind rewinds the internal pointer one position and returns the item pointed. The second value
+// returned is a flag indicating if the operation was successfully.
 func (so *SortedList) Rewind() (Item, bool) {
 	return so.list.Rewind()
 }
 
-// Get gets the item pointed by the internal pointer. It returns the item and a boolean flag with
-// the true value if the item was getted or false if the list is empty.
+// Search searchs the item in the list. Returns the item searched and a flag indicating if the
+// item was found.
 func (so *SortedList) Get() (Item, bool) {
 	return so.list.Get()
 }
@@ -109,9 +109,8 @@ func (so *SortedList) Search(it Item) (Item, bool) {
 	return so.list.Search(it)
 }
 
-// Delete deletes the item pointed by the internal pointer and move the internal pointer to the
-// first of the list. It returns 2 values: The item deleted and a flag indicating if the value
-// was deleted.
+// Delete deletes the item pointed by the internal pointer and it moves the internal pointer to
+// the begining of the list. The second value indicates if the item was deleted.
 func (so *SortedList) Delete() (Item, bool) {
 	return so.list.Delete()
 }

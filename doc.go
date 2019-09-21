@@ -3,6 +3,7 @@
 
 // Package mygostructs contains a set of Data-structures:
 //  - List
+//  - Sorted list
 //  - Queue
 //  - Stack
 //  - Binary search tree

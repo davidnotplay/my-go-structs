@@ -1,7 +1,6 @@
 package mygostructs
 
-// Avl is the classic binary search tree type data structure, with rebalancing. More info:
-// https://en.wikipedia.org/wiki/AVL_tree
+// Avl is a struct it implements a AVL tree type data structure.
 type Avl struct {
 	Tree
 }

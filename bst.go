@@ -1,7 +1,6 @@
 package mygostructs
 
-// Bst is the classic binary search tree type data structure. More info:
-// https://en.wikipedia.org/wiki/Binary_search_tree
+// Bst is a struct it implements a binary search tree type data structure.
 type Bst struct {
 	Tree
 }

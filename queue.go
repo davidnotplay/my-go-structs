@@ -6,8 +6,8 @@ type queueNode struct {
 	next *queueNode
 }
 
-// Queue is the classic queue type data structure (FIFO). More info:
-// https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
+// Queue is a struct it implements a queue type abstract data structure, where the items are
+// inserted linearly and the first element in enter is the first element in out. (FIFO).
 type Queue struct {
 	length int
 	fnode  *queueNode
@@ -19,7 +19,7 @@ func NewQueue() Queue {
 	return Queue{}
 }
 
-// Enqueue adds a new item in the queue.
+// Enqueue adds a new item in the end of the queue.
 func (qu *Queue) Enqueue(it Item) {
 	node := &queueNode{item: it}
 
@@ -34,8 +34,8 @@ func (qu *Queue) Enqueue(it Item) {
 	qu.length++
 }
 
-// Dequeue gets the first item of the queue. The second value returned, is a flag indicating if
-// was possible fetch the first item or if the Queue was empty.
+// Dequeue returns and delete teh first item of the queue. The second value returned is flag
+// indicating the operation was success.
 func (qu *Queue) Dequeue() (Item, bool) {
 	if qu.length == 0 {
 		return nil, false
@@ -47,9 +47,6 @@ func (qu *Queue) Dequeue() (Item, bool) {
 
 	return node.item, true
 }
-
-// Front reads the first item in the queue, if the queue isn't empty. The second value returned,
-// is a flag indicating if item was read, true, or if the Queue is empty, false.
 
 // Front reads the first item in the queue. The second value is a flag indicating if the item
 // was read successlly.

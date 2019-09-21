@@ -6,8 +6,8 @@ type stackNode struct {
 	prev *stackNode
 }
 
-// Stack is the classic stack type data structure (LIFO). More info:
-// https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
+// Stack is a struct it implements a stack type abstract data structure, where the items are
+// inserted linearly and the last item in enter is the first in out. (LIFO)
 type Stack struct {
 	top    *stackNode
 	length int

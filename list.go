@@ -7,22 +7,26 @@ type listNode struct {
 	item Item
 }
 
+// Less checks if item in the listNode is less than the the parameter item.
 func (ln listNode) Less(it Item) bool {
 	lnn, valid := it.(*listNode)
 	return valid && ln.item.Less(lnn.item)
 }
 
+// Eq checks if item in the listNode is equal to the parameter item.
 func (ln listNode) Eq(it Item) bool {
 	lnn, valid := it.(*listNode)
 	return valid && ln.item.Eq(lnn.item)
 }
 
+//String transforms and returns the item in the listNode as an String.
 func (ln listNode) String() string {
 	return ln.item.String()
 }
 
-// List is a doubly linked list type data structure. More info:
-// https://en.wikipedia.org/wiki/Doubly_linked_list
+// List is a struct it implements a doubly linked list type data structure. The items are inserted
+// linearly. It can access and manipulate any item of the list. Also it allows search quickly, if
+// an item exists in the list.
 type List struct {
 	fnode  *listNode // pointer to the first node of the list.
 	lnode  *listNode // ponter to the last node of the list
@@ -36,9 +40,9 @@ func NewList(duplicated bool) List {
 	return List{avl: Tree{rebalance: true, duplicated: duplicated}}
 }
 
+
 // AddAfter adds the item after the item pointed by internal pointer and moves the internal
-// pointer to the new item inserted. The function returns true if the item was inserted or false
-// if the item is duplicated, and duplicated property is false.
+// pointer to the new item inserted. Returns a flag indicating if the item was added successfully.
 func (l *List) AddAfter(it Item) bool {
 	node := listNode{}
 	node.item = it
@@ -65,7 +69,7 @@ func (l *List) AddAfter(it Item) bool {
 	}
 
 	if node.next == nil {
-		// the node has been inserted in the last position.
+		// The node has been inserted in the last position.
 		l.lnode = &node
 	}
 
@@ -74,8 +78,7 @@ func (l *List) AddAfter(it Item) bool {
 }
 
 // AddBefore adds the item before the item pointed by internal pointer and moves the internal
-// pointer to the new item inserted. The function returns true if the item was inserted or false
-// if the item is duplicated, and duplicated property is false.
+// pointer to the new item inserted. Returns a flag indicating if the item was added successfully
 func (l *List) AddBefore(it Item) bool {
 	node := listNode{}
 	node.item = it
@@ -110,9 +113,8 @@ func (l *List) AddBefore(it Item) bool {
 	return true
 }
 
-// Next moves the internal pointer to the next item, if it possible. Returns true if the pointer
-// was moved correctly or false if it is impossible (the list is empty or the internal pointer is
-// pointed to the last item)
+// Next moves the internal pointer to the next item. Returns a flag indicating if the operation
+// was possible.
 func (l *List) Next() bool {
 	if l.pnode.next != nil {
 		l.pnode = l.pnode.next
@@ -122,9 +124,8 @@ func (l *List) Next() bool {
 	return false
 }
 
-// Prev moves the internal pointer to the previous item, if it possible. Returns true if the
-// pointer was moved correctly or false if it is impossible (the list is empty or the internal
-// pointer is pointed to the first item)
+// Prev moves the internal pointer to the previous item. Returns a flag indicating if the operation
+// was possible.
 func (l *List) Prev() bool {
 	if l.pnode.prev != nil {
 		l.pnode = l.pnode.prev
@@ -144,9 +145,8 @@ func (l *List) Last() {
 	l.pnode = l.lnode
 }
 
-// Advance advances the internal pointer one position and returns the item pointed and the true
-// value. If it isn't possible advance more, because the internal pointer at end, the function
-// returns nil and false then.
+// Advance advances the internal pointer one position and returns the item pointed. The second
+// value returned is a flag indicating if the operation was successfully.
 func (l *List) Advance() (Item, bool) {
 	if l.pnode.next != nil {
 		defer l.Next()
@@ -156,9 +156,8 @@ func (l *List) Advance() (Item, bool) {
 	return nil, false
 }
 
-// Rewind rewinds the internal pointer one position and returns the item pointed and the true
-// value. If it can not rewind, because the internal pointer is in the begin, the function returns
-// nil and false then.
+// Rewind rewinds the internal pointer one position and returns the item pointed. The second value
+// returned is a flag indicating if the operation was successfully.
 func (l *List) Rewind() (Item, bool) {
 	if l.pnode.prev != nil {
 		defer l.Prev()
@@ -168,8 +167,8 @@ func (l *List) Rewind() (Item, bool) {
 	return nil, false
 }
 
-// Get gets the item pointed by the internal pointer. It returns the item and a boolean flag with
-// the true value if the item was getted or false if the list is empty.
+// Get gets the item pointed by the internal pointer. Returns the item and a flag indicating if
+// it was possible get the item.
 func (l *List) Get() (Item, bool) {
 	if l.pnode != nil {
 		return l.pnode.item, true
@@ -180,8 +179,7 @@ func (l *List) Get() (Item, bool) {
 }
 
 // Replace replaces the item pointed by the internal pointer by the item of parameter.
-// Returns true if the function has replaced the item. False if it is impossible: The list is
-// empty.
+// Returns a flag indicating if the operatio was successfully.
 func (l *List) Replace(it Item) bool {
 	if l.Length() == 0 {
 		return false //list empty
@@ -208,9 +206,20 @@ func (l *List) Replace(it Item) bool {
 	return true
 }
 
-// Delete deletes the item pointed by the internal pointer and move the internal pointer to the
-// first of the list. It returns 2 values: The item deleted and a flag indicating if the value
-// was deleted.
+// Search searchs the item in the list. Returns the item searched and a flag indicating if the
+// item was found.
+func (l *List) Search(it Item) (Item, bool) {
+	node, found := l.avl.Search(&listNode{item: it})
+	if found {
+		l.pnode = node.(*listNode)
+		return l.pnode.item, true
+	}
+
+	return nil, false
+}
+
+// Delete deletes the item pointed by the internal pointer and it moves the internal pointer to
+// the begining of the list. The second value indicates if the item was deleted.
 func (l *List) Delete() (Item, bool) {
 	var item Item
 
@@ -255,18 +264,6 @@ func (l *List) Delete() (Item, bool) {
 func (l *List) Clear() {
 	duplicated := l.avl.duplicated
 	*l = NewList(duplicated)
-}
-
-// Search searchs the item in the list. It returns the item found and a flag indicating if the item
-// exists in the list. This function also move the internal pointer to the item found.
-func (l *List) Search(it Item) (Item, bool) {
-	node, found := l.avl.Search(&listNode{item: it})
-	if found {
-		l.pnode = node.(*listNode)
-		return l.pnode.item, true
-	}
-
-	return nil, false
 }
 
 // Length returns the number of items in the list.
