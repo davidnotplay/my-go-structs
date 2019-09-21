@@ -66,7 +66,6 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 	return node.rotateRight()
 }
 
-
 // Tree struct is the base for the Bst struct and AVL struct.
 type Tree struct {
 	root       *treeNode // Tree root.
@@ -128,14 +127,13 @@ func insertGetAdy(node *treeNode, item Item, reb, duplicated bool) (*treeNode, *
 		node.rtree, prev, inserted = insertGetAdy(node.rtree, item, reb, duplicated)
 	}
 
-	if prev == nil && node.item.Less(item)  {
+	if prev == nil && node.item.Less(item) {
 		prev = &node.item
 	}
 
 	if inserted && reb {
 		node = rebalance(node)
 	}
-
 
 	return node, prev, inserted
 }

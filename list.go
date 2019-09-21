@@ -28,10 +28,10 @@ func (ln listNode) String() string {
 // linearly. It can access and manipulate any item of the list. Also it allows search quickly, if
 // an item exists in the list.
 type List struct {
-	fnode  *listNode // pointer to the first node of the list.
-	lnode  *listNode // ponter to the last node of the list
-	pnode  *listNode // Internal pointer. It is moved using the struct functions.
-	avl    Tree      // avl tree
+	fnode *listNode // pointer to the first node of the list.
+	lnode *listNode // ponter to the last node of the list
+	pnode *listNode // Internal pointer. It is moved using the struct functions.
+	avl   Tree      // avl tree
 }
 
 // NewList returns an empty List. The parameter is flag indicating if the list allows items
@@ -39,7 +39,6 @@ type List struct {
 func NewList(duplicated bool) List {
 	return List{avl: Tree{rebalance: true, duplicated: duplicated}}
 }
-
 
 // AddAfter adds the item after the item pointed by internal pointer and moves the internal
 // pointer to the new item inserted. Returns a flag indicating if the item was added successfully.

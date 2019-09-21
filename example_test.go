@@ -882,7 +882,6 @@ func ExampleStack_Clear() {
 	// Number of items: 0
 }
 
-
 /*
 	Sorted List
 	===========

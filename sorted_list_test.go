@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-
 func Test_NewSortedList_func(t *testing.T) {
 	for _, dup := range []bool{true, false} {
 		sl := NewSortedList(dup)
@@ -24,12 +23,11 @@ func Test_NewSortedList_func(t *testing.T) {
 func Test_SortedList_Add_func(t *testing.T) {
 	as := assert.New(t)
 	so := NewSortedList(false)
-	data := []int {8, 2, 9, 10, 3, 5, 6, 7, 1, 4};
+	data := []int{8, 2, 9, 10, 3, 5, 6, 7, 1, 4}
 
 	min, max, l := 999, 0, 1
 	for _, value := range data {
 		inserted := so.Add(It(value))
-
 
 		if value < min {
 			min = value
@@ -47,7 +45,6 @@ func Test_SortedList_Add_func(t *testing.T) {
 
 		l++
 	}
-
 
 	node := so.list.fnode
 	for a := 1; a <= 10; a++ {

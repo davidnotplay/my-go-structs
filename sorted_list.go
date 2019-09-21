@@ -8,7 +8,7 @@ type SortedList struct {
 }
 
 // NewSortedList creates and returns a new empty sorted list.
-func NewSortedList(duplicated bool) SortedList{
+func NewSortedList(duplicated bool) SortedList {
 	return SortedList{NewList(duplicated)}
 }
 
@@ -16,7 +16,7 @@ func NewSortedList(duplicated bool) SortedList{
 // successfully.
 func (so *SortedList) Add(item Item) bool {
 	var (
-		prev	 *Item
+		prev     *Item
 		inserted bool
 		node     *listNode
 	)
