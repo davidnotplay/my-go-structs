@@ -1,5 +1,7 @@
 package mygostructs
 
+import "sync"
+
 //queueNode is the node for Queue struct.
 type queueNode struct {
 	item Item
@@ -12,6 +14,7 @@ type Queue struct {
 	length int
 	fnode  *queueNode
 	lnode  *queueNode
+	mutex  sync.Mutex
 }
 
 // NewQueue returns a an empty queue.
@@ -21,6 +24,9 @@ func NewQueue() Queue {
 
 // Enqueue adds a new item in the end of the queue.
 func (qu *Queue) Enqueue(it Item) {
+	qu.mutex.Lock()
+	defer qu.mutex.Unlock()
+
 	node := &queueNode{item: it}
 
 	if qu.length == 0 {
@@ -37,6 +43,9 @@ func (qu *Queue) Enqueue(it Item) {
 // Dequeue returns and delete teh first item of the queue. The second value returned is flag
 // indicating the operation was success.
 func (qu *Queue) Dequeue() (Item, bool) {
+	qu.mutex.Lock()
+	defer qu.mutex.Unlock()
+
 	if qu.length == 0 {
 		return nil, false
 	}
@@ -51,7 +60,10 @@ func (qu *Queue) Dequeue() (Item, bool) {
 // Front reads the first item in the queue. The second value is a flag indicating if the item
 // was read successlly.
 func (qu *Queue) Front() (Item, bool) {
-	if qu.Length() > 0 {
+	qu.mutex.Lock()
+	defer qu.mutex.Unlock()
+
+	if qu.length > 0 {
 		return qu.fnode.item, true
 	}
 
@@ -60,10 +72,14 @@ func (qu *Queue) Front() (Item, bool) {
 
 // Length returns the number of items in the queue.
 func (qu *Queue) Length() int {
+	qu.mutex.Lock()
+	defer qu.mutex.Unlock()
 	return qu.length
 }
 
 // Clear clears the queue.
 func (qu *Queue) Clear() {
-	*qu = NewQueue()
+	qu.mutex.Lock()
+	defer qu.mutex.Unlock()
+	qu.fnode, qu.lnode, qu.length = nil, nil, 0
 }
