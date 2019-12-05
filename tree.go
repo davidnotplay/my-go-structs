@@ -1,5 +1,7 @@
 package mygostructs
 
+import "sync"
+
 // max returns the param more large
 func max(a, b int) int {
 	if a > b {
@@ -68,10 +70,11 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 
 // Tree struct is the base for the Bst struct and AVL struct.
 type Tree struct {
-	root       *treeNode // Tree root.
-	length     int       // Number of tree nodes.
-	rebalance  bool      // Rebalance the tree after modify it.
-	duplicated bool      // Flag indicating if allows duplicated items.
+	root       *treeNode   // Tree root.
+	length     int         // Number of tree nodes.
+	rebalance  bool        // Rebalance the tree after modify it.
+	duplicated bool        // Flag indicating if allows duplicated items.
+	mutex      sync.Mutex  // Lock for avoid the concurrence when manipulate the struct.
 }
 
 // insertItem searchs the correct position inside of the param tree node, inserts the
@@ -127,7 +130,7 @@ func insertGetAdy(node *treeNode, item Item, reb, duplicated bool) (*treeNode, *
 		node.rtree, prev, inserted = insertGetAdy(node.rtree, item, reb, duplicated)
 	}
 
-	if prev == nil && node.item.Less(item) {
+	if prev == nil && (node.item.Less(item) || node.item.Eq(item)) {
 		prev = &node.item
 	}
 
@@ -167,6 +170,10 @@ func rebalance(node *treeNode) *treeNode {
 // was success or the item cannot be inserted because it was duplicated.
 func (tr *Tree) Insert(it Item) bool {
 	var inserted bool
+
+	tr.mutex.Lock()
+	defer tr.mutex.Unlock()
+
 	tr.root, inserted = insertItem(tr.root, it, tr.rebalance, tr.duplicated)
 
 	if inserted {
@@ -178,6 +185,9 @@ func (tr *Tree) Insert(it Item) bool {
 
 // Length returns the number of items in the tree.
 func (tr *Tree) Length() int {
+	tr.mutex.Lock()
+	defer tr.mutex.Unlock()
+
 	return tr.length
 }
 
@@ -203,6 +213,9 @@ func search(node *treeNode, it Item) (*treeNode, bool) {
 // Search searchs the item in the tree. It returns the item found and a flag indicating if
 // the item exists in the tree tree.
 func (tr *Tree) Search(it Item) (Item, bool) {
+	tr.mutex.Lock()
+	defer tr.mutex.Unlock()
+
 	if node, found := search(tr.root, it); found {
 		return node.item, true
 	}
@@ -230,9 +243,7 @@ func deleteNode(node *treeNode, it Item, rebalanceIt bool) (*treeNode, Item, boo
 			return node.ltree, node.item, true
 		}
 
-		var nodeTemp *treeNode
-		nodeTemp = node.rtree
-
+		nodeTemp := node.rtree
 		for nodeTemp.ltree != nil {
 			nodeTemp = nodeTemp.ltree
 		}
@@ -240,7 +251,7 @@ func deleteNode(node *treeNode, it Item, rebalanceIt bool) (*treeNode, Item, boo
 		itDeleted = node.item
 		node.item = nodeTemp.item
 		node.rtree, _, _ = deleteNode(node.rtree, nodeTemp.item, rebalanceIt)
-		return node, itDeleted, true
+		found = true
 
 	} else if node.item.Less(it) {
 		node.rtree, itDeleted, found = deleteNode(node.rtree, it, rebalanceIt)
@@ -258,6 +269,9 @@ func deleteNode(node *treeNode, it Item, rebalanceIt bool) (*treeNode, Item, boo
 // Delete deletes the item of the tree. Returns the item deleted and a flag indicating if the item
 // existed in the tree.
 func (tr *Tree) Delete(it Item) (itd Item, deleted bool) {
+	tr.mutex.Lock()
+	defer tr.mutex.Unlock()
+
 	tr.root, itd, deleted = deleteNode(tr.root, it, tr.rebalance)
 	if deleted {
 		tr.length--
@@ -267,6 +281,9 @@ func (tr *Tree) Delete(it Item) (itd Item, deleted bool) {
 
 // Clear clears the tree.
 func (tr *Tree) Clear() {
+	tr.mutex.Lock()
+	defer tr.mutex.Unlock()
+
 	tr.root = nil
 	tr.length = 0
 }
