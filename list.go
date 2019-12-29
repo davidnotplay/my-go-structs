@@ -1,5 +1,7 @@
 package mygostructs
 
+import "sync"
+
 // listNode is the node for the List struct.
 type listNode struct {
 	prev *listNode
@@ -28,10 +30,11 @@ func (ln listNode) String() string {
 // linearly. It can access and manipulate any item of the list. Also it allows search quickly, if
 // an item exists in the list.
 type List struct {
-	fnode *listNode // pointer to the first node of the list.
-	lnode *listNode // ponter to the last node of the list
-	pnode *listNode // Internal pointer. It is moved using the struct functions.
-	avl   Tree      // avl tree
+	fnode *listNode  // pointer to the first node of the list.
+	lnode *listNode  // ponter to the last node of the list
+	pnode *listNode  // Internal pointer. It is moved using the struct functions.
+	avl   Tree       // avl tree
+	mutex sync.Mutex // Lock for avoid the concurrence when manipulate the struct.
 }
 
 // NewList returns an empty List. The parameter is flag indicating if the list allows items
@@ -43,6 +46,9 @@ func NewList(duplicated bool) List {
 // AddAfter adds the item after the item pointed by internal pointer and moves the internal
 // pointer to the new item inserted. Returns a flag indicating if the item was added successfully.
 func (l *List) AddAfter(it Item) bool {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
 	node := listNode{}
 	node.item = it
 
@@ -79,6 +85,9 @@ func (l *List) AddAfter(it Item) bool {
 // AddBefore adds the item before the item pointed by internal pointer and moves the internal
 // pointer to the new item inserted. Returns a flag indicating if the item was added successfully
 func (l *List) AddBefore(it Item) bool {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
 	node := listNode{}
 	node.item = it
 
@@ -115,7 +124,10 @@ func (l *List) AddBefore(it Item) bool {
 // Next moves the internal pointer to the next item. Returns a flag indicating if the operation
 // was possible.
 func (l *List) Next() bool {
-	if l.pnode.next != nil {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
+	if l.pnode != nil && l.pnode.next != nil {
 		l.pnode = l.pnode.next
 		return true
 	}
@@ -126,7 +138,10 @@ func (l *List) Next() bool {
 // Prev moves the internal pointer to the previous item. Returns a flag indicating if the operation
 // was possible.
 func (l *List) Prev() bool {
-	if l.pnode.prev != nil {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
+	if l.pnode != nil && l.pnode.prev != nil {
 		l.pnode = l.pnode.prev
 		return true
 	}
@@ -136,20 +151,28 @@ func (l *List) Prev() bool {
 
 // First moves the internal pointer to the first item of the list.
 func (l *List) First() {
+	l.mutex.Lock()
 	l.pnode = l.fnode
+	l.mutex.Unlock()
 }
 
 // Last moves the internal pointer to the last item of the list.
 func (l *List) Last() {
+	l.mutex.Lock()
 	l.pnode = l.lnode
+	l.mutex.Unlock()
 }
 
 // Advance advances the internal pointer one position and returns the item pointed. The second
 // value returned is a flag indicating if the operation was successfully.
 func (l *List) Advance() (Item, bool) {
-	if l.pnode.next != nil {
-		defer l.Next()
-		return l.pnode.next.item, true
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
+	if l.pnode != nil && l.pnode.next != nil {
+		it := l.pnode.next.item
+		l.pnode = l.pnode.next
+		return it, true
 	}
 
 	return nil, false
@@ -158,9 +181,13 @@ func (l *List) Advance() (Item, bool) {
 // Rewind rewinds the internal pointer one position and returns the item pointed. The second value
 // returned is a flag indicating if the operation was successfully.
 func (l *List) Rewind() (Item, bool) {
-	if l.pnode.prev != nil {
-		defer l.Prev()
-		return l.pnode.prev.item, true
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
+	if l.pnode != nil && l.pnode.prev != nil {
+		it := l.pnode.prev.item
+		l.pnode = l.pnode.prev
+		return it, true
 	}
 
 	return nil, false
@@ -169,6 +196,9 @@ func (l *List) Rewind() (Item, bool) {
 // Get gets the item pointed by the internal pointer. Returns the item and a flag indicating if
 // it was possible get the item.
 func (l *List) Get() (Item, bool) {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
 	if l.pnode != nil {
 		return l.pnode.item, true
 	}
@@ -180,7 +210,10 @@ func (l *List) Get() (Item, bool) {
 // Replace replaces the item pointed by the internal pointer by the item of parameter.
 // Returns a flag indicating if the operatio was successfully.
 func (l *List) Replace(it Item) bool {
-	if l.Length() == 0 {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
+	if l.avl.length == 0 {
 		return false //list empty
 	}
 
@@ -208,6 +241,9 @@ func (l *List) Replace(it Item) bool {
 // Search searchs the item in the list. Returns the item searched and a flag indicating if the
 // item was found.
 func (l *List) Search(it Item) (Item, bool) {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+
 	node, found := l.avl.Search(&listNode{item: it})
 	if found {
 		l.pnode = node.(*listNode)
@@ -221,6 +257,9 @@ func (l *List) Search(it Item) (Item, bool) {
 // the begining of the list. The second value indicates if the item was deleted.
 func (l *List) Delete() (Item, bool) {
 	var item Item
+
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
 
 	if l.avl.length == 0 {
 		return item, false
@@ -255,42 +294,50 @@ func (l *List) Delete() (Item, bool) {
 		l.lnode = tmpPnode.prev
 	}
 
-	l.First()
+	l.pnode = l.fnode
 	return item, true
-}
-
-// Clear clears the list.
-func (l *List) Clear() {
-	duplicated := l.avl.duplicated
-	*l = NewList(duplicated)
 }
 
 // Length returns the number of items in the list.
 func (l *List) Length() int {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
 	return l.avl.length
 }
 
+// Clear clears the list.
+func (l *List) Clear() {
+	l.mutex.Lock()
+	l.avl = Tree{rebalance: true, duplicated: l.avl.duplicated}
+	l.fnode = nil
+	l.pnode = nil
+	l.lnode = nil
+	l.mutex.Unlock()
+}
+
 // ForEach excutes the function of the parameter in all items of the list, consecutively and from
-// the begining.
+// the begining. The behaviour of this function isn't defined if you modify the list inside of the
+// function or in another thread while this method is executing
 func (l *List) ForEach(f func(Item)) {
-	var item Item
 
 	if l.Length() == 0 {
 		// empty list
 		return
 	}
 
-	oldpnode := l.pnode
-	l.First()
-	for cont := true; cont; cont = l.Next() {
-		item, _ = l.Get()
-		f(item)
-	}
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
 
-	l.pnode = oldpnode
+	for node := l.fnode; node != nil; node = node.next {
+		l.mutex.Unlock()
+		f(node.item)
+		l.mutex.Lock()
+	}
 }
 
 // Map creates a new list using the results of parser function execution in all items of the list.
+// The behaviour of this function isn't defined if you modify the list inside of the function or
+// in another thread while this method is executing
 func (l *List) Map(parser func(Item) Item) *List {
 	var (
 		newList List
@@ -306,8 +353,9 @@ func (l *List) Map(parser func(Item) Item) *List {
 	return &newList
 }
 
-// Filter create a new list with all items that pass the test implemented in the filter
-// function.
+// Filter creates a new list with all items that pass the test implemented in the filter function.
+// The behaviour of this function isn't defined if you modify the list inside of the function or
+// in another thread while this method is executing
 func (l *List) Filter(filter func(Item) bool) *List {
 	var (
 		newList List

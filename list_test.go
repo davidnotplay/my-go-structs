@@ -3,675 +3,1082 @@ package mygostructs
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
+// ip returns a pointer of the integer.
+func ip(i int) *int {
+	return &i
+}
+
+// checkln checks the node properties
 func checkln(t *testing.T, node *listNode, value int, prev, next *int) {
-	assert.Equal(t, node.item.(IntItem).value, value, "node item is invalid")
+	assert.Equal(t, node.item.(IntItem).value, value, "item doesn't match")
 
 	if prev == nil {
-		assert.Nil(t, node.prev, "prev isn't nil")
+		assert.Nil(t, node.prev, "prev item isn't nil")
 	} else {
-		assert.Equal(t, node.prev.item.(IntItem).value, *prev, "prev item is invalid")
+		if node.prev == nil {
+			assert.Fail(t, "item is nil", "prev item is nil")
+		} else {
+			value := node.prev.item.(IntItem).value
+			assert.Equal(t, value, *prev, "prev item doesn't match")
+		}
 	}
 
 	if next == nil {
-		assert.Nil(t, node.next, "next isn't nil")
+		assert.Nil(t, node.next, "next item isnt't nil")
 	} else {
-		assert.Equal(t, node.next.item.(IntItem).value, *next, "next item is invalid")
-	}
-}
-
-func Test_Less_listNode_func(t *testing.T) {
-	for i := 0; i <= 10; i++ {
-		for j := 0; j <= 10; j++ {
-			nodei := listNode{item: It(i)}
-			nodej := listNode{item: It(j)}
-			assert.Equal(t, nodei.Less(&nodej), i < j)
+		if node.next == nil {
+			assert.Fail(t, "item is nil", "next item is nil")
+		} else {
+			value := node.next.item.(IntItem).value
+			assert.Equal(t, value, *next, "next item doesn't match")
 		}
 	}
 }
 
-func Test_Eq_listNode_func(t *testing.T) {
-	for i := 0; i <= 10; i++ {
-		for j := 0; j <= 10; j++ {
-			nodei := listNode{item: It(i)}
-			nodej := listNode{item: It(j)}
-			assert.Equal(t, nodei.Eq(&nodej), i == j)
-		}
+// moveNextPrev changes the pointer and after restore it
+func changeListProperties(l *List, max int, done chan bool) {
+	for i := 0; i < max; i++ {
+		l.mutex.Lock()
+		fnode, pnode, lnode, length := l.fnode, l.pnode, l.lnode, l.avl.length
+		l.fnode, l.pnode, l.lnode, l.avl.length = nil, nil, nil, 0
+		l.fnode, l.pnode, l.lnode, l.avl.length = pnode, lnode, fnode, -1
+		time.Sleep(time.Nanosecond)
+		l.fnode, l.pnode, l.lnode, l.avl.length = fnode, pnode, lnode, length
+		l.mutex.Unlock()
 	}
+
+	done <- true
 }
 
-func Test_String_listNode_func(t *testing.T) {
-	for i := 0; i <= 10; i++ {
-		item := It(i)
-		node := listNode{item: item}
-		assert.Equal(t, node.String(), item.String())
-	}
+func Test_listNode_Less_func(t *testing.T) {
+	var n1, n2 listNode
+	as := assert.New(t)
+	n1 = listNode{nil, nil, It(1)}
+
+	n2 = listNode{nil, nil, It(2)}
+	as.True(n1.Less(&n2), "%s isnt't less than %s", n1, n2)
+	n2 = listNode{nil, nil, It(1)}
+	as.False(n1.Less(&n2), "%s is less than %s", n1, n2)
+	n2 = listNode{nil, nil, It(0)}
+	as.False(n1.Less(&n2), "%s is less than %s", n1, n2)
+}
+
+func Test_listNode_Eq_func(t *testing.T) {
+	var n1, n2 listNode
+	as := assert.New(t)
+	n1 = listNode{nil, nil, It(1)}
+
+	n2 = listNode{nil, nil, It(1)}
+	as.True(n1.Eq(&n2), "%s isn't equal to %s", n1, n2)
+	n2 = listNode{nil, nil, It(0)}
+	as.False(n1.Eq(&n2), "%s is equal to %s", n1, n2)
+}
+
+func Test_listNode_String_func(t *testing.T) {
+	assert.Equalf(t, listNode{nil, nil, It(1)}.String(), "1", "item stringify is invalid")
 }
 
 func Test_NewList_func(t *testing.T) {
 	as := assert.New(t)
 
-	l := NewList(true)
-	as.Nil(l.fnode)
-	as.Nil(l.pnode)
-	as.Nil(l.lnode)
-	as.Equal(l.avl.length, 0)
-	as.True(l.avl.duplicated)
-	as.True(l.avl.rebalance)
+	for _, duplicated := range []bool{true, false} {
+		list := NewList(duplicated)
 
-	l = NewList(false)
-	as.Nil(l.fnode)
-	as.Nil(l.pnode)
-	as.Nil(l.lnode)
-	as.Equal(l.avl.length, 0)
-	as.False(l.avl.duplicated)
-	as.True(l.avl.rebalance)
+		as.Nil(list.fnode, "pointer to first node isn't nil in empty list")
+		as.Nil(list.pnode, "pointer to current node isn't nil in empty list")
+		as.Nil(list.lnode, "pointer to last node isn't nil in empty list")
+		as.Nil(list.avl.root, "avl root isn't nil in empty tree")
+		as.Equal(list.avl.length, 0, "avl length isn't 0 in empty tree")
+		as.True(list.avl.rebalance, "avl rebalance flag, is false")
+		as.Equal(list.avl.duplicated, duplicated, "avl duplicated flag is invalid")
+	}
 }
 
 func Test_List_AddAfter_func(t *testing.T) {
 	var (
 		inserted bool
-		found    bool
-		node     *listNode
-		values   = []int{1, 2, 2, 3, 4, 5, 5}
-		ndvalues = []int{1, 2, 3, 4, 5}
-		as       = assert.New(t)
-		l        = NewList(true)
+		counter  int
 	)
 
-	for indx, value := range values {
-		// Test value inserted
-		inserted = l.AddAfter(It(value))
-		as.True(inserted)
+	size := 100
+	as := assert.New(t)
+	list := NewList(false)
 
-		// Test the internal pointers are corrects.
-		if indx == 0 {
-			checkln(t, l.fnode, values[0], nil, nil)
-			checkln(t, l.pnode, values[0], nil, nil)
-			checkln(t, l.lnode, values[0], nil, nil)
+	// Insert items.
+	for i := 0; i < size; i++ {
+		item := It(i)
+		inserted = list.AddAfter(item)
+		as.True(inserted, "item %s no inserted", item)
+		_, found := list.avl.Search(&listNode{nil, nil, item})
+		as.True(found, "item %s not found in the AVL tree", item)
+	}
+	as.Equal(list.Length(), size, "list length is invalid")
 
-		} else {
-			checkln(t, l.fnode, values[0], nil, i(values[1]))
-			checkln(t, l.lnode, values[indx], i(values[indx-1]), nil)
-			checkln(t, l.pnode, values[indx], i(values[indx-1]), nil)
+	// check the pointers visiting all elements in the list from the start
+	counter = 0
+	list.First()
+	for item, advance := list.Get(); advance; item, advance = list.Advance() {
+		as.Equal(item.(IntItem).value, counter, "position of %s item is incorrect", item)
+		counter++
+	}
+	as.Equal(list.Length(), counter, "number of item visited is inavlid")
+
+	// check the pointers visiting all elements in the list from the end
+	counter = 0
+	list.Last()
+	for item, cont := list.Get(); cont; item, cont = list.Rewind() {
+		value := item.(IntItem).value
+		as.Equal(value, list.Length()-counter-1, "position of %s item is incorrect", item)
+		counter++
+	}
+	as.Equal(list.Length(), counter, "number of item visited is inavlid")
+
+	// List with duplicated items.
+	list = NewList(true)
+	as.True(list.AddAfter(It(1)), "item wasn't inserted")
+	as.True(list.AddAfter(It(1)), "item wasn't inserted")
+	as.Equal(list.Length(), 2, "the tree length doesn't match")
+
+	// list without duplicated items
+	list = NewList(false)
+	as.True(list.AddAfter(It(1)), "item wasn't inserted")
+	as.False(list.AddAfter(It(1)), "duplicated item was inserted")
+	as.Equal(list.avl.Length(), 1, "the tree length doesn't match")
+}
+
+func Test_List_AddAfter_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 1000
+	done := make(chan bool)
+	insert := func(min, max int) {
+		for i := min; i < max; i++ {
+			list.AddAfter(It(i))
 		}
 
-		// node saved in the avl
-		_, found = l.avl.Search(l.pnode)
-		as.True(found)
+		done <- true
 	}
 
-	// next pointers.
-	node = l.fnode
-	for i := 0; i < len(values); i++ {
-		// as.Equal(node.item.(IntItem).value, values[i])
-		as.Equal(node.item.(IntItem).value, values[i])
-		node = node.next
-	}
-	as.Nil(node)
-
-	// prev pointers.
-	node = l.lnode
-	for i := len(values) - 1; i >= 0; i-- {
-		as.Equal(node.item.(IntItem).value, values[i])
-		node = node.prev
-	}
-	as.Nil(node)
-
-	// No duplicates items.
-	l = NewList(false)
-
-	for indx, value := range values {
-		// Test value inserted
-		inserted = l.AddAfter(It(value))
-		// 2 and 6 index with items duplicated.
-		as.Equalf(inserted, indx != 2 && indx != 6, "index %d", indx)
-
-		// node saved in the avl
-		_, found = l.avl.Search(l.pnode)
-		as.True(found)
+	for i := 0; i < concurrence; i++ {
+		go changeListProperties(&list, size, done)
+		go insert(i*size, (i+1)*size)
 	}
 
-	checkln(t, l.fnode, 1, nil, i(2))
-	checkln(t, l.pnode, 5, i(4), nil)
-	checkln(t, l.lnode, 5, i(4), nil)
-
-	// next pointers.
-	node = l.fnode
-	for i := 0; i < len(ndvalues); i++ {
-		// as.Equal(node.item.(IntItem).value, values[i])
-		as.Equal(node.item.(IntItem).value, ndvalues[i])
-		node = node.next
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
 	}
-	as.Nil(node)
 
-	// prev pointers.
-	node = l.lnode
-	for i := len(ndvalues) - 1; i >= 0; i-- {
-		as.Equal(node.item.(IntItem).value, ndvalues[i])
-		node = node.prev
+	as.Equal(list.avl.Length(), concurrence*size, "list length doesn't match")
+	for i := 0; i < concurrence*size; i++ {
+		item := It(i)
+		_, found := list.avl.Search(&listNode{nil, nil, item})
+		as.Truef(found, "item %s not found", item)
 	}
-	as.Nil(node)
 }
 
 func Test_List_AddBefore_func(t *testing.T) {
 	var (
 		inserted bool
-		found    bool
-		node     *listNode
-		values   = []int{1, 2, 2, 3, 4, 5, 5}
-		ndvalues = []int{1, 2, 3, 4, 5}
-		as       = assert.New(t)
-		l        = NewList(true)
+		counter  int
 	)
 
-	for indx, value := range values {
-		// Test value inserted
-		inserted = l.AddBefore(It(value))
-		as.True(inserted)
+	size := 100
+	as := assert.New(t)
+	list := NewList(false)
 
-		// Test the internal pointers are corrects.
-		if indx == 0 {
-			checkln(t, l.fnode, values[0], nil, nil)
-			checkln(t, l.pnode, values[0], nil, nil)
-			checkln(t, l.lnode, values[0], nil, nil)
+	// Insert items.
+	for i := 0; i < size; i++ {
+		item := It(i)
+		inserted = list.AddBefore(item)
+		as.True(inserted, "item %s no inserted", item)
+		_, found := list.avl.Search(&listNode{nil, nil, item})
+		as.True(found, "item %s not found in the AVL tree", item)
+	}
+	as.Equal(list.Length(), size, "list length is invalid")
 
-		} else {
-			checkln(t, l.fnode, values[indx], nil, i(values[indx-1]))
-			checkln(t, l.pnode, values[indx], nil, i(values[indx-1]))
-			checkln(t, l.lnode, values[0], i(values[1]), nil)
+	// check the pointers visiting all elements in the list from the start
+	counter = 0
+	list.First()
+	for item, advance := list.Get(); advance; item, advance = list.Advance() {
+		value := item.(IntItem).value
+		as.Equal(value, list.Length()-counter-1, "position of %s item is incorrect", item)
+		counter++
+	}
+	as.Equal(list.Length(), counter, "number of item visited is inavlid")
+
+	// check the pointers visiting all elements in the list from the end
+	counter = 0
+	list.Last()
+	for item, cont := list.Get(); cont; item, cont = list.Rewind() {
+		value := item.(IntItem).value
+		as.Equal(value, counter, "position of %s item is incorrect", item)
+		counter++
+	}
+	as.Equal(list.Length(), counter, "number of item visited is inavlid")
+
+	// List with duplicated items.
+	list = NewList(true)
+	as.True(list.AddBefore(It(1)), "item wasn't inserted")
+	as.True(list.AddBefore(It(1)), "item wasn't inserted")
+	as.Equal(list.Length(), 2, "the tree length doesn't match")
+
+	// list without duplicated items
+	list = NewList(false)
+	as.True(list.AddBefore(It(1)), "item wasn't inserted")
+	as.False(list.AddBefore(It(1)), "duplicated item was inserted")
+	as.Equal(list.avl.Length(), 1, "the tree length doesn't match")
+}
+
+func Test_List_AddBefore_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 1000
+	done := make(chan bool)
+	insert := func(min, max int) {
+		for i := min; i < max; i++ {
+			list.AddBefore(It(i))
 		}
 
-		// node saved in the avl
-		_, found = l.avl.Search(l.pnode)
-		as.True(found)
+		done <- true
 	}
 
-	// next pointers.
-	node = l.lnode
-	for i := 0; i < len(values); i++ {
-		// as.Equal(node.item.(IntItem).value, values[i])
-		as.Equal(node.item.(IntItem).value, values[i])
-		node = node.prev
-	}
-	as.Nil(node)
-
-	// prev pointers.
-	node = l.fnode
-	for i := len(values) - 1; i >= 0; i-- {
-		as.Equal(node.item.(IntItem).value, values[i])
-		node = node.next
-	}
-	as.Nil(node)
-
-	// No duplicates items.
-	l = NewList(false)
-
-	for indx, value := range values {
-		// Test value inserted
-		inserted = l.AddBefore(It(value))
-		// 2 and 6 index with items duplicated.
-		as.Equalf(inserted, indx != 2 && indx != 6, "index %d", indx)
-
-		// node saved in the avl
-		_, found = l.avl.Search(l.pnode)
-		as.True(found)
+	for i := 0; i < concurrence; i++ {
+		go changeListProperties(&list, size, done)
+		go insert(i*size, (i+1)*size)
 	}
 
-	checkln(t, l.fnode, 5, nil, i(4))
-	checkln(t, l.pnode, 5, nil, i(4))
-	checkln(t, l.lnode, 1, i(2), nil)
-
-	// next pointers.
-	node = l.lnode
-	for i := 0; i < len(ndvalues); i++ {
-		// as.Equal(node.item.(IntItem).value, values[i])
-		as.Equal(node.item.(IntItem).value, ndvalues[i])
-		node = node.prev
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
 	}
-	as.Nil(node)
 
-	// prev pointers.
-	node = l.fnode
-	for i := len(ndvalues) - 1; i >= 0; i-- {
-		as.Equal(node.item.(IntItem).value, ndvalues[i])
-		node = node.next
+	as.Equal(list.avl.Length(), concurrence*size, "list length doesn't match")
+	for i := 0; i < concurrence*size; i++ {
+		item := It(i)
+		_, found := list.avl.Search(&listNode{nil, nil, item})
+		as.True(found, "item %s not found", item)
 	}
-	as.Nil(node)
 }
 
 func Test_List_Next_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList(true)
-	values := []int{1, 2, 3, 4, 5}
+	list := NewList(true)
 
-	// insert the value
-	for _, i := range values {
-		l.AddAfter(It(i))
+	// empty list
+	as.False(list.Next(), "there is a next item in the empty list")
+
+	for i := 0; i < 5; i++ {
+		list.AddAfter(It(i))
 	}
 
-	l.pnode = l.fnode // move the pointer to first item.
+	list.First()
+	for i := 0; i < 5; i++ {
+		item, _ := list.Get()
+		value := item.(IntItem).value
+		as.Equal(value, i, "item is incorrect")
 
-	for i := 1; i <= l.avl.length; i++ {
-		as.Equal(l.pnode.item.(IntItem).value, i)
-		if i < l.avl.length {
-			as.True(l.Next())
-			continue
+		if i < 4 {
+			as.True(list.Next(), "cannot access to next item")
+		} else {
+			as.False(list.Next(), "last item has next element")
+		}
+	}
+}
+
+func Test_List_Next_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	next := func() {
+		for i := 0; i < size; i++ {
+			as.True(list.Next(), "cannot access next item")
 		}
 
-		// last item
-		as.False(l.Next()) // In the end of the list. No continue
-		as.Equal(l.pnode, l.lnode)
+		done <- true
 	}
 
-	as.False(l.Next())
-	as.False(l.Next())
+	for i := 0; i < concurrence*size+1; i++ {
+		list.AddAfter(It(i))
+	}
+
+	list.First()
+	for i := 0; i < concurrence; i++ {
+		go next()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	as.False(list.Next(), "current item isn't the last item")
 }
 
 func Test_List_Prev_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList(true)
-	values := []int{1, 2, 3, 4, 5}
+	list := NewList(true)
 
-	// insert the value
-	for _, i := range values {
-		l.AddAfter(It(i))
+	// empty list
+	as.False(list.Prev(), "there is a previous item in the empty list")
+
+	for i := 0; i < 5; i++ {
+		list.AddAfter(It(i))
 	}
 
-	l.pnode = l.lnode //move the pointer to the last item.
-
-	for i := l.avl.length; i >= 1; i-- {
-		as.Equal(l.pnode.item.(IntItem).value, i)
-		if i > 1 {
-			as.True(l.Prev())
-			continue
+	list.Last()
+	for i := 4; i >= 0; i-- {
+		if i > 0 {
+			as.True(list.Prev(), "cannot access to prev item")
+		} else {
+			as.False(list.Prev(), "first item has a previous element")
 		}
+	}
+}
 
-		// last item
-		as.False(l.Prev()) // In the end of the list. No continue
-		as.Equal(l.pnode, l.fnode)
+func Test_List_Prev_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	prev := func() {
+		for i := 0; i < size; i++ {
+			as.True(list.Prev(), "cannot access next item")
+		}
+		done <- true
 	}
 
-	as.False(l.Prev())
-	as.False(l.Prev())
+	for i := 0; i < size*concurrence+1; i++ {
+		list.AddAfter(It(i))
+	}
+
+	list.Last()
+	for i := 0; i < concurrence; i++ {
+		go prev()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	as.Equalf(list.pnode, list.fnode, "pointed node isn't the first node")
 }
 
 func Test_List_First_func(t *testing.T) {
-	as := assert.New(t)
-	l := NewList(true)
+	list := NewList(true)
 
-	for i := 1; i <= 5; i++ {
-		l.AddAfter(It(i))
+	for i := 0; i < 5; i++ {
+		list.AddAfter(It(i))
 	}
 
-	as.Equal(l.pnode, l.lnode)
-	l.First()
-	as.Equal(l.pnode, l.fnode)
+	list.pnode = list.lnode
+	list.First()
+	assert.Equalf(t, list.pnode, list.fnode, "pointed node isn't the first node")
+}
+
+func Test_List_First_func_sync(t *testing.T) {
+	list := NewList(true)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	first := func() {
+		for i := 0; i < size; i++ {
+			list.First()
+		}
+
+		done <- true
+	}
+
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	for i := 0; i < concurrence; i++ {
+		go first()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	assert.Equal(t, list.pnode, list.fnode, "pointed node isn't the first node")
 }
 
 func Test_List_Last_func(t *testing.T) {
-	as := assert.New(t)
-	l := NewList(true)
+	list := NewList(true)
 
-	for i := 1; i <= 5; i++ {
-		l.AddBefore(It(i))
+	for i := 0; i < 5; i++ {
+		list.AddAfter(It(i))
 	}
 
-	as.Equal(l.pnode, l.fnode)
-	l.Last()
-	as.Equal(l.pnode, l.lnode)
+	list.pnode = list.fnode
+	list.Last()
+	assert.Equalf(t, list.pnode, list.lnode, "pointed node isn't the first node")
+}
+
+func Test_List_Last_func_sync(t *testing.T) {
+	list := NewList(true)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	last := func() {
+		for i := 0; i < size; i++ {
+			list.Last()
+		}
+
+		done <- true
+	}
+
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	for i := 0; i < concurrence; i++ {
+		go last()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	assert.Equalf(t, list.pnode, list.lnode, "node pointed isn't the last node")
 }
 
 func Test_List_Advance_func(t *testing.T) {
+	list := NewList(true)
+	size := 5
 	as := assert.New(t)
-	l := NewList(true)
 
-	for i := 1; i <= 5; i++ {
-		l.AddAfter(It(i))
+	// In empty list
+	item, cont := list.Advance()
+	if item != nil {
+		as.Fail(
+			"item isn't nil",
+			"the item returned when it advances in an empty list isn't nil: item: %s",
+			item,
+		)
 	}
 
-	l.First()
-	i := 1
-	for item, cont := l.Get(); cont; item, cont = l.Advance() {
-		as.Equal(item.(IntItem).value, i)
+	as.False(cont, "item returned when it advances in an empty list")
+
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	list.First()
+	i := 0
+	for item, cont := list.Get(); cont; item, cont = list.Advance() {
+		value := item.(IntItem).value
+		as.Equal(value, i, "item value is invalid, value: %d", value)
 		i++
 	}
+
+	as.Equal(i, size, "list length is invalid")
+}
+
+func Test_List_Advance_func_sync(t *testing.T) {
+	list := NewList(true)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	as := assert.New(t)
+	advance := func() {
+		for i := 0; i < size; i++ {
+			_, cont := list.Advance()
+			as.True(cont, "list cannot advance")
+		}
+
+		done <- true
+	}
+
+	for i := 0; i < size*concurrence+1; i++ {
+		list.AddAfter(It(i))
+	}
+
+	list.First()
+	for i := 0; i < concurrence; i++ {
+		go advance()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	item, cont := list.Advance()
+	assert.Nil(t, item, "item isn't nil when advance from last position")
+	assert.False(t, cont, "item can advance from the last position")
 }
 
 func Test_List_Rewind_func(t *testing.T) {
+	list := NewList(true)
 	as := assert.New(t)
-	l := NewList(true)
+	size := 5
 
-	for i := 1; i <= 5; i++ {
-		l.AddAfter(It(i))
+	// In empty list
+	item, cont := list.Rewind()
+	if item != nil {
+		as.Fail(
+			"item isn't nil",
+			"the item returned when it rewinds in an empty list isn't nil: item: %s",
+			item,
+		)
 	}
 
-	l.Last()
-	i := 5
-	for item, cont := l.Get(); cont; item, cont = l.Rewind() {
-		as.Equal(item.(IntItem).value, i)
+	as.False(cont, "item returned when it rewinds in an empty list")
+
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	i := size
+	for item, cont := list.Get(); cont; item, cont = list.Rewind() {
+		value := item.(IntItem).value
+		as.Equal(value, i-1, "item value is invalid, value: %d", value)
 		i--
 	}
+
+	as.Equalf(i, 0, "list length is invalid")
+}
+
+func Test_List_Rewind_func_sync(t *testing.T) {
+	list := NewList(true)
+	as := assert.New(t)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	rewind := func() {
+		for i := 0; i < size; i++ {
+			_, cont := list.Rewind()
+			as.True(cont, "the list cannot Rewind")
+		}
+
+		done <- true
+	}
+
+	for i := 0; i < size*concurrence+1; i++ {
+		list.AddAfter(It(i))
+	}
+
+	list.Last()
+	for i := 0; i < concurrence; i++ {
+		go rewind()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	item, cont := list.Rewind()
+	as.Nil(item, "item isn't nil, when the list rewind from the first position")
+	as.False(cont, "can continue, when the list rewind from the first position")
 }
 
 func Test_List_Get_func(t *testing.T) {
 	as := assert.New(t)
-	l := NewList(true)
+	list := NewList(true)
 
-	// Get item in an empty list
-	v, exists := l.Get()
-	as.Nil(v)
-	as.False(exists)
+	// empty list
+	item, getted := list.Get()
+	as.Nil(item, "list is empty but the item returned isn't nil")
+	as.False(getted, "list is empty but the item returned isn't nil")
 
-	for i := 1; i <= 5; i++ {
-		l.AddAfter(It(i))
+
+	for i := 0; i < 5; i++ {
+		list.AddAfter(It(i))
 	}
 
-	as.Equal(l.avl.length, 5)
+	list.First()
+	for i := 0; i < 5; i++ {
+		item, getted := list.Get()
+		list.Next()
 
-	l.First()
-	for i := 1; i <= 5; i++ {
-		v, exists = l.Get()
-		as.True(exists)
-		as.Equal(v.(IntItem).value, i)
-		l.Next()
+		value := item.(IntItem).value
+		as.Equal(value, i, "value is invalid")
+		as.True(getted, "item wasn't getted")
+	}
+}
+
+func Test_List_Get_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	get := func() {
+		for i := 0; i < 2000; i++ {
+			item, getted := list.Get()
+			value := item.(IntItem).value
+			as.Equalf(value, 0, "value isn't 0")
+			as.True(getted, "item wasn't got")
+		}
+
+		done <- true
+	}
+
+	for i := 0; i < 10; i++ {
+		list.AddAfter(It(i))
+	}
+
+	list.First()
+
+	for i := 0; i < concurrence; i++ {
+		go get()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
 	}
 }
 
 func Test_List_Replace_func(t *testing.T) {
+	as := assert.New(t)
 	list := NewList(true)
+	size := 5
 
-	for i := 1; i <= 5; i++ {
+	// empty list
+	as.Falsef(list.Replace(It(-1)), "item was replaced in an empty list")
+
+	for i := 0; i < size; i++ {
 		list.AddAfter(It(i))
 	}
 
-	// replace items.
 	list.First()
 	for item, cont := list.Get(); cont; item, cont = list.Advance() {
-		num := item.(IntItem).value
-		list.Replace(It(num + 10))
+		value := item.(IntItem).value
+		as.Truef(list.Replace(It(value+10)), "value %d wasn't replaced", value)
 	}
+
 
 	list.First()
-	i := 11
-	for item, cont := list.Get(); cont; item, cont = list.Advance() {
-		assert.Equal(t, item.(IntItem).value, i)
-		i++
+	for i := 0; i < size; i++ {
+		item, _ := list.Get()
+		value := item.(IntItem).value
+		as.Equalf(value, i+10, "value is invalid")
+		list.Next()
+	}
+}
+
+func Test_List_Replace_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 1000
+	done := make(chan bool)
+	replace := func() {
+		for i := 0; i < size; i++ {
+			as.True(list.Replace(It(-1)), "item wasn't replaced")
+		}
+
+		done <- true
 	}
 
-	assert.Equal(t, i, 16)
-
-	// Search in tree correctly when the item is replaced.
-	list.Clear()
-
-	for i := 1; i <= 10; i++ {
+	for i := 0; i < size*concurrence; i++ {
 		list.AddAfter(It(i))
 	}
 
-	// Replace and search the items.
 	list.First()
-	for item, cont := list.Get(); cont; item, cont = list.Advance() {
-		num := item.(IntItem).value
-
-		if num%2 != 0 {
-			num = num * -2
-		} else {
-			num = num * +2
-		}
-
-		list.Replace(It(num))
+	for i := 0; i < concurrence; i++ {
+		go replace()
+		go changeListProperties(&list, size, done)
 	}
 
-	indx := 1
-	list.ForEach(func(item Item) {
-		num := indx
-		if num%2 != 0 {
-			num = num * -2
-		} else {
-			num = num * +2
-		}
-		assert.Equal(t, item.(IntItem).value, num)
-
-		indx++
-	})
-
-	assert.Equal(t, indx, 11)
-
-	for i := 1; i <= 10; i++ {
-		num := i
-		if num%2 != 0 {
-			num = num * -2
-		} else {
-			num = num * +2
-		}
-
-		_, found := list.Search(It(num))
-		assert.Truef(t, found, "Num %d not found", num)
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
 	}
 
-	assert.Equal(t, list.avl.length, 10)
-	assert.Equal(t, list.avl.length, 10)
+	for i := 1; i < size*concurrence; i++ {
+		_, exist := list.Search(It(i))
+		as.True(exist, "item %d doesn't exist", i)
+	}
+}
+
+func Test_List_Search_func(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	size := 100
+
+	// In empty list
+	item, found := list.Search(It(3))
+	as.Nil(item, "item returned in an empty list isn't nil")
+	as.Falsef(found, "item found in an empty list")
+
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	for i := 0; i < size; i++ {
+		item, found = list.Search(It(i))
+		value := item.(IntItem).value
+		as.Equal(value, i, "item returned in the search doesn't match")
+		as.True(found, "item %d wasn't found", value)
+	}
+
+	// Search an item it doesn't exist in the list
+	item, found = list.Search(It(-1))
+	if item != nil {
+		err := "item was returned"
+		msg :=  "item -1 was returned in the list: value: %d"
+		as.Fail(err, msg, item.(IntItem).value)
+	}
+	as.False(found, "item -1 was found in the list")
+}
+
+func Test_List_Search_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	size := 1000
+	concurrence := 8
+	done := make(chan bool)
+	search := func(min, max int) {
+		for i := min; i < max; i++ {
+			item, found := list.Search(It(i))
+			value := item.(IntItem).value
+			as.Equal(value, i, "values don't match")
+			as.True(found, "value %d not found", value)
+		}
+		done <- true
+	}
+
+	for i := 0; i < concurrence*size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	for i := 0; i < concurrence; i++ {
+		go search(i*size, (i+1)*size)
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
 }
 
 func Test_List_Delete_func(t *testing.T) {
 	var (
+		list    List
 		item    Item
 		deleted bool
 	)
+	list = NewList(false)
 	as := assert.New(t)
-	l := NewList(true)
+	size := 100
 
-	// test empty list
-	item, deleted = l.Delete()
-	as.Nil(item)
-	as.False(deleted)
+	// Delete item in empty list
+	item, deleted = list.Delete()
+	as.Nil(item, "item returned isn't nil when it deletes an item in empty list")
+	as.False(deleted, "item was deleted in an empty list")
 
-	// only one item
-	l.AddAfter(It(3))
-	item, deleted = l.Delete()
-
-	as.Equal(item.(IntItem).value, 3)
-	as.True(deleted)
-	as.Nil(l.pnode)
-	as.Nil(l.fnode)
-	as.Nil(l.lnode)
-	as.Equal(l.avl.length, 0)
-
-	for i := 1; i <= 10; i++ {
-		l.AddAfter(It(i))
+	// Delete item in a list without duplicated items
+	list = NewList(false)
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
 	}
 
-	// insert items duplicated
-	l.AddAfter(It(2))
-	l.AddAfter(It(4))
-	l.AddAfter(It(7))
+	list.First()
+	for i := 0; i < size; i++ {
+		item, deleted = list.Delete()
+		if item == nil {
+			msg := "item returned is nil when delete the item in position %d"
+			as.Fail("item is nil", msg, i)
+			continue
 
-	maxLength := l.Length()
-	for i, a := range []int{3, 2, 4, 6, 9, 1, 2, 7, 5, 10, 8, 7, 4} {
-		_, found := l.Search(It(a))
-		as.True(found)
+		}
+		as.True(deleted, "item wasn't deleted: position: %d", i)
 
-		vdeleted, deleted := l.Delete()
-		as.True(deleted)
-		as.Equal(vdeleted.(IntItem).value, a)
-		as.Equal(l.pnode, l.fnode)
-		as.Equal(l.Length(), maxLength-(i+1))
-
-		_, found = l.Search(It(a))
-		as.Equal(found, i == 1 || i == 2 || i == 7)
+		_, found := list.avl.Search(item)
+		as.False(found, "item deleted was found in list avl tree")
 	}
 
-	as.Equal(l.Length(), 0)
-	as.Nil(l.fnode)
-	as.Nil(l.pnode)
-	as.Nil(l.lnode)
+	as.Equal(list.Length(), 0, "list isn't empty")
+
+
+	// Delete item in a list with duplicated items
+	list = NewList(true)
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(1))
+	}
+
+	list.First()
+	for i := 0; i < size; i++ {
+		item, deleted = list.Delete()
+		if item == nil {
+			msg := "item returned is nil when delete the item in position %d"
+			as.Fail("item is nil", msg, i)
+			continue
+
+		}
+		as.True(deleted, "item wasn't deleted: position: %d", i)
+
+		_, found := list.avl.Search(item)
+		as.False(found, "item deleted was found in list avl tree")
+	}
+
+	as.Equal(list.Length(), 0, "list isn't empty")
+}
+
+func Test_List_Delete_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 1000
+	done := make(chan bool)
+	deletef := func() {
+		for i := 0; i < size; i++ {
+			_, deleted := list.Delete()
+			as.True(deleted, "item wasn't deleted")
+		}
+
+		done <- true
+	}
+
+	for i := 0; i < (concurrence+1)*size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	for i := 0; i < concurrence; i++ {
+		go deletef()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	as.Equal(list.Length(), 1000, "list length is invalid")
+}
+
+func Test_List_Length_func(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(false)
+	size := 10
+
+	/*
+		No duplicate items
+	*/
+	for i := 1; i <= size; i++ {
+		list.AddAfter(It(i))
+		as.Equal(list.Length(), i, "list length is invalid")
+	}
+
+	list.AddAfter(It(1))
+	as.Equal(list.Length(), size, "list length is invalid")
+
+	// remove items
+	for i := 1; i <= size; i++ {
+		list.Delete()
+		as.Equal(list.Length(), size-i, "list length is invalid")
+	}
+
+	as.Equal(list.Length(), 0, "list length isn't 0 in empty list")
+
+	/*
+		Duplicate items
+	*/
+	list = NewList(true)
+	for i := 1; i <= size; i++ {
+		list.AddAfter(It(i))
+		as.Equal(list.Length(), i, "list length is invalid")
+	}
+
+	list.AddAfter(It(1))
+	as.Equal(list.Length(), size+1, "list length is invalid")
+
+	// remove items
+	for i := 1; i <= size+1; i++ {
+		list.Delete()
+		as.Equal(list.Length(), size+1-i, "list length is invalid")
+	}
+
+	as.Equal(list.Length(), 0, "list length isn't 0 in empty list")
+}
+
+func Test_List_Length_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 1000
+	done := make(chan bool)
+	length := func () {
+		for i := 0; i < size; i++ {
+			as.Equal(list.Length(), size, "list length is invalid")
+		}
+
+		done <- true
+	}
+
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
+	}
+
+
+	for i := 0; i < concurrence; i++ {
+		go length()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence*2; i++ {
+		<- done
+	}
 }
 
 func Test_List_Clear_func(t *testing.T) {
 	as := assert.New(t)
 
 	for _, duplicated := range []bool{true, false} {
-		l := NewList(duplicated)
-		as.Nil(l.fnode)
-		as.Nil(l.pnode)
-		as.Nil(l.lnode)
-		as.Equal(l.avl.length, 0)
+		list := NewList(duplicated)
 
-		as.Equal(l.avl.duplicated, duplicated)
-		as.Equal(l.avl.length, 0)
-		as.True(l.avl.rebalance)
-		as.Nil(l.avl.root)
-
-		for i := 1; i <= 10; i++ {
-			l.AddAfter(It(i))
+		for i := 0; i < 5; i++ {
+			list.AddAfter(It(i))
 		}
 
-		// clear the list
-		l.Clear()
+		list.Clear()
+		as.Nil(list.fnode, "pointer to first item isn't nil")
+		as.Nil(list.fnode, "pointer to current item isn't nil")
+		as.Nil(list.fnode, "pointer to last item isn't nil")
 
-		as.Nil(l.fnode)
-		as.Nil(l.pnode)
-		as.Nil(l.lnode)
-		as.Equal(l.avl.length, 0)
-
-		as.Equal(l.avl.duplicated, duplicated)
-		as.Equal(l.avl.length, 0)
-		as.True(l.avl.rebalance)
-		as.Nil(l.avl.root)
+		as.Nil(list.avl.root, "tree root in list isn't nil")
+		as.Equal(list.avl.length, 0, "invalid length in the avl tree")
+		as.True(list.avl.rebalance, "tree in the list isn't rebalanced")
+		as.Equal(list.avl.duplicated, duplicated, "duplicated flag is invalid")
 	}
 }
 
-func Test_List_Search_func(t *testing.T) {
-	var (
-		item  Item
-		found bool
-	)
-	as := assert.New(t)
-	l := NewList(true)
 
-	// First checks an empty list
-	item, found = l.Search(It(1))
-	as.Nil(item)
-	as.False(found)
-
-	for _, a := range []int{1, 2, 3, 4, 5, 6} {
-		l.AddAfter(It(a))
-	}
-
-	// Check the pointers are correct
-	checkln(t, l.fnode, 1, nil, i(2))
-	checkln(t, l.pnode, 6, i(5), nil)
-	checkln(t, l.lnode, 6, i(5), nil)
-
-	// Search items they are in the list
-	for _, a := range []int{1, 2, 3, 4, 5, 6} {
-		item, found := l.Search(It(a))
-		as.Equal(item.(IntItem).value, a)
-		as.True(found)
-
-		// Check the pointers are correct
-		checkln(t, l.fnode, 1, nil, i(2))
-		checkln(t, l.lnode, 6, i(5), nil)
-
-		switch {
-		case a == 1:
-			checkln(t, l.pnode, 1, nil, i(2))
-		case a == 6:
-			checkln(t, l.pnode, 6, i(5), nil)
-		default:
-			checkln(t, l.pnode, a, i(a-1), i(a+1))
-		}
-
-	}
-
-	// Search items they arent' in the list
-	for _, a := range []int{7, 8, 9, 10, -1, -2} {
-		item, found := l.Search(It(a))
-		as.Nil(item)
-		as.False(found)
-
-		// Check the pointers are correct
-		checkln(t, l.fnode, 1, nil, i(2))
-		checkln(t, l.pnode, 6, i(5), nil)
-		checkln(t, l.lnode, 6, i(5), nil)
-	}
-}
-
-func Test_List_Length_func(t *testing.T) {
-	as := assert.New(t)
-	l := NewList(true)
-
-	as.Equal(l.Length(), 0)
-
-	for i, a := range []int{1, 2, 3, 4, 5, 6} {
-		l.AddAfter(It(a))
-		as.Equal(l.Length(), i+1)
-	}
-}
 
 func Test_List_ForEach_func(t *testing.T) {
 	as := assert.New(t)
 	list := NewList(true)
+	size := 10
 
-	for i := 1; i <= 5; i++ {
+	list.ForEach(func (Item) {
+		as.FailNow("function was exectued when the list was empty")
+	})
+
+	for i := 0; i < size; i++ {
 		list.AddAfter(It(i))
 	}
 
-	// Move the internal pointer.
-	list.First()
-	list.Next()
-	list.Next()
-	itPrev, _ := list.Get()
+	// Move the internal pointer to check if the `ForEach` function starts from begining
+	list.Last()
+	itBefore, _ := list.Get()
 
-	i := 1
+	i := 0
 	list.ForEach(func(it Item) {
-		as.Equal(it.(IntItem).value, i)
+		as.Equal(it.(IntItem).value, i, "value is invalid")
 		i++
 	})
-	as.Equal(i, 6)
+	as.Equal(i, size, "foreach function wasn't executed")
 
 	// test if the internal pointer is pointed the same node that before of execute the
 	// ForEach function.
-	itNext, _ := list.Get()
-	as.Equal(itNext, itPrev)
-	as.Equal(itNext.(IntItem).value, 3)
+	itAfter, _ := list.Get()
+	as.Equal(
+		itAfter,
+		itBefore,
+		"item pointed by internal pointer is diff after execute foreach function",
+	)
+}
+
+func Test_List_ForEach_func_sync(t *testing.T) {
+	as := assert.New(t)
+	list := NewList(true)
+	concurrence := 8
+	size := 2000
+	done := make(chan bool)
+	foreach := func() {
+		i := 0;
+		list.ForEach(func(item Item) {
+			value := item.(IntItem).value
+			as.Equal(value, i, "value is incorrect")
+			i++
+
+			//  the internal pointers don't change
+			itemGetted, _ := list.Get()
+			as.Equal(itemGetted.(IntItem).value, 0, "internal pointer changed")
+		})
+
+		as.Equal(i, size, "index doesn't match with the list length")
+		done <- true
+	}
+
+	for i := 0; i < size; i++ {
+		list.AddAfter(It(i))
+	}
+
+	list.First()
+	for i := 0; i < concurrence; i++ {
+		go foreach()
+		go changeListProperties(&list, size, done)
+	}
+
+	for i := 0; i < concurrence; i++ {
+		<- done
+		<- done
+	}
+
+	// The internal pointer is in the first item.
+	itemGetted, _ := list.Get()
+	as.Equal(itemGetted.(IntItem).value, 0, "item getted isn't 0")
 }
 
 func Test_List_Map_func(t *testing.T) {
 	as := assert.New(t)
 	list := NewList(true)
+	size := 5
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= size; i++ {
 		list.AddAfter(It(i))
 	}
 
 	// Move the internal pointer.
-	list.First()
-	list.Next()
-	list.Next()
-	itPrev, _ := list.Get()
+	list.Last()
+	itBefore, _ := list.Get()
 
 	pow2List := list.Map(func(it Item) Item {
 		num := it.(IntItem).value
-		return It(num * num)
+		return It(num*num)
 	})
 
-	as.Equal(pow2List.Length(), 5)
+	as.Equal(pow2List.Length(), size, "length of new list is invalid")
 	pow2List.First()
-	for _, i := range []int{1, 4, 9, 16, 25} {
+	for i := 1; i <= size; i++ {
 		it, _ := pow2List.Get()
-		as.Equal(it.(IntItem).value, i)
+		as.Equal(it.(IntItem).value, i*i, "value is incorrect")
 		pow2List.Next()
 	}
 
-	as.False(pow2List.Next())
-
-	// test if the internal pointer is pointed the same node that before of execute the
-	// ForEach function.
-	itNext, _ := list.Get()
-	as.Equal(itNext, itPrev)
-	as.Equal(itNext.(IntItem).value, 3)
+	// Check if the internal pointer is pointed the same node that before
+	// of execute the Map function.
+	itAfter, _ := list.Get()
+	as.Equal(
+		itAfter,
+		itBefore,
+		"item pointed by internal pointer is diff after execute map function",
+	)
 }
 
 func Test_List_Filter_func(t *testing.T) {
@@ -686,6 +1093,9 @@ func Test_List_Filter_func(t *testing.T) {
 		list.AddAfter(It(i))
 	}
 
+	list.Last()
+	itBefore, _ := list.Get()
+
 	newList := list.Filter(filter)
 
 	i := 0
@@ -694,4 +1104,15 @@ func Test_List_Filter_func(t *testing.T) {
 		as.Equal(it.(IntItem).value, i*2+1)
 		i++
 	}
+
+	as.Equal(newList.Length(), i, "new list length is invalid")
+
+	// Check if the internal pointer is pointed the same node that before of execute the
+	// Map function.
+	itAfter, _ := list.Get()
+	as.Equal(
+		itAfter,
+		itBefore,
+		"item pointed by internal pointer is diff after execute filter function",
+	)
 }
