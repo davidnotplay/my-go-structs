@@ -4,12 +4,13 @@ package mygostructs
 // are inserted ordered. It can access and manipulate any item of the list. Also it allows search
 // quickly, if an item exists in the list.
 type SortedList struct {
-	list List
+	list *List
 }
 
 // NewSortedList creates and returns a new empty sorted list.
 func NewSortedList(duplicated bool) SortedList {
-	return SortedList{NewList(duplicated)}
+	list := NewList(duplicated)
+	return SortedList{&list}
 }
 
 // Add adds the item to sorted list. Returns a flag indicating if the item wass added
@@ -20,6 +21,9 @@ func (so *SortedList) Add(item Item) bool {
 		inserted bool
 		node     *listNode
 	)
+
+	so.list.mutex.Lock()
+	defer so.list.mutex.Unlock()
 
 	node = &listNode{item: item}
 
@@ -97,8 +101,8 @@ func (so *SortedList) Rewind() (Item, bool) {
 	return so.list.Rewind()
 }
 
-// Search searchs the item in the list. Returns the item searched and a flag indicating if the
-// item was found.
+// Get returns the item pointed by the internal pointer. The second value returned is a flag
+// indicating if the item was returned or the item doesn't exist because the list is empty.
 func (so *SortedList) Get() (Item, bool) {
 	return so.list.Get()
 }
@@ -134,11 +138,11 @@ func (so *SortedList) ForEach(f func(Item)) {
 // Map creates a new list using the results of parser function execution in all items of
 // the list.
 func (so *SortedList) Map(parser func(Item) Item) *SortedList {
-	return &SortedList{*(so.list.Map(parser))}
+	return &SortedList{(so.list.Map(parser))}
 }
 
 // Filter create a new list with all items that pass the test implemented in the filter
 // function.
 func (so *SortedList) Filter(filter func(Item) bool) *SortedList {
-	return &SortedList{*(so.list.Filter(filter))}
+	return &SortedList{(so.list.Filter(filter))}
 }
