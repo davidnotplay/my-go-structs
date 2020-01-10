@@ -13,7 +13,7 @@ type stackNode struct {
 type Stack struct {
 	top    *stackNode
 	length int
-	mutex sync.Mutex
+	mutex  sync.Mutex
 }
 
 // NewStack creates and returns a new empty stack

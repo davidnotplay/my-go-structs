@@ -81,8 +81,8 @@ func Test_Stack_Push_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(stack.Length(), size*concurrence, "stack length is incorrect")
@@ -145,8 +145,8 @@ func Test_Stack_Pop_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(stack.Length(), 0, "stack isn't empty")
@@ -202,15 +202,14 @@ func Test_Stack_Top_func_sync(t *testing.T) {
 		stack.Push(It(i))
 	}
 
-
 	for i := 0; i < concurrence; i++ {
 		go top()
 		go changeStackProperties(&stack, size, done)
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(stack.Length(), 100, "stack length is invalid")
@@ -257,8 +256,8 @@ func Test_Stack_Length_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 

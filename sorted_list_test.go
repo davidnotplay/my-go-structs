@@ -28,7 +28,7 @@ func Test_SortedList_Add_func(t *testing.T) {
 	min, max := 999, -1
 
 	for _, value := range data {
-		if  value < min {
+		if value < min {
 			min = value
 		}
 
@@ -65,7 +65,6 @@ func Test_SortedList_Add_func(t *testing.T) {
 
 	as.Equal(counter, size, "number of iterations in loop is invalid")
 
-
 	// Loop backward the list to check the items order.
 	counter = 0
 	for node := list.list.lnode; node != nil; counter, node = counter+1, node.prev {
@@ -77,7 +76,6 @@ func Test_SortedList_Add_func(t *testing.T) {
 	list = NewSortedList(false)
 	as.True(list.Add(It(1)), "item wasn't inserted")
 	as.False(list.Add(It(1)), "duplicated item was inserted")
-
 
 	// List with duplicated items.
 	list = NewSortedList(true)
@@ -116,7 +114,7 @@ func Test_SortedList_Add_func(t *testing.T) {
 	counter = 0
 	for node := list.list.fnode; node != nil; counter, node = counter+1, node.next {
 		value := node.item.(IntItem).value
-		as.Equal(value, (counter/2), "value of item is invalid")
+		as.Equal(value, (counter / 2), "value of item is invalid")
 	}
 
 	as.Equal(counter, size, "number of iterations in loop is invalid")
@@ -135,7 +133,7 @@ func Test_SortedList_Add_func_sync(t *testing.T) {
 	size := 1000
 	concurrence := 8
 	done := make(chan bool)
-	add := func (min, max int) {
+	add := func(min, max int) {
 		for i := min; i < max; i++ {
 			item := It(i)
 			as.True(list.Add(item), "item %s wasn't inserted", item)
@@ -145,13 +143,13 @@ func Test_SortedList_Add_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		go add (size*i, (i+1)*size)
+		go add(size*i, (i+1)*size)
 		go changeListProperties(list.list, size, done)
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(list.Length(), size*concurrence, "list length is invalid")
@@ -166,7 +164,6 @@ func Test_SortedList_Add_func_sync(t *testing.T) {
 func Test_SortedList_Next_func(t *testing.T) {
 	as := assert.New(t)
 	list := NewSortedList(false)
-
 
 	// test in empty list
 	as.False(list.Next(), "empty list has a next item")
@@ -212,8 +209,8 @@ func Test_SortedList_Next_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.False(list.Next(), "item found after last item")
@@ -267,8 +264,8 @@ func Test_SortedList_Prev_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.False(list.Prev(), "item found before first item")
@@ -310,8 +307,8 @@ func Test_SortedList_First_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	assert.Equal(t, list.list.pnode, list.list.fnode, "pointed node isn't the first node")
@@ -353,8 +350,8 @@ func Test_SortedList_Last_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	assert.Equalf(t, list.list.pnode, list.list.lnode, "node pointed isn't the last node")
@@ -388,7 +385,6 @@ func Test_SortedList_Advance_func(t *testing.T) {
 	}
 }
 
-
 func Test_SortedList_Advance_func_sync(t *testing.T) {
 	list := NewSortedList(true)
 	concurrence := 8
@@ -415,8 +411,8 @@ func Test_SortedList_Advance_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	item, cont := list.Advance()
@@ -478,8 +474,8 @@ func Test_SortedList_Rewind_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	item, cont := list.Rewind()
@@ -540,8 +536,8 @@ func Test_SortedList_Get_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 
@@ -609,8 +605,8 @@ func Test_SortedList_Search_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 
@@ -708,8 +704,8 @@ func Test_SortedList_Delete_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(list.Length(), 1000, "list length is invalid")
@@ -741,7 +737,7 @@ func Test_SortedList_Length_func_sync(t *testing.T) {
 	concurrence := 8
 	size := 1000
 	done := make(chan bool)
-	length := func () {
+	length := func() {
 		for i := 0; i < size; i++ {
 			as.Equal(list.Length(), size, "list length is invalid")
 		}
@@ -753,14 +749,13 @@ func Test_SortedList_Length_func_sync(t *testing.T) {
 		list.AddAfter(It(i))
 	}
 
-
 	for i := 0; i < concurrence; i++ {
 		go length()
 		go changeListProperties(&list, size, done)
 	}
 
 	for i := 0; i < concurrence*2; i++ {
-		<- done
+		<-done
 	}
 }
 
@@ -782,7 +777,7 @@ func Test_SortedList_Clear_func(t *testing.T) {
 		as.Equal(so.list.avl.length, 0, "length isn't 0 in an empty list")
 
 		as.Equal(so.list.avl.duplicated, duplicated, "duplicated flag in list is invalid")
-		as.Equal(so.list.avl.length, 0,"avl length is invalid when the tree is empty")
+		as.Equal(so.list.avl.length, 0, "avl length is invalid when the tree is empty")
 		as.True(so.list.avl.rebalance, "rebalanced flag is invalid")
 		as.Nil(so.list.avl.root, "avl root pointer isn't 0")
 	}
@@ -793,7 +788,7 @@ func Test_SortedList_ForEach_func(t *testing.T) {
 	list := NewSortedList(true)
 	size := 10
 
-	list.ForEach(func (Item) {
+	list.ForEach(func(Item) {
 		as.FailNow("function was exectued when the list was empty")
 	})
 
@@ -828,7 +823,7 @@ func Test_SortedList_ForEach_func_sync(t *testing.T) {
 	size := 2000
 	done := make(chan bool)
 	foreach := func() {
-		i := 0;
+		i := 0
 		list.ForEach(func(item Item) {
 			value := item.(IntItem).value
 			as.Equal(value, i, "value is incorrect")
@@ -854,8 +849,8 @@ func Test_SortedList_ForEach_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	// The internal pointer is in the first item.
@@ -878,7 +873,7 @@ func Test_SortedList_Map_func(t *testing.T) {
 
 	pow2List := list.Map(func(it Item) Item {
 		num := it.(IntItem).value
-		return It(num*num)
+		return It(num * num)
 	})
 
 	as.Equal(pow2List.Length(), size, "length of new list is invalid")

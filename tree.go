@@ -70,11 +70,11 @@ func (node *treeNode) rotateLeftRight() *treeNode {
 
 // Tree struct is the base for the Bst struct and AVL struct.
 type Tree struct {
-	root       *treeNode   // Tree root.
-	length     int         // Number of tree nodes.
-	rebalance  bool        // Rebalance the tree after modify it.
-	duplicated bool        // Flag indicating if allows duplicated items.
-	mutex      sync.Mutex  // Lock for avoid the concurrence when manipulate the struct.
+	root       *treeNode  // Tree root.
+	length     int        // Number of tree nodes.
+	rebalance  bool       // Rebalance the tree after modify it.
+	duplicated bool       // Flag indicating if allows duplicated items.
+	mutex      sync.Mutex // Lock for avoid the concurrence when manipulate the struct.
 }
 
 // insertItem searchs the correct position inside of the param tree node, inserts the

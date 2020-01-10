@@ -38,7 +38,7 @@ func Test_NewQueue_func(t *testing.T) {
 	queue := NewQueue()
 
 	as.Nil(queue.fnode, "in empty queue, pointer to first item isn't nil")
-	as.Nil(queue.lnode,  "in empty queue pointer to last item isn't nil")
+	as.Nil(queue.lnode, "in empty queue pointer to last item isn't nil")
 	as.Equal(queue.length, 0, "in empty queue, the length isn't 0")
 }
 
@@ -78,8 +78,8 @@ func Test_Queue_Enqueue_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(queue.length, size*concurrence, "the length doesn't match")
@@ -139,8 +139,8 @@ func Test_Queue_Dequeue_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(queue.Length(), 1, "length is invalid")
@@ -204,8 +204,8 @@ func Test_Queue_Front_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 
@@ -250,8 +250,8 @@ func Test_Queue_Length_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 

@@ -1,9 +1,9 @@
 package mygostructs
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
 	"time"
 )
 
@@ -51,7 +51,7 @@ func checkTree(t *testing.T, root *treeNode, results []treeTest) {
 	as := assert.New(t)
 
 	checkNode = func(node *treeNode) {
-		if (node == nil) {
+		if node == nil {
 			return
 		}
 
@@ -69,7 +69,7 @@ func checkTree(t *testing.T, root *treeNode, results []treeTest) {
 		as.Equal(node.height, result.height, "%s: the height doesn't match", msg)
 
 		// check left node
-		if result.lvalue == nil{
+		if result.lvalue == nil {
 			if node.ltree != nil {
 				valueStr := node.ltree.item.String()
 				as.Fail(
@@ -99,7 +99,7 @@ func checkTree(t *testing.T, root *treeNode, results []treeTest) {
 		}
 
 		// check right node
-		if result.rvalue == nil{
+		if result.rvalue == nil {
 			if node.rtree != nil {
 				valueStr := node.rtree.item.String()
 				as.Fail(
@@ -201,28 +201,27 @@ func Test_treeNode_rotateRight_func(t *testing.T) {
 	tree4.ltree = tree2
 	tree4.rtree = tree5
 	/*
-	Tree created:
-	        4
-	      2   5
-             1 3
+			Tree created:
+			        4
+			      2   5
+		             1 3
 
 	*/
-
 
 	ntree := tree4.rotateRight()
 	/*
-	Tree after right rotation:
-		2
-	      1   4
-		 3 5
+		Tree after right rotation:
+			2
+		      1   4
+			 3 5
 	*/
 
 	checkTree(t, ntree, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{2, 1, i(1), i(4)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 1, i(3), i(5)},
-		{5, 0, nil,  nil},
+		{5, 0, nil, nil},
 	})
 }
 
@@ -238,25 +237,25 @@ func Test_treeNode_rotateLeft_func(t *testing.T) {
 	tree2.ltree = tree1
 	tree2.rtree = tree4
 	/*
-	Test created:
-		2
-	      1   4
-		 3 5
+		Test created:
+			2
+		      1   4
+			 3 5
 	*/
 
 	ntree := tree2.rotateLeft()
 	/*
-	Test after left rotation:
-	        4
-	      2   5
-             1 3
+			Test after left rotation:
+			        4
+			      2   5
+		             1 3
 	*/
 	checkTree(t, ntree, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{2, 1, i(1), i(3)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 1, i(2), i(5)},
-		{5, 0, nil,  nil},
+		{5, 0, nil, nil},
 	})
 }
 
@@ -272,25 +271,25 @@ func Test_treeNode_rotateRightLeft_func(t *testing.T) {
 	tree2.ltree = tree1
 	tree2.rtree = tree4
 	/*
-	Tree created:
-		2
-	      1   4
-	         3 5
+		Tree created:
+			2
+		      1   4
+		         3 5
 	*/
 
 	ntree := tree2.rotateRightLeft()
 	/*
-	Tree after right left rotation:
-	        3
-	      2   4
-	     1     5
+		Tree after right left rotation:
+		        3
+		      2   4
+		     1     5
 	*/
-	checkTree(t, ntree, [] treeTest{
-	   {1, 0, nil,  nil},
-	   {2, 1, i(1), nil},
-	   {3, 2, i(2), i(4)},
-	   {4, 1, nil,  i(5)},
-	   {5, 0, nil,  nil},
+	checkTree(t, ntree, []treeTest{
+		{1, 0, nil, nil},
+		{2, 1, i(1), nil},
+		{3, 2, i(2), i(4)},
+		{4, 1, nil, i(5)},
+		{5, 0, nil, nil},
 	})
 }
 
@@ -306,31 +305,31 @@ func Test_treeNode_rotateLeftRight_func(t *testing.T) {
 	tree4.ltree = tree2
 	tree4.rtree = tree5
 	/*
-	Tree created
-	        4
-	      2	  5
-	     1 3
+		Tree created
+		        4
+		      2	  5
+		     1 3
 	*/
 
 	ntree := tree4.rotateLeftRight()
 	/*
-	Tree after left right rotation
-	        3
-	      2   4
-	     1     5
+		Tree after left right rotation
+		        3
+		      2   4
+		     1     5
 	*/
-	checkTree(t, ntree, [] treeTest{
-	   {1, 0, nil,  nil},
-	   {2, 1, i(1), nil},
-	   {3, 2, i(2), i(4)},
-	   {4, 1, nil,  i(5)},
-	   {5, 0, nil,  nil},
+	checkTree(t, ntree, []treeTest{
+		{1, 0, nil, nil},
+		{2, 1, i(1), nil},
+		{3, 2, i(2), i(4)},
+		{4, 1, nil, i(5)},
+		{5, 0, nil, nil},
 	})
 }
 
 func Test_insertGetAdy_func(t *testing.T) {
 	var (
-		root	  *treeNode
+		root      *treeNode
 		prev      *Item
 		inserted  bool
 		items     []int
@@ -340,9 +339,9 @@ func Test_insertGetAdy_func(t *testing.T) {
 	as := assert.New(t)
 
 	/*
-	Test function:
-		- rebalance
-		- no duplicated items
+		Test function:
+			- rebalance
+			- no duplicated items
 	*/
 	items = []int{3, 4, 2, 9, 7, 6, 5, 1, 0, 8}
 	prevItems = []*int{nil, i(3), nil, i(4), i(4), i(4), i(4), nil, nil, i(7)}
@@ -406,9 +405,9 @@ func Test_insertGetAdy_func(t *testing.T) {
 		{9, 1, i(8), nil},
 	})
 	/*
-	Test function:
-		- no rebalance
-		- no duplicated items
+		Test function:
+			- no rebalance
+			- no duplicated items
 	*/
 	root = nil
 	items = []int{4, 8, 3, 2, 7, 6, 9, 1, 0, 5}
@@ -459,9 +458,9 @@ func Test_insertGetAdy_func(t *testing.T) {
 	as.Nil(prev, "previous item isn't nil when item wasn't inserted")
 
 	/*
-	Test function:
-		- rebalance
-		- duplicated items
+		Test function:
+			- rebalance
+			- duplicated items
 	*/
 	root = nil
 	items = []int{4, 3, 3, 2, 1, 0, 4, 5, 1, 2}
@@ -491,13 +490,13 @@ func Test_insertGetAdy_func(t *testing.T) {
 			"previous item doesn't match, item inserted is %s",
 			item,
 		)
-}
+	}
 
 	/*
-	       2
-	   1       3
-	 0   1   3   4
-	- - - - 3 - 4 5
+		       2
+		   1       3
+		 0   1   3   4
+		- - - - 3 - 4 5
 	*/
 	checkTree(t, root, []treeTest{
 		{0, 0, nil, nil},
@@ -513,9 +512,9 @@ func Test_insertGetAdy_func(t *testing.T) {
 	})
 
 	/*
-	Test function:
-		- mo rebalance
-		- duplicated items
+		Test function:
+			- mo rebalance
+			- duplicated items
 	*/
 	root = nil
 	items = []int{4, 3, 3, 2, 1, 0, 4, 5, 1, 2}
@@ -545,42 +544,42 @@ func Test_insertGetAdy_func(t *testing.T) {
 			"previous item doesn't match, item inserted is %s",
 			item,
 		)
-}
+	}
 
 	/*
-	               4
-	       3               4
-	   2       3       -       5
-	 1   2   -   -   -   -   -   -
-	0 1 - - - - - - - - - - - - - -
+		               4
+		       3               4
+		   2       3       -       5
+		 1   2   -   -   -   -   -   -
+		0 1 - - - - - - - - - - - - - -
 	*/
 	checkTree(t, root, []treeTest{
-		{0, 0, nil,  nil},
+		{0, 0, nil, nil},
 		{1, 0, i(0), i(1)},
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{2, 0, i(1), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 0, i(2), i(3)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 0, i(3), i(4)},
-		{4, 0, nil,  i(5)},
-		{5, 0, nil,  nil},
+		{4, 0, nil, i(5)},
+		{5, 0, nil, nil},
 	})
 }
 
 func Test_Tree_Insert_func(t *testing.T) {
 	var (
-		tree      Tree
-		inserted  bool
-		items     []int
+		tree     Tree
+		inserted bool
+		items    []int
 	)
 
 	as := assert.New(t)
 
 	/*
-	Test function:
-		- rebalance
-		- no duplicated items
+		Test function:
+			- rebalance
+			- no duplicated items
 	*/
 	tree = Tree{rebalance: true, duplicated: false}
 	items = []int{3, 4, 2, 9, 7, 6, 5, 1, 0, 8}
@@ -605,7 +604,7 @@ func Test_Tree_Insert_func(t *testing.T) {
 	})
 
 	// insert item duplicated.
-	inserted = tree.Insert(It(0));
+	inserted = tree.Insert(It(0))
 	as.False(inserted, "duplicated item was inserted")
 
 	// check the root didn't change.
@@ -622,9 +621,9 @@ func Test_Tree_Insert_func(t *testing.T) {
 		{9, 1, i(8), nil},
 	})
 	/*
-	Test function:
-		- no rebalance
-		- no duplicated items
+		Test function:
+			- no rebalance
+			- no duplicated items
 	*/
 	tree = Tree{rebalance: false, duplicated: false}
 	items = []int{4, 8, 3, 2, 7, 6, 9, 1, 0, 5}
@@ -652,9 +651,9 @@ func Test_Tree_Insert_func(t *testing.T) {
 	as.False(inserted, "duplicated item was inserted")
 
 	/*
-	Test function:
-		- rebalance
-		- duplicated items
+		Test function:
+			- rebalance
+			- duplicated items
 	*/
 	tree = Tree{rebalance: true, duplicated: true}
 	items = []int{4, 3, 3, 2, 1, 0, 4, 5, 1, 2}
@@ -665,10 +664,10 @@ func Test_Tree_Insert_func(t *testing.T) {
 	}
 
 	/*
-	       2
-	   1       3
-	 0   1   3   4
-	- - - - 3 - 4 5
+		       2
+		   1       3
+		 0   1   3   4
+		- - - - 3 - 4 5
 	*/
 	checkTree(t, tree.root, []treeTest{
 		{0, 0, nil, nil},
@@ -684,9 +683,9 @@ func Test_Tree_Insert_func(t *testing.T) {
 	})
 
 	/*
-	Test function:
-		- mo rebalance
-		- duplicated items
+		Test function:
+			- mo rebalance
+			- duplicated items
 	*/
 	tree = Tree{rebalance: false, duplicated: true}
 	items = []int{4, 3, 3, 2, 1, 0, 4, 5, 1, 2}
@@ -697,23 +696,23 @@ func Test_Tree_Insert_func(t *testing.T) {
 	}
 
 	/*
-	               4
-	       3               4
-	   2       3       -       5
-	 1   2   -   -   -   -   -   -
-	0 1 - - - - - - - - - - - - - -
+		               4
+		       3               4
+		   2       3       -       5
+		 1   2   -   -   -   -   -   -
+		0 1 - - - - - - - - - - - - - -
 	*/
 	checkTree(t, tree.root, []treeTest{
-		{0, 0, nil,  nil},
+		{0, 0, nil, nil},
 		{1, 0, i(0), i(1)},
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{2, 0, i(1), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 0, i(2), i(3)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 0, i(3), i(4)},
-		{4, 0, nil,  i(5)},
-		{5, 0, nil,  nil},
+		{4, 0, nil, i(5)},
+		{5, 0, nil, nil},
 	})
 
 }
@@ -725,7 +724,7 @@ func Test_Tree_Insert_func_sync(t *testing.T) {
 	concurrence := 8
 	size := 2000
 
-	insert := func (min, max int) {
+	insert := func(min, max int) {
 		for i := min; i < max; i++ {
 			item := It(i)
 			as.Truef(tree.Insert(item), "item %s is duplicated", item)
@@ -735,13 +734,13 @@ func Test_Tree_Insert_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		go insert(i * size, (i+1) * size)
+		go insert(i*size, (i+1)*size)
 		go treeChangeProp(&tree, size, done)
 	}
 
-	for i := 0 ; i < concurrence; i++ {
-		<- done
-		<- done
+	for i := 0; i < concurrence; i++ {
+		<-done
+		<-done
 	}
 
 	for i := 0; i < size*concurrence; i++ {
@@ -755,7 +754,7 @@ func Test_Tree_Insert_func_sync(t *testing.T) {
 
 func Test_Tree_Length_func(t *testing.T) {
 	as := assert.New(t)
-	tree := Tree {rebalance: true}
+	tree := Tree{rebalance: true}
 
 	// inserting items
 	for i := 1; i <= 10; i++ {
@@ -785,7 +784,7 @@ func Test_Tree_Length_func_sync(t *testing.T) {
 	tree := Tree{}
 
 	lengthFunc := func() {
-		for i := 0; i<size; i++ {
+		for i := 0; i < size; i++ {
 			assert.Equalf(t, tree.Length(), size, "tree length doesn't match")
 		}
 
@@ -802,8 +801,8 @@ func Test_Tree_Length_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 
@@ -812,12 +811,12 @@ func Test_Tree_Search_func(t *testing.T) {
 	tr := Tree{rebalance: true}
 
 	for i := 0; i < 50; i++ {
-		tr.Insert(It(i*2))
+		tr.Insert(It(i * 2))
 	}
 
 	// items that exists in the tree
 	for i := 0; i < 50; i++ {
-		item := It(i*2)
+		item := It(i * 2)
 		result, found := tr.Search(item)
 		as.True(found, "item %s not found", item)
 		as.Truef(result.Eq(item), "item found doesn't match")
@@ -825,7 +824,7 @@ func Test_Tree_Search_func(t *testing.T) {
 
 	// items that doesn't exist in the tree
 	for i := 0; i < 50; i++ {
-		item := It(i*2+1)
+		item := It(i*2 + 1)
 		result, found := tr.Search(item)
 		as.False(found, "item %s found", item)
 		if result != nil {
@@ -862,8 +861,8 @@ func Test_Tree_Search_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 
@@ -887,16 +886,16 @@ func Test_Tree_Delete_func(t *testing.T) {
 	}
 
 	checkTree(t, tree.root, []treeTest{
-		{0, 0, nil,  nil},
+		{0, 0, nil, nil},
 		{1, 1, i(0), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 3, i(1), i(7)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 1, i(4), i(6)},
-		{6, 0, nil,  nil},
+		{6, 0, nil, nil},
 		{7, 2, i(5), i(8)},
-		{8, 1, nil,  i(9)},
-		{9, 0, nil,  nil},
+		{8, 1, nil, i(9)},
+		{9, 0, nil, nil},
 	})
 
 	// remove one leaf
@@ -904,15 +903,15 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 9, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{0, 0, nil,  nil},
+		{0, 0, nil, nil},
 		{1, 1, i(0), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 3, i(1), i(7)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 1, i(4), i(6)},
-		{6, 0, nil,  nil},
+		{6, 0, nil, nil},
 		{7, 2, i(5), i(8)},
-		{8, 0, nil,  nil},
+		{8, 0, nil, nil},
 	})
 
 	// remove another leaf, the tree must rebalance it
@@ -920,14 +919,14 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 8, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{0, 0, nil,  nil},
+		{0, 0, nil, nil},
 		{1, 1, i(0), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 3, i(1), i(6)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 1, i(4), nil},
 		{6, 2, i(5), i(7)},
-		{7, 0, nil,  nil},
+		{7, 0, nil, nil},
 	})
 
 	// delete one node it has only the left child.
@@ -935,13 +934,13 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 5, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{0, 0, nil,  nil},
+		{0, 0, nil, nil},
 		{1, 1, i(0), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 2, i(1), i(6)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{6, 1, i(4), i(7)},
-		{7, 0, nil,  nil},
+		{7, 0, nil, nil},
 	})
 
 	// delete leaf
@@ -954,11 +953,11 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 1, "item deleted is incorrect")
 	as.True(deleted, "rw")
 	checkTree(t, tree.root, []treeTest{
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 2, i(2), i(6)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{6, 1, i(4), i(7)},
-		{7, 0, nil,  nil},
+		{7, 0, nil, nil},
 	})
 
 	// delete node with 2 children
@@ -966,10 +965,10 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 3, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{4, 2, i(2), i(6)},
-		{6, 1, nil,  i(7)},
-		{7, 0, nil,  nil},
+		{6, 1, nil, i(7)},
+		{7, 0, nil, nil},
 	})
 
 	// Delete another leaf and rebalance
@@ -977,9 +976,9 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 2, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{6, 1, i(4), i(7)},
-		{7, 0, nil,  nil},
+		{7, 0, nil, nil},
 	})
 
 	// delete a item it doesn't exist in the tree
@@ -1001,15 +1000,15 @@ func Test_Tree_Delete_func(t *testing.T) {
 	}
 
 	checkTree(t, tree.root, []treeTest{
-		{0, 0, nil,  nil},
+		{0, 0, nil, nil},
 		{1, 0, i(0), nil},
 		{2, 0, i(1), nil},
 		{3, 0, i(2), i(4)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 0, i(3), i(9)},
-		{6, 0, nil,  nil},
+		{6, 0, nil, nil},
 		{7, 0, i(6), i(8)},
-		{8, 0, nil,  nil},
+		{8, 0, nil, nil},
 		{9, 0, i(7), nil},
 	})
 
@@ -1018,14 +1017,14 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 0, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{2, 0, i(1), nil},
 		{3, 0, i(2), i(4)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 0, i(3), i(9)},
-		{6, 0, nil,  nil},
+		{6, 0, nil, nil},
 		{7, 0, i(6), i(8)},
-		{8, 0, nil,  nil},
+		{8, 0, nil, nil},
 		{9, 0, i(7), nil},
 	})
 
@@ -1036,11 +1035,11 @@ func Test_Tree_Delete_func(t *testing.T) {
 	checkTree(t, tree.root, []treeTest{
 		{1, 0, nil, nil},
 		{3, 0, i(1), i(4)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 0, i(3), i(9)},
-		{6, 0, nil,  nil},
+		{6, 0, nil, nil},
 		{7, 0, i(6), i(8)},
-		{8, 0, nil,  nil},
+		{8, 0, nil, nil},
 		{9, 0, i(7), nil},
 	})
 
@@ -1056,9 +1055,9 @@ func Test_Tree_Delete_func(t *testing.T) {
 	checkTree(t, tree.root, []treeTest{
 		{1, 0, nil, nil},
 		{3, 0, i(1), i(4)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{7, 0, i(3), i(9)},
-		{8, 0, nil,  nil},
+		{8, 0, nil, nil},
 		{9, 0, i(8), nil},
 	})
 
@@ -1081,15 +1080,15 @@ func Test_Tree_Delete_func(t *testing.T) {
 	}
 
 	checkTree(t, tree.root, []treeTest{
-		{0, 0, nil,  nil},
-		{1, 2, i(0),  i(2)},
-		{1, 0, nil,  nil},
+		{0, 0, nil, nil},
+		{1, 2, i(0), i(2)},
+		{1, 0, nil, nil},
 		{2, 1, i(1), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 3, i(1), i(4)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 2, i(3), i(5)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 1, i(4), nil},
 	})
 
@@ -1098,14 +1097,14 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 0, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{1, 2, i(1), i(2)},
-		{2, 1, nil,  i(2)},
-		{2, 0, nil,  nil},
+		{2, 1, nil, i(2)},
+		{2, 0, nil, nil},
 		{3, 3, i(1), i(4)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 2, i(3), i(5)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 1, i(4), nil},
 	})
 
@@ -1114,13 +1113,13 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 2, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{1, 1, i(1), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 3, i(1), i(4)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 2, i(3), i(5)},
-		{4, 0, nil,  nil},
+		{4, 0, nil, nil},
 		{5, 1, i(4), nil},
 	})
 
@@ -1129,15 +1128,14 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 4, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{1, 1, i(1), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 2, i(1), i(4)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 1, i(3), i(5)},
 		{5, 0, nil, nil},
 	})
-
 
 	// Insert and delete the 3
 	tree.Insert(It(3))
@@ -1145,11 +1143,11 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 3, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{1, 1, i(1), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 2, i(1), i(4)},
-		{3, 0, nil,  nil},
+		{3, 0, nil, nil},
 		{4, 1, i(3), i(5)},
 		{5, 0, nil, nil},
 	})
@@ -1159,22 +1157,21 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 3, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
+		{1, 0, nil, nil},
 		{1, 1, i(1), i(2)},
-		{2, 0, nil,  nil},
+		{2, 0, nil, nil},
 		{3, 2, i(1), i(4)},
 		{4, 1, nil, i(5)},
 		{5, 0, nil, nil},
 	})
-
 
 	// delete item number 1
 	item, deleted = tree.Delete(It(1))
 	as.Equal(item.(IntItem).value, 1, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
-		{2, 1, i(1),  nil},
+		{1, 0, nil, nil},
+		{2, 1, i(1), nil},
 		{3, 2, i(2), i(4)},
 		{4, 1, nil, i(5)},
 		{5, 0, nil, nil},
@@ -1188,9 +1185,9 @@ func Test_Tree_Delete_func(t *testing.T) {
 	as.Equal(item.(IntItem).value, 5, "item deleted is incorrect")
 	as.True(deleted, "item wasn't deleted")
 	checkTree(t, tree.root, []treeTest{
-		{1, 0, nil,  nil},
-		{2, 1, i(1),  i(3)},
-		{3, 0, nil,  nil},
+		{1, 0, nil, nil},
+		{2, 1, i(1), i(3)},
+		{3, 0, nil, nil},
 	})
 }
 
@@ -1220,8 +1217,8 @@ func Test_Tree_Delete_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(tree.Length(), 0, "the tree isn't empty")
@@ -1274,8 +1271,8 @@ func Test_Tree_Clear_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	assert.Nil(t, tree.root, "tree root isn't nil")

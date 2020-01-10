@@ -169,8 +169,8 @@ func Test_List_AddAfter_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(list.avl.Length(), concurrence*size, "list length doesn't match")
@@ -254,8 +254,8 @@ func Test_List_AddBefore_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(list.avl.Length(), concurrence*size, "list length doesn't match")
@@ -316,8 +316,8 @@ func Test_List_Next_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.False(list.Next(), "current item isn't the last item")
@@ -368,8 +368,8 @@ func Test_List_Prev_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equalf(list.pnode, list.fnode, "pointed node isn't the first node")
@@ -410,8 +410,8 @@ func Test_List_First_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	assert.Equal(t, list.pnode, list.fnode, "pointed node isn't the first node")
@@ -452,8 +452,8 @@ func Test_List_Last_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	assert.Equalf(t, list.pnode, list.lnode, "node pointed isn't the last node")
@@ -517,8 +517,8 @@ func Test_List_Advance_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	item, cont := list.Advance()
@@ -583,8 +583,8 @@ func Test_List_Rewind_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	item, cont := list.Rewind()
@@ -600,7 +600,6 @@ func Test_List_Get_func(t *testing.T) {
 	item, getted := list.Get()
 	as.Nil(item, "list is empty but the item returned isn't nil")
 	as.False(getted, "list is empty but the item returned isn't nil")
-
 
 	for i := 0; i < 5; i++ {
 		list.AddAfter(It(i))
@@ -646,8 +645,8 @@ func Test_List_Get_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 
@@ -668,7 +667,6 @@ func Test_List_Replace_func(t *testing.T) {
 		value := item.(IntItem).value
 		as.Truef(list.Replace(It(value+10)), "value %d wasn't replaced", value)
 	}
-
 
 	list.First()
 	for i := 0; i < size; i++ {
@@ -704,8 +702,8 @@ func Test_List_Replace_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	for i := 1; i < size*concurrence; i++ {
@@ -739,7 +737,7 @@ func Test_List_Search_func(t *testing.T) {
 	item, found = list.Search(It(-1))
 	if item != nil {
 		err := "item was returned"
-		msg :=  "item -1 was returned in the list: value: %d"
+		msg := "item -1 was returned in the list: value: %d"
 		as.Fail(err, msg, item.(IntItem).value)
 	}
 	as.False(found, "item -1 was found in the list")
@@ -771,8 +769,8 @@ func Test_List_Search_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 }
 
@@ -813,7 +811,6 @@ func Test_List_Delete_func(t *testing.T) {
 	}
 
 	as.Equal(list.Length(), 0, "list isn't empty")
-
 
 	// Delete item in a list with duplicated items
 	list = NewList(true)
@@ -864,8 +861,8 @@ func Test_List_Delete_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	as.Equal(list.Length(), 1000, "list length is invalid")
@@ -922,7 +919,7 @@ func Test_List_Length_func_sync(t *testing.T) {
 	concurrence := 8
 	size := 1000
 	done := make(chan bool)
-	length := func () {
+	length := func() {
 		for i := 0; i < size; i++ {
 			as.Equal(list.Length(), size, "list length is invalid")
 		}
@@ -934,14 +931,13 @@ func Test_List_Length_func_sync(t *testing.T) {
 		list.AddAfter(It(i))
 	}
 
-
 	for i := 0; i < concurrence; i++ {
 		go length()
 		go changeListProperties(&list, size, done)
 	}
 
 	for i := 0; i < concurrence*2; i++ {
-		<- done
+		<-done
 	}
 }
 
@@ -967,14 +963,12 @@ func Test_List_Clear_func(t *testing.T) {
 	}
 }
 
-
-
 func Test_List_ForEach_func(t *testing.T) {
 	as := assert.New(t)
 	list := NewList(true)
 	size := 10
 
-	list.ForEach(func (Item) {
+	list.ForEach(func(Item) {
 		as.FailNow("function was exectued when the list was empty")
 	})
 
@@ -1010,7 +1004,7 @@ func Test_List_ForEach_func_sync(t *testing.T) {
 	size := 2000
 	done := make(chan bool)
 	foreach := func() {
-		i := 0;
+		i := 0
 		list.ForEach(func(item Item) {
 			value := item.(IntItem).value
 			as.Equal(value, i, "value is incorrect")
@@ -1036,8 +1030,8 @@ func Test_List_ForEach_func_sync(t *testing.T) {
 	}
 
 	for i := 0; i < concurrence; i++ {
-		<- done
-		<- done
+		<-done
+		<-done
 	}
 
 	// The internal pointer is in the first item.
@@ -1060,7 +1054,7 @@ func Test_List_Map_func(t *testing.T) {
 
 	pow2List := list.Map(func(it Item) Item {
 		num := it.(IntItem).value
-		return It(num*num)
+		return It(num * num)
 	})
 
 	as.Equal(pow2List.Length(), size, "length of new list is invalid")
