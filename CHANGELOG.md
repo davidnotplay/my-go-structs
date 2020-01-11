@@ -2,6 +2,10 @@
 Changelog
 =========
 
+Version 2.0.0
+-------------
+- Adapt all structs to run in multithread code.
+
 Version 1.2.0
 -------------
 - Create Sorted list struct
