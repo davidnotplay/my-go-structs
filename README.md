@@ -1,7 +1,7 @@
 My Go structs
 =============
 
-My Go structs is package that contains a set of differents abstract data types:
+**My Go structs** is package that contains a set of differents abstract data types:
 * [Queue](#queue)
 * [Stack](#stack)
 * [List](#list)
@@ -63,7 +63,7 @@ for item, found := stack.Pop(); found; item, found = stack.Pop() {
 
 ### List
 - [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#List)
-- List features:
+- Features:
   * Insert in items in any position of the list.
   * Get any item in the list.
   * Update any item in the list.
@@ -257,7 +257,7 @@ if itemDeleted, deleted := avl.Delete(It(2)); deleted {
 Item iterface
 -------------
 The `Item` interface is the data type used as item in all structs. Any item you want use in the 
-structs must implements the this interface. 
+structs must implements this interface. 
 
 - [Official documentation](https://godoc.org/github.com/davidnotplay/my-go-structs#Item)
 

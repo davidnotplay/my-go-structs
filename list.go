@@ -27,8 +27,10 @@ func (ln listNode) String() string {
 }
 
 // List is a struct it implements a doubly linked list type data structure. The items are inserted
-// linearly. It can access and manipulate any item of the list. Also it allows search quickly, if
-// an item exists in the list.
+// linearly. It can access and manipulate any item of the list. Also it allows to search quickly
+// items.
+//
+// The struct is adapted to run in multithread code.
 type List struct {
 	fnode *listNode  // pointer to the first node of the list.
 	lnode *listNode  // ponter to the last node of the list

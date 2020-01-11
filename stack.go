@@ -10,6 +10,8 @@ type stackNode struct {
 
 // Stack is a struct it implements a stack type abstract data structure, where the items are
 // inserted linearly and the last item in enter is the first in out. (LIFO)
+//
+// The struct is adapted to run in multithread code.
 type Stack struct {
 	top    *stackNode
 	length int

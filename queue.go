@@ -10,6 +10,8 @@ type queueNode struct {
 
 // Queue is a struct it implements a queue type abstract data structure, where the items are
 // inserted linearly and the first element in enter is the first element in out. (FIFO).
+//
+// The struct is adapted to run in multithread code.
 type Queue struct {
 	length int
 	fnode  *queueNode
@@ -17,12 +19,12 @@ type Queue struct {
 	mutex  sync.Mutex
 }
 
-// NewQueue returns a an empty queue.
+// NewQueue creates and returns a new empty queue.
 func NewQueue() Queue {
 	return Queue{}
 }
 
-// Enqueue adds a new item in the end of the queue.
+// Enqueue adds the item of the paramter in the end of the queue.
 func (qu *Queue) Enqueue(it Item) {
 	qu.mutex.Lock()
 	defer qu.mutex.Unlock()
@@ -40,7 +42,7 @@ func (qu *Queue) Enqueue(it Item) {
 	qu.length++
 }
 
-// Dequeue returns and delete teh first item of the queue. The second value returned is flag
+// Dequeue returns and delete the first item of the queue. The second value returned is flag
 // indicating the operation was success.
 func (qu *Queue) Dequeue() (Item, bool) {
 	qu.mutex.Lock()

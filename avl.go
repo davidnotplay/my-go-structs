@@ -1,6 +1,8 @@
 package mygostructs
 
 // Avl is a struct it implements a AVL tree type data structure.
+//
+// The struct is adapted to run in multithread code.
 type Avl struct {
 	Tree
 }
